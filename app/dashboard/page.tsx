@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import Navbar from "../components/Navbar";
 
 export default function DashboardPage() {
     const { user, loading, logout } = useAuth();
@@ -23,7 +24,8 @@ export default function DashboardPage() {
     }
 
     if (!user) return null;
-    return (
+    return (<>
+        {/* <Navbar/> */}
         <div className="min-h-screen bg-gray-100 p-6">
             <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-6">
                 {/* Header */}
@@ -54,6 +56,7 @@ export default function DashboardPage() {
                 {user.role === "AGENT" && <AgentPanel />}
             </div>
         </div>
+        </>
     );
 }
 
