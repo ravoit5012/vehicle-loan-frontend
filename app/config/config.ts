@@ -21,6 +21,13 @@ export const API_ENDPOINTS = {
   // MANAGER DETAILS ENDPOINTS
   GET_ALL_MANAGERS: `${BASE_URL}/manager/all`,
   GET_MANAGER_BY_ID:  `${BASE_URL}/manager/id`,
+
+  // LOAN TYPE DETAILS ENDPOINTS
+  CREATE_LOAN_TYPE : `${BASE_URL}/loan-types/create`,
+  UPDATE_LOAN_TYPE : `${BASE_URL}/loan-types/update/id`,
+  GET_ALL_LOAN_TYPES: `${BASE_URL}/loan-types/get-all`,
+  GET_LOAN_TYPE_BY_ID: `${BASE_URL}/loan-types/id`,
+  DELETE_LOAN_TYPE:`${BASE_URL}/loan-types/delete/id`,
 };
 
 export const FILES_URL = process.env.NEXT_PUBLIC_API_FILES_URL || "http://localhost:3001";

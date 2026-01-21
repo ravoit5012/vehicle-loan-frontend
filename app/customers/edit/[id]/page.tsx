@@ -284,9 +284,38 @@ const EditCustomer: React.FC = () => {
                     <FaFileAlt /> Documents
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
+                    <ClickToActivateInput label="PAN Number" name="panNumber" value={customer.panNumber} onChange={handleInputChange} />
                     <FileUploadField label="PAN Card" name="panImage" onChange={handleFileChange} currentUrl={customer.panImageUrl} />
-                    <FileUploadField label="POI Front" name="poiFrontImage" onChange={handleFileChange} currentUrl={customer.poiFrontImageUrl} />
-                    <FileUploadField label="POI Back" name="poiBackImage" onChange={handleFileChange} currentUrl={customer.poiBackImageUrl} />
+                    <ClickToActivateSelect
+                        label="Proof of Identity Document"
+                        name="poiDocumentType"
+                        value={customer.poiDocumentType || ""}
+                        onChange={handleInputChange}
+                        options={[
+                            { label: "Aadhar Card", value: "AADHAR" },
+                            { label: "Voter ID Card", value: "VOTER_ID" },
+                            { label: "Driving License", value: "DRIVING_LICENSE" },
+                            { label: "Passport", value: "PASSPORT" },
+                        ]}
+                    />
+                    <ClickToActivateInput label="POI Document Number" name="poiDocumentNumber" value={customer.poiDocumentNumber} onChange={handleInputChange} />
+                    <FileUploadField label="POI Front Image" name="poiFrontImage" onChange={handleFileChange} currentUrl={customer.poiFrontImageUrl} />
+                    <FileUploadField label="POI Back Image" name="poiBackImage" onChange={handleFileChange} currentUrl={customer.poiBackImageUrl} />
+                    <ClickToActivateSelect
+                        label="Proof of Address Document"
+                        name="poaDocumentType"
+                        value={customer.poaDocumentType || ""}
+                        onChange={handleInputChange}
+                        options={[
+                            { label: "Aadhar Card", value: "AADHAR" },
+                            { label: "Voter ID Card", value: "VOTER_ID" },
+                            { label: "Driving License", value: "DRIVING_LICENSE" },
+                            { label: "Electricity Bill", value: "ELECTRICITY_BILL" },
+                            { label: "Gas Bill", value: "GAS_BILL" },
+                            { label: "Bank Statement", value: "BANK_STATEMENT" },
+                        ]}
+                    />
+                    <ClickToActivateInput label="POA Document Number" name="poaDocumentNumber" value={customer.poaDocumentNumber} onChange={handleInputChange} />
                     <FileUploadField label="POA Front" name="poaFrontImage" onChange={handleFileChange} currentUrl={customer.poaFrontImageUrl} />
                     <FileUploadField label="POA Back" name="poaBackImage" onChange={handleFileChange} currentUrl={customer.poaBackImageUrl} />
                     <FileUploadField label="Signature" name="applicantSignature" onChange={handleFileChange} currentUrl={customer.applicantSignatureUrl} />

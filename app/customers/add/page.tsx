@@ -354,41 +354,27 @@ export default function AddCustomer() {
       .then(res => res.json())
       .then(data => setAgents(data));
   };
-  const [customerCount, setCustomerCount] = useState<number>(0);
-  useEffect(() => {
-    const fetchCustomerCount = async () => {
-      try {
-        const res = await fetch(API_ENDPOINTS.CUSTOMER_COUNT);
-        const data = await res.json();
-        // assuming API returns { count: number }
-        setCustomerCount(data.count || 0);
-      } catch (err) {
-        console.error("Failed to fetch customer count", err);
-      }
-    };
 
-    fetchCustomerCount();
-  }, []);
   const generateCustomerId = (
     managerName: string,
-    agentName: string,
-    count: number
+    applicantName: string,
+    phoneNumber: string,
   ) => {
     const managerPart = managerName.slice(0, 3).toUpperCase();
-    const agentPart = agentName.slice(0, 3).toUpperCase();
-    const numberPart = String(count + 1).padStart(4, "0");
+    const namePart = applicantName.slice(0, 3).toUpperCase();
+    const phonePart = phoneNumber.slice(-4);
 
-    return `C${managerPart}${agentPart}${numberPart}`;
+    return `C-${managerPart}${namePart}${phonePart}`;
   };
   useEffect(() => {
     const managerObj = managers.find(m => m.id === form.manager);
     const agentObj = agents.find(a => a.id === form.agent);
 
-    if (managerObj && agentObj && customerCount !== null) {
+    if (managerObj && agentObj) {
       const newCustomerId = generateCustomerId(
         managerObj.name,
-        agentObj.name,
-        customerCount
+        form.applicantName,
+        form.mobileNumber
       );
 
       setForm(prev => ({
@@ -396,7 +382,7 @@ export default function AddCustomer() {
         memberId: newCustomerId,
       }));
     }
-  }, [form.manager, form.agent, customerCount, managers, agents]);
+  }, [form.manager, form.agent, form.applicantName, form.mobileNumber, managers, agents]);
   const normalizeArray = <T,>(data: T | T[]): T[] => {
     return Array.isArray(data) ? data : [data];
   };
@@ -703,7 +689,7 @@ export default function AddCustomer() {
           />
 
           <InputField
-            label="Document Number"
+            label="POI Document Number"
             name="poiDocumentNumber"
             value={form.poiDocumentNumber}
             onChange={handleChange}

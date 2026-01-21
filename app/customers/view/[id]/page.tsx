@@ -151,11 +151,16 @@ const ViewCustomer: React.FC = () => {
           <FaFileAlt /> Documents
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
+          <InputField label="PAN Card Number" value={customer.panNumber} readOnly />
           <FileField label="PAN Card" url={customer.panImageUrl} />
-          <FileField label="POI Front" url={customer.poiFrontImageUrl} />
-          <FileField label="POI Back" url={customer.poiBackImageUrl} />
-          <FileField label="POA Front" url={customer.poaFrontImageUrl} />
-          <FileField label="POA Back" url={customer.poaBackImageUrl} />
+          <InputField label="Proof of Identity Document" value={customer.poiDocumentType} readOnly />
+          <InputField label="POI Document Number" value={customer.poiDocumentNumber} readOnly />
+          <FileField label="POI Front Image" url={customer.poiFrontImageUrl} />
+          <FileField label="POI Back Image" url={customer.poiBackImageUrl} />
+          <InputField label="Proof of Address Document" value={customer.poaDocumentType} readOnly />
+          <InputField label="POA Document Number" value={customer.poaDocumentNumber} readOnly />
+          <FileField label="POA Front Image" url={customer.poaFrontImageUrl} />
+          <FileField label="POA Back Image" url={customer.poaBackImageUrl} />
           <FileField label="Signature" url={customer.applicantSignatureUrl} />
           <FileField label="Personal Photo" url={customer.personalPhotoUrl} />
         </div>
