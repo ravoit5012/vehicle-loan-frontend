@@ -28,6 +28,21 @@ export const API_ENDPOINTS = {
   GET_ALL_LOAN_TYPES: `${BASE_URL}/loan-types/get-all`,
   GET_LOAN_TYPE_BY_ID: `${BASE_URL}/loan-types/id`,
   DELETE_LOAN_TYPE:`${BASE_URL}/loan-types/delete/id`,
+
+  // LOAN APPLICATION ENDPOINTS
+  CREATE_LOAN : `${BASE_URL}/loan/create/`,
+  GET_ALL_LOAN_APPLICATIONS : `${BASE_URL}/loan/get-all`,
+  GET_LOAN_APPLICATION_BY_ID : `${BASE_URL}/loan/id`,
+  CALL_VERIFY : `${BASE_URL}/loan/call-verified/id`,
+  DELETE_LOAN_APPLICATION : `${BASE_URL}/loan/delete/id`,
+  GENERATE_CONTRACT : `${BASE_URL}/loan/generate-contract/id`,
+  UPLOAD_SIGNED_LETTER : `${BASE_URL}/loan/sign-contract/id`,
+  FIELD_VERIFICATION : `${BASE_URL}/loan/field-verify/id`,
+  ADMIN_APPROVAL : `${BASE_URL}/loan/admin-approve/id`,
+  DISBURSE_LOAN : `${BASE_URL}/loan/disburse/id`,
+  REJECT_LOAN : `${BASE_URL}/loan/reject/id`,
+  CLOSE_LOAN : `${BASE_URL}/loan/close/id`,
+
 };
 
 export const FILES_URL = process.env.NEXT_PUBLIC_API_FILES_URL || "http://localhost:3001";

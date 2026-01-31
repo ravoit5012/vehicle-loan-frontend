@@ -69,9 +69,9 @@ export default function ViewLoansPage() {
                 <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
                     <FaFile className="text-orange-400 text-3xl" />
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900">View All Rejected Loans</h2>
+                        <h2 className="text-2xl font-bold text-gray-900">View All Loans</h2>
                         <p className="text-gray-600 mt-1">
-                            Get a summary of All rejected loans
+                            Get a summary and view all your loan applications
                         </p>
                     </div>
                 </div>

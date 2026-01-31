@@ -116,16 +116,6 @@ export default function AddCustomer() {
     accountStatus: "",
   });
 
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const { name, files } = e.target;
-  //   if (!files || !files[0]) return;
-
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     [name]: files[0],
-  //   }));
-  // };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (!files || !files[0]) return;
@@ -166,62 +156,6 @@ export default function AddCustomer() {
       }));
     }
   };
-
-  // const handleSubmit = async () => {
-  //   if (form.password !== form.confirmPassword) {
-  //     alert("Passwords do not match");
-  //     return;
-  //   }
-
-  //   const {
-  //     sameAddress,
-  //     confirmPassword,
-  //     manager,
-  //     agent,
-  //     ...payload
-  //   } = form;
-
-  //   const formData = new FormData();
-
-  //   // append all other fields
-  //   Object.entries(payload).forEach(([key, value]) => {
-  //     if (value !== null && value !== undefined) {
-  //       formData.append(key, value as any);
-  //     }
-  //   });
-
-  //   // append managerId and agentId
-  //   formData.append("managerId", manager);
-  //   formData.append("agentId", agent);
-
-  //   try {
-  //     const response = await fetch(API_ENDPOINTS.ADD_CUSTOMER, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     const data = await response.json(); // backend response
-
-  //     if (!response.ok) {
-  //       // backend rejected (missing field, validation error, etc.)
-  //       throw new Error(data.message || "Something went wrong");
-  //     }
-
-  //     // success
-  //     console.log("Customer added:", data);
-  //     alert("Customer added successfully");
-  //     window.location.reload();
-
-  //   } catch (error: unknown) {
-  //     if (error instanceof Error) {
-  //       alert(error.message);
-  //     } else {
-  //       alert("An unexpected error occurred");
-  //     }
-  //   }
-
-
-  // };
 
   const handleSubmit = async () => {
     if (!validateForm()) {
