@@ -127,10 +127,11 @@ export default function ApplyLoanPage() {
 
         if (!selectedLoanType) alert("Select Loan type")
         if (!selectedCustomer) alert("select customer")
+            console.log(selectedCustomer)
         const payload = {
             customerId: selectedCustomer.id, // Use selectedCustomer directly
             loanTypeId: formData.loanTypeId,
-            agentId: selectedCustomer.agent.id,
+            agentId: selectedCustomer.agentId,
             loanAmount,
             loanDuration: duration,
             collectionFreq,

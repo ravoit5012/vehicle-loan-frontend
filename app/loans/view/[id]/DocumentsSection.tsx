@@ -1,4 +1,3 @@
-import { FILES_URL } from "@/app/config/config";
 export default function DocumentsSection({ loan, customer }: { loan: any, customer: any }) {
   const docs = [
     { label: 'Contract', doc: loan.contractDocument?.url },
@@ -24,7 +23,7 @@ export default function DocumentsSection({ loan, customer }: { loan: any, custom
             <span>{label}</span>
             {doc ? (
               <a
-                href={`${FILES_URL}${doc}`}
+                href={doc}
                 target="_blank"
                 className="text-blue-600 underline"
               >

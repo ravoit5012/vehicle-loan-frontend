@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import StatusBadge from './StatusBadge';
-import { FILES_URL, API_ENDPOINTS } from '@/app/config/config';
+import { API_ENDPOINTS } from '@/app/config/config';
 import { useAuth } from '@/hooks/useAuth';
 import Loading from '@/app/components/Loading';
 export default function LoanRow({
@@ -47,12 +47,32 @@ export default function LoanRow({
         credentials: 'include',
       });
 
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   alert("Contract Generated Successfully");
+      //   window.open(data.contractDocument.url, '_blank');
+      //   window.location.reload();
+      // }
       if (response.ok) {
         const data = await response.json();
+
+        const newTab = window.open('', '_blank');
+
         alert("Contract Generated Successfully");
-        window.open(`${FILES_URL}${data.contractDocument.url}`, '_blank');
-        window.location.reload();
-      } else {
+
+        if (newTab) {
+          newTab.location.href = data.contractDocument.url;
+        } else {
+          // fallback if popup was blocked
+          window.location.href = data.contractDocument.url;
+        }
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      }
+
+      else {
         alert("Failed to generate contract");
       }
     } catch (error: any) {

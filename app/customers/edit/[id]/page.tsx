@@ -2,7 +2,7 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { useParams, useRouter } from "next/navigation"; // Next.js 13+ app router
 import axios from "axios";
-import { FILES_URL, API_ENDPOINTS } from "../../../config/config";
+import { API_ENDPOINTS } from "../../../config/config";
 import {
     FaUser,
     FaUserTie,
@@ -396,7 +396,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({ label, name, currentU
         <input type="file" name={name} onChange={onChange} className="cursor-pointer border border-gray-300 rounded-md p-1" />
         {currentUrl && (
             <button
-                onClick={() => window.open(`${FILES_URL}${currentUrl}`, "_blank")}
+                onClick={() => window.open(currentUrl, "_blank")}
                 className="cursor-pointer px-3 py-1 text-sm text-blue-700 underline hover:text-blue-900"
             >
                 View Current File

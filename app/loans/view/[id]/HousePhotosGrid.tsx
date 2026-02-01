@@ -1,4 +1,3 @@
-import { FILES_URL } from "@/app/config/config";
 export default function HousePhotosGrid({
   photos,
 }: {
@@ -15,7 +14,7 @@ export default function HousePhotosGrid({
         {photos.map((p, i) => (
           <div key={i} className="relative">
             <img
-              src={`${FILES_URL}${p.url}`}
+              src={p.url}
               className="rounded-lg object-cover h-40 w-full"
             />
             <div className="text-xs mt-1 text-gray-500">

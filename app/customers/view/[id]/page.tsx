@@ -2,7 +2,6 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { useParams } from "next/navigation"; // Next.js 13+ app router
 import axios from "axios";
-import { FILES_URL } from "../../../config/config";
 import { API_ENDPOINTS} from "../../../config/config";
 import {
   FaUser,
@@ -89,7 +88,7 @@ const ViewCustomer: React.FC = () => {
   }, [id]);
 
   const openFile = (url: string) => {
-    window.open(`${FILES_URL}${url}`, "_blank");
+    window.open(url, "_blank");
   };
 
   if (loading) return <p className="p-6">Loading customer...</p>;
@@ -218,7 +217,7 @@ const FileField: React.FC<FileFieldProps> = ({ label, url }) => (
   <div className="flex flex-col gap-2">
     <span className="font-semibold">{label}</span>
     <button
-      onClick={() => window.open(`${FILES_URL}${url}`, "_blank")}
+      onClick={() => window.open(url, "_blank")}
       className="px-3 py-1 text-sm cursor-pointer text-blue-700 underline hover:text-blue-900"
     >
       View File
