@@ -70,7 +70,7 @@ const menu: MenuItem[] = [
     roles: ["ADMIN", "MANAGER"],
     children: [
       { label: "Add Repayment", href: "/repayments/add" },
-      { label: "All Repayments", href: "/repayments" },
+      { label: "All Repayments", href: "/repayments/all" },
       { label: "Repayment Schedule", href: "/repayments/schedule" },
     ],
   },
@@ -79,7 +79,7 @@ const menu: MenuItem[] = [
     icon: <UserCog size={18} />,
     roles: ["ADMIN"],
     children: [
-      { label: "Add Manager", href: "/managers/add" },
+      { label: "Add Manager", href: "/managers/create" },
       { label: "View Managers", href: "/managers" },
       { label: "Manager Analytics", href: "/managers/analytics" },
     ],
@@ -89,7 +89,7 @@ const menu: MenuItem[] = [
     icon: <User size={18} />,
     roles: ["ADMIN", "MANAGER"],
     children: [
-      { label: "Add Agents", href: "/agents/add" },
+      { label: "Add Agents", href: "/agents/create" },
       { label: "All Agents", href: "/agents" },
       { label: "Agent Analytics", href: "/agents/analytics" },
     ],

@@ -160,6 +160,13 @@ export default function LoanRow({
               className="cursor-pointer bg-indigo-100 text-indigo-700 my-1 hover:scale-110 ease-in-out duration-300 transition-all py-1 px-4 rounded-lg btn-secondary w-full"
             >
               Upload Signed Contract
+            </button>)}
+          {loan.status === 'CONTRACT_SIGNED' && (
+            <button
+              onClick={() => router.push(`/loans/view/${loan.id}/field-verify`)}
+              className="cursor-pointer bg-purple-100 text-purple-700 my-1 hover:scale-110 ease-in-out duration-300 transition-all py-1 px-4 rounded-lg btn-secondary w-full"
+            >
+              Field Verification
             </button>
           )}
           {loan.status === 'FIELD_VERIFIED' && user?.role == "ADMIN" && (

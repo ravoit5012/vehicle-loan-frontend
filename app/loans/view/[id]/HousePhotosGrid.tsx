@@ -4,8 +4,7 @@ export default function HousePhotosGrid({
 }: {
   photos: any[];
 }) {
-  console.log(photos)
-  console.log("url : ", `${FILES_URL}/${photos[0].url}`)
+
   return (
     <div className="card">
       <h2 className="section-title mb-4">

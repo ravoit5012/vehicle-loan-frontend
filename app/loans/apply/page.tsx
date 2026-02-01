@@ -51,7 +51,6 @@ export default function ApplyLoanPage() {
 
             setCustomers(customersRes.data);
             setLoanTypes(loanTypesRes.data);
-            console.log(customersRes.data)
         })();
     }, []);
 
@@ -124,8 +123,8 @@ export default function ApplyLoanPage() {
     // Submit Handler
     // =========================
     const onSubmit = async (formData: any) => {
-        // if (!selectedLoanType || !selectedCustomer) return;
-        console.log("Selected Customer:", selectedCustomer);
+        if (!selectedLoanType || !selectedCustomer) return;
+
         if (!selectedLoanType) alert("Select Loan type")
         if (!selectedCustomer) alert("select customer")
         const payload = {
@@ -141,7 +140,6 @@ export default function ApplyLoanPage() {
             additionalFees,
         };
 
-        console.log(payload);
 
         await axios.post(API_ENDPOINTS.CREATE_LOAN, payload, { withCredentials: true });
 
