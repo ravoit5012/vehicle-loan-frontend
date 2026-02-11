@@ -67,7 +67,7 @@ const menu: MenuItem[] = [
   {
     label: "EMI Repayment Management",
     icon: <Wallet size={18} />,
-    roles: ["ADMIN", "MANAGER"],
+    roles: ["ADMIN", "MANAGER", "AGENT"],
     children: [
       { label: "Add Repayment", href: "/repayments/add" },
       { label: "All Repayments", href: "/repayments/all" },
@@ -127,7 +127,7 @@ export default function Navbar() {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   /* ===== Routes where navbar should be hidden ===== */
-  const HIDE_NAVBAR_ROUTES = ["/login", "/register", "/forgot-password"];
+  const HIDE_NAVBAR_ROUTES = ["/login", "/register", "/forgot-password", "/"];
   const shouldHideNavbar = HIDE_NAVBAR_ROUTES.includes(pathname);
 
   /* ===== Auto expand menu based on route ===== */
@@ -155,6 +155,7 @@ export default function Navbar() {
 
   /* ===== Hide navbar AFTER hooks ===== */
   if (shouldHideNavbar) return null;
+  if (!user) return null; // or a loading state
 
   return (
     <>

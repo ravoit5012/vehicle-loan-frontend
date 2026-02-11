@@ -48,9 +48,11 @@ export const API_ENDPOINTS = {
   DISBURSE_LOAN: `${BASE_URL}/loan/disburse/id`,
   REJECT_LOAN: `${BASE_URL}/loan/reject/id`,
   CLOSE_LOAN: `${BASE_URL}/loan/close/id`,
+
   // FEES PAYMENTS
   GET_ALL_FEES: `${BASE_URL}/loan/get-all-fees`,
   FEES_PAYMENT: `${BASE_URL}/loan/collect-fees`,
+  
   // REPAYMENTS
   GET_ALL_REPAYMENTS: `${BASE_URL}/loan/all-repayments`,
   GET_REPAYMENTS_FOR_LOAN: `${BASE_URL}/loan/repayments`,

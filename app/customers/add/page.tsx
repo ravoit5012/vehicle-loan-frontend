@@ -67,7 +67,7 @@ interface FormState {
   confirmPassword: string;
   accountStatus: string;
 }
-
+import Loading from "@/app/components/Loading";
 export default function AddCustomer() {
   const [form, setForm] = useState<FormState>({
     applicantName: "",
@@ -157,6 +157,48 @@ export default function AddCustomer() {
     }
   };
 
+  // const handleSubmit = async () => {
+  //   if (!validateForm()) {
+  //     alert("Fill all required fields");
+  //     return;
+  //   }
+
+  //   if (form.password !== form.confirmPassword) {
+  //     alert("Passwords do not match");
+  //     return;
+  //   }
+
+  //   const { sameAddress, confirmPassword, manager, agent, ...payload } = form;
+
+  //   const formData = new FormData();
+
+  //   Object.entries(payload).forEach(([key, value]) => {
+  //     if (value !== null && value !== undefined) {
+  //       formData.append(key, value as any);
+  //     }
+  //   });
+
+  //   formData.append("managerId", manager);
+  //   formData.append("agentId", agent);
+
+  //   try {
+  //     const response = await fetch(API_ENDPOINTS.ADD_CUSTOMER, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(data.message || "Something went wrong");
+  //     }
+
+  //     alert("Customer added successfully");
+  //     window.location.reload();
+  //   } catch (error: unknown) {
+  //     alert(error instanceof Error ? error.message : "Unexpected error");
+  //   }
+  // };
   const handleSubmit = async () => {
     if (!validateForm()) {
       alert("Fill all required fields");
@@ -168,8 +210,9 @@ export default function AddCustomer() {
       return;
     }
 
-    const { sameAddress, confirmPassword, manager, agent, ...payload } = form;
+    setIsLoading(true); // ✅ Start loading
 
+    const { sameAddress, confirmPassword, manager, agent, ...payload } = form;
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {
@@ -197,6 +240,8 @@ export default function AddCustomer() {
       window.location.reload();
     } catch (error: unknown) {
       alert(error instanceof Error ? error.message : "Unexpected error");
+    } finally {
+      setIsLoading(false); // ✅ Stop loading
     }
   };
 
@@ -205,6 +250,7 @@ export default function AddCustomer() {
   const { user } = useAuth();
   const userRole = user?.role as "ADMIN" | "MANAGER" | "AGENT";
   const loggedInUserId = user?.id || "";
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const validateForm = () => {
     const newErrors: Record<string, boolean> = {};
@@ -321,7 +367,12 @@ export default function AddCustomer() {
     return Array.isArray(data) ? data : [data];
   };
 
-  return (
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
+
+  return (<>
+  <Loading visible={isLoading} />
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">
       <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
         <FaUserPlus className="text-orange-400 text-3xl" />
@@ -816,56 +867,10 @@ export default function AddCustomer() {
           Submit
         </button>
       </div>
-    </div>
+    </div></>
   );
 }
 
-// interface InputFieldProps {
-//   label: string;
-//   name: string;
-//   value: string;
-//   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-//   type?: string;
-//   icon?: React.ReactNode;
-//   required?: boolean;
-//   readOnly?: boolean;
-//   disabled?: boolean;
-//   placeholder?: string;
-// }
-
-// function InputField({
-//   label,
-//   name,
-//   value,
-//   onChange,
-//   type = "text",
-//   icon,
-//   required = false,
-//   readOnly = false,
-//   disabled = false,
-//   placeholder = "",
-// }: InputFieldProps) {
-//   return (
-//     <label className="flex flex-col text-gray-700 text-sm">
-//       <span className="mb-1 font-semibold flex items-center gap-2">
-//         {icon} {label} {required && <span className="text-red-600">*</span>}
-//       </span>
-//       <input
-//         type={type}
-//         name={name}
-//         id={name}
-//         value={value}
-//         onChange={onChange}
-//         className={`border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${disabled ? "bg-gray-100 cursor-not-allowed" : ""
-//           }`}
-//         required={required}
-//         readOnly={readOnly}
-//         disabled={disabled}
-//         placeholder={placeholder}
-//       />
-//     </label>
-//   );
-// }
 
 interface InputFieldProps {
   label: string;
@@ -923,52 +928,6 @@ function InputField({
     </label>
   );
 }
-
-
-
-// interface SelectFieldProps {
-//   label: string;
-//   name: string;
-//   value: string;
-//   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-//   options: SelectOption[];
-//   required?: boolean;
-// }
-
-// function SelectField({
-//   label,
-//   name,
-//   value,
-//   onChange,
-//   options,
-//   required = false,
-// }: SelectFieldProps) {
-//   return (
-//     <label className="flex flex-col text-gray-700 text-sm cursor-pointer">
-//       <span className="mb-1 font-semibold">
-//         {label} {required && <span className="text-red-600">*</span>}
-//       </span>
-
-//       <select
-//         name={name}
-//         value={value}
-//         onChange={onChange}
-//         required={required}
-//         className="border border-gray-300 cursor-pointer rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
-//       >
-//         <option value="" className="cursor-pointer" disabled>
-//           Select {label}
-//         </option>
-
-//         {options.map((opt) => (
-//           <option className="cursor-pointer" key={opt.value} value={opt.value}>
-//             {opt.label}
-//           </option>
-//         ))}
-//       </select>
-//     </label>
-//   );
-// }
 
 interface SelectOption {
   label: string;
@@ -1034,45 +993,7 @@ interface RadioOption {
   value: string;
 }
 
-// interface RadioGroupProps {
-//   label: string;
-//   name: string;
-//   options: RadioOption[];
-//   selected: string;
-//   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-//   required?: boolean;
-// }
-// function RadioGroup({
-//   label,
-//   name,
-//   options,
-//   selected,
-//   onChange,
-//   required = false,
-// }: RadioGroupProps) {
-//   return (
-//     <fieldset className="text-gray-700 text-sm">
-//       <legend className="mb-1 font-semibold">
-//         {label} {required && <span className="text-red-600">*</span>}
-//       </legend>
-//       <div className="flex gap-6">
-//         {options.map((option) => (
-//           <label key={option.value} className="flex items-center gap-2 cursor-pointer">
-//             <input
-//               type="radio"
-//               name={name}
-//               value={option.value}
-//               checked={selected === option.value}
-//               onChange={onChange}
-//               required={required}
-//             />
-//             <span>{option.label}</span>
-//           </label>
-//         ))}
-//       </div>
-//     </fieldset>
-//   );
-// }
+
 interface RadioGroupProps {
   label: string;
   name: string;
