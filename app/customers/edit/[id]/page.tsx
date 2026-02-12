@@ -375,8 +375,8 @@ const EditCustomer: React.FC = () => {
                     <ClickToActivateInput label="POA Document Number" name="nomineePoaDocumentNumber" value={customer.nomineePoaDocumentNumber} onChange={handleInputChange} />
                     <FileUploadField label="POA Front" name="nomineePoaFrontImage" onChange={handleFileChange} currentUrl={customer.nomineePoaFrontImageUrl} />
                     <FileUploadField label="POA Back" name="nomineePoaBackImage" onChange={handleFileChange} currentUrl={customer.nomineePoaBackImageUrl} />
-                    <FileUploadField label="Signature" name="nomineeSignature" onChange={handleFileChange} currentUrl={customer.nomineeSignatureUrl} />
-                    <FileUploadField label="Personal Photo" name="nomineePersonalPhoto" onChange={handleFileChange} currentUrl={customer.nomineePersonalPhotoUrl} />
+                    <FileUploadField label="Nominee Signature" name="nomineeSignature" onChange={handleFileChange} currentUrl={customer.nomineeSignatureUrl} />
+                    <FileUploadField label="Nominee Photo" name="nomineePersonalPhoto" onChange={handleFileChange} currentUrl={customer.nomineePersonalPhotoUrl} />
                 </div>
             </section>
 

@@ -193,8 +193,8 @@ const ViewCustomer: React.FC = () => {
           <InputField label="POA Document Number" value={customer.nomineePoaDocumentNumber} readOnly />
           <FileField label="POA Front Image" url={customer.nomineePoaFrontImageUrl} />
           <FileField label="POA Back Image" url={customer.nomineePoaBackImageUrl} />
-          <FileField label="Signature" url={customer.nomineeSignatureUrl} />
-          <FileField label="Personal Photo" url={customer.nomineePersonalPhotoUrl} />
+          <FileField label="Nominee Signature" url={customer.nomineeSignatureUrl} />
+          <FileField label="Nominee Photo" url={customer.nomineePersonalPhotoUrl} />
         </div>
       </section>
 

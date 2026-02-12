@@ -918,7 +918,7 @@ export default function AddCustomer() {
             />
           </label>
           <label className="flex flex-col text-sm">
-            <span className="font-semibold">Applicant Signature<span className="text-red-600">*</span> </span>
+            <span className="font-semibold">Nominee Signature<span className="text-red-600">*</span> </span>
             <input
               type="file"
               name="nomineeSignature"
@@ -929,7 +929,7 @@ export default function AddCustomer() {
             />
           </label>
           <label className="flex flex-col text-sm">
-            <span className="font-semibold">Personal Photo<span className="text-red-600">*</span> </span>
+            <span className="font-semibold">Nominee Photo<span className="text-red-600">*</span> </span>
             <input
               type="file"
               name="nomineePersonalPhoto"
