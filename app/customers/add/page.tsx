@@ -367,10 +367,6 @@ export default function AddCustomer() {
     return Array.isArray(data) ? data : [data];
   };
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
-
   return (<>
   <Loading visible={isLoading} />
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">

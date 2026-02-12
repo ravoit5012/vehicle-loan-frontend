@@ -33,9 +33,9 @@ export default function ManagersPage() {
             .includes(search.toLowerCase())
     );
 
-    if (loading) return <Loading />;
 
-    return (
+    return (<>
+        <Loading visible={loading} />
         <div className="max-w-7xl mx-auto p-6 space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
@@ -66,5 +66,5 @@ export default function ManagersPage() {
 
             <ManagerTable managers={filtered} />
         </div>
-    );
+    </>);
 }

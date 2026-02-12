@@ -27,10 +27,9 @@ export default function ViewManagerPage() {
     const data = await res.json();
     setManager(data);
   }
-
-  if (!manager) return <Loading />;
-
   return (
+    <>
+    <Loading visible={!manager} />
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <ManagerDetailsCard manager={manager} />
 
@@ -64,6 +63,6 @@ export default function ViewManagerPage() {
           onDeleted={() => router.push('/managers')}
         />
       )}
-    </div>
+    </div></>
   );
 }

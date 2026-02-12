@@ -45,9 +45,9 @@ export default function CollectFeesPage() {
         );
     }, [search, fees]);
 
-    if (loading) return <Loading />;
 
-    return (
+    return (<>
+    <Loading visible={loading} />
         <div className="max-w-7xl mx-auto p-6 space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -79,5 +79,5 @@ export default function CollectFeesPage() {
 
             <FeesTable fees={filteredFees} />
         </div>
-    );
+  </>  );
 }

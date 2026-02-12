@@ -56,9 +56,10 @@ export default function AllRepaymentsPage() {
             .includes(search.toLowerCase())
     );
 
-    if (loading) return <Loading />;
 
-    return (
+
+    return (<>
+    <Loading visible={loading} />
         <div className="max-w-6xl mx-auto p-6 space-y-6">
             <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
                 <FaCalendarCheck className="text-orange-400 text-3xl" />
@@ -84,6 +85,6 @@ export default function AllRepaymentsPage() {
                     <RepaymentAccordion key={i} data={item} />
                 ))}
             </div>
-        </div>
+        </div></>
     );
 }
