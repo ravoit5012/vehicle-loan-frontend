@@ -45,7 +45,7 @@ export default function SubmitFieldVerification({
 
   return (
     <>
-      {loading && <Loading />}
+      <Loading visible={loading} />
       <button
         onClick={submit}
         className="w-full bg-green-600 text-white py-3 rounded-lg text-lg"

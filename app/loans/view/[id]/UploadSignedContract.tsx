@@ -48,8 +48,8 @@ export default function UploadSignedContract({
 
     return (
         <>
-            {loading && <Loading />}
 
+            <Loading visible={loading} />
             <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
                 <h2 className="text-2xl font-semibold text-blue-600 mb-4">
                     Upload Signed Contract Letter

@@ -42,8 +42,7 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
 
   return (
     <>
-      {loading && <Loading />}
-
+      <Loading visible={loading} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
         <div>
           <label className="text-sm m-2 text-gray-800">
