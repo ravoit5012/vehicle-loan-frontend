@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   GET_CUSTOMER_BY_ID: `${BASE_URL}/customers/id`,
   UPDATE_CUSTOMER: `${BASE_URL}/customers/update/id`,
   DELETE_CUSTOMER: `${BASE_URL}/customers/delete/id`,
+  UPLOAD_EXTRA_DOCUMENTS: `${BASE_URL}/customers/upload-extra`,
 
   //AGENT DETAILS ENDPOINTS
   CREATE_AGENT: `${BASE_URL}/agent`,

@@ -21,6 +21,8 @@ export default function EmiRow({ emi, loanId }: any) {
           {new Date(emi.dueDate).toLocaleDateString()}
         </td>
         <td className="p-3 text-gray-700 dark:text-gray-100">₹ {emi.emiAmount.toLocaleString()}</td>
+        <td className="p-3 text-gray-700 dark:text-gray-100">₹ {emi.principalAmount.toLocaleString()}</td>
+        <td className="p-3 text-gray-700 dark:text-gray-100">₹ {emi.interestAmount.toLocaleString()}</td>
         <td className="p-3 text-gray-700 dark:text-gray-100">₹ {emi.paidAmount.toLocaleString()}</td>
         <td className="p-3">
           <span
@@ -47,6 +49,21 @@ export default function EmiRow({ emi, loanId }: any) {
             </>
           )}
         </td>
+        <td className="p-3">
+          {emi.proofUrl ? (
+            <a
+              href={emi.proofUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1 rounded-md text-xs font-medium hover:bg-blue-100 transition"
+            >
+              📄 View
+            </a>
+          ) : (
+            <span className="text-gray-400 text-sm">—</span>
+          )}
+        </td>
+
       </tr>
 
       {/* Pay EMI Modal */}

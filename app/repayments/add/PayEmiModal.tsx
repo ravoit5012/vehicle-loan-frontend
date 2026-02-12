@@ -5,6 +5,7 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
   const [amount, setAmount] = useState('');
   const [txn, setTxn] = useState('');
   const [loading, setLoading] = useState(false);
+  const [proof, setProof] = useState<File | null>(null);
 
   const submit = async () => {
     if (!amount || !txn) {
@@ -13,28 +14,35 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
     }
 
     setLoading(true);
+
     try {
+      const formData = new FormData();
+
+      formData.append("emiNumber", emi.emiNumber.toString());
+      formData.append("paidAmount", amount.toString());
+      formData.append("paymentMethod", "CASH"); // or dynamic if needed
+      formData.append("transactionId", txn);
+
+      if (proof) {
+        formData.append("proof", proof); // MUST match FileInterceptor field name
+      }
+
       const res = await fetch(`${API_ENDPOINTS.PAY_REPAYMENT}/${loanId}`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          emiNumber: emi.emiNumber,
-          paidAmount: Number(amount),
-          paymentMethod: 'CASH',
-          transactionId: txn,
-        }),
+        method: "POST",
+        body: formData,
+        credentials: "include",
       });
 
       if (res.ok) {
-        alert('Payment recorded successfully!');
+        alert("Payment recorded successfully!");
         window.location.reload();
       } else {
-        alert('Failed to record payment.');
+        alert("Failed to record payment.");
       }
+
     } catch (err) {
       console.error(err);
-      alert('Something went wrong.');
+      alert("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -62,6 +70,32 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
             value={txn}
             onChange={e => setTxn(e.target.value)}
           />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Upload Payment Proof
+            </label>
+
+            <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-500 transition bg-gray-50 dark:bg-gray-700">
+              <div className="text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {proof ? proof.name : "Click to upload image or PDF"}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  JPG, PNG, PDF allowed
+                </p>
+              </div>
+
+              <input
+                type="file"
+                name="proof"
+                accept="image/*,application/pdf"
+                className="hidden"
+                onChange={(e) => setProof(e.target.files?.[0] || null)}
+              />
+            </label>
+          </div>
+
+
         </div>
 
         <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">

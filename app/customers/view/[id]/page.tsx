@@ -2,7 +2,7 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { useParams } from "next/navigation"; // Next.js 13+ app router
 import axios from "axios";
-import { API_ENDPOINTS} from "../../../config/config";
+import { API_ENDPOINTS } from "../../../config/config";
 import {
   FaUser,
   FaUserTie,
@@ -209,6 +209,60 @@ const ViewCustomer: React.FC = () => {
           <InputField label="Account Status" value={customer.accountStatus} readOnly />
         </div>
       </section>
+
+      {/* EXTRA DOCUMENTS */}
+      <section className="mb-8">
+        <h2 className="bg-indigo-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+          <FaFileAlt /> Extra Documents
+        </h2>
+
+        <div className="p-4 border border-t-0 border-indigo-600 rounded-b-md bg-white">
+
+          {customer.extraDocuments && customer.extraDocuments.length > 0 ? (
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+              {customer.extraDocuments.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition bg-gray-50"
+                >
+                  <div className="flex flex-col gap-3">
+
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-gray-800 truncate">
+                        {doc.name}
+                      </h3>
+                    </div>
+
+                    <p className="text-xs text-gray-500">
+                      Uploaded: {new Date(doc.uploadedAt).toLocaleDateString()}
+                    </p>
+
+                    <button
+                      onClick={() => window.open(doc.url, "_blank")}
+                      className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-md transition"
+                    >
+                      View Document
+                    </button>
+
+                  </div>
+                </div>
+              ))}
+
+            </div>
+
+          ) : (
+
+            <div className="text-center text-gray-500 py-6">
+              No extra documents uploaded.
+            </div>
+
+          )}
+
+        </div>
+      </section>
+
     </div>
   );
 };

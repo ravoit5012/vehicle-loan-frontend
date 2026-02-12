@@ -409,6 +409,13 @@ const EditCustomer: React.FC = () => {
                     Save Changes
                 </button>
             </div>
+
+            <button
+                onClick={() => router.push(`/customers/add-extra-documents/${customer.id}`)}
+                className="mt-8 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition duration-200"
+            >
+                Add Extra Documents
+            </button>
         </div>
     );
 };
