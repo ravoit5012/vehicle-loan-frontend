@@ -71,6 +71,13 @@ interface Customer {
   accountStatus: string;
   managerId: string;
   agentId: string;
+  extraDocuments?: {
+    id: string;
+    name: string;
+    url: string;
+    uploadedAt: string;
+  }[];
+
 }
 
 const ViewCustomer: React.FC = () => {
@@ -218,7 +225,7 @@ const ViewCustomer: React.FC = () => {
 
         <div className="p-4 border border-t-0 border-indigo-600 rounded-b-md bg-white">
 
-          {customer.extraDocuments && customer.extraDocuments.length > 0 ? (
+          {customer.extraDocuments && customer.extraDocuments?.length > 0 ? (
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
