@@ -46,6 +46,19 @@ interface FormState {
   nomineeDistrict: string;
   nomineePinCode: string;
 
+  nomineePanNumber: string;
+  nomineePanImage: File | null;
+  nomineePoiDocumentType: string;
+  nomineePoiDocumentNumber: string;
+  nomineePoiFrontImage: File | null;
+  nomineePoiBackImage: File | null;
+  nomineePoaDocumentType: string;
+  nomineePoaDocumentNumber: string;
+  nomineePoaFrontImage: File | null;
+  nomineePoaBackImage: File | null;
+  nomineeSignature: File | null;
+  nomineePersonalPhoto: File | null;
+
   panNumber: string;
   panImage: File | null;
   poiDocumentType: string;
@@ -93,6 +106,19 @@ export default function AddCustomer() {
     nomineePoliceStation: "",
     nomineeDistrict: "",
     nomineePinCode: "",
+
+    nomineePanNumber: "",
+    nomineePanImage: null,
+    nomineePoiDocumentType: "",
+    nomineePoiDocumentNumber: "",
+    nomineePoiFrontImage: null,
+    nomineePoiBackImage: null,
+    nomineePoaDocumentType: "",
+    nomineePoaDocumentNumber: "",
+    nomineePoaFrontImage: null,
+    nomineePoaBackImage: null,
+    nomineeSignature: null,
+    nomineePersonalPhoto: null,
 
     panNumber: "",
     panImage: null,
@@ -762,6 +788,151 @@ export default function AddCustomer() {
             <input
               type="file"
               name="personalPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+        </div>
+      </section>
+
+
+      {/* NOMINEE DOCUMENT DETAILS */}
+      <section className="mb-8">
+        <h2 className="bg-orange-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+          <FaFileAlt /> Nominee Document Details
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
+          <InputField
+            label="PAN Card Number"
+            name="nomineePanNumber"
+            icon={<FaIdCard />}
+            value={form.nomineePanNumber}
+            onChange={handleChange}
+            required
+            error={errors.nomineePanNumber}
+          />
+          <label className="flex flex-col gap-2 text-sm">
+            <span className="font-semibold">PAN Card Image<span className="text-red-600">*</span></span>
+            <input
+              type="file"
+              name="nomineePanImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+
+          <SelectField
+            label="Proof of Identity Document"
+            name="nomineePoiDocumentType"
+            value={form.nomineePoiDocumentType}
+            onChange={handleChange}
+            options={[
+              { label: "Aadhar Card", value: "AADHAR" },
+              { label: "Voter ID Card", value: "VOTER_ID" },
+              { label: "Driving License", value: "DRIVING_LICENSE" },
+              { label: "Passport", value: "PASSPORT" },
+            ]}
+            required
+            error={errors.nomineePoiDocumentType}
+          />
+
+          <InputField
+            label="POI Document Number"
+            name="nomineePoiDocumentNumber"
+            value={form.nomineePoiDocumentNumber}
+            onChange={handleChange}
+            required
+            error={errors.nomineePoiDocumentNumber}
+          />
+          <label className="flex flex-col text-sm">
+            <span className="font-semibold">POI Document Front Image<span className="text-red-600">*</span></span>
+            <input
+              type="file"
+              name="nomineePoiFrontImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="font-semibold">POI Document Back Image<span className="text-red-600">*</span></span>
+            <input
+              type="file"
+              name="nomineePoiBackImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+
+          <SelectField
+            label="Proof of Address Document"
+            name="nomineePoaDocumentType"
+            value={form.nomineePoaDocumentType}
+            onChange={handleChange}
+            options={[
+              { label: "Aadhar Card", value: "AADHAR" },
+              { label: "Voter ID Card", value: "VOTER_ID" },
+              { label: "Driving License", value: "DRIVING_LICENSE" },
+              { label: "Electricity Bill", value: "ELECTRICITY_BILL" },
+              { label: "Gas Bill", value: "GAS_BILL" },
+              { label: "Bank Statement", value: "BANK_STATEMENT" },
+            ]}
+            required
+            error={errors.nomineePoaDocumentType}
+          />
+          <InputField
+            label="POA Document Number"
+            name="nomineePoaDocumentNumber"
+            value={form.nomineePoaDocumentNumber}
+            onChange={handleChange}
+            required
+            error={errors.nomineePoaDocumentNumber}
+          />
+          <label className="flex flex-col text-sm">
+            <span className="font-semibold">POA Document Front Image<span className="text-red-600">*</span></span>
+            <input
+              type="file"
+              name="nomineePoaFrontImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="font-semibold">POA Document Back Image <span className="text-red-600">*</span> </span>
+            <input
+              type="file"
+              name="nomineePoaBackImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="font-semibold">Applicant Signature<span className="text-red-600">*</span> </span>
+            <input
+              type="file"
+              name="nomineeSignature"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              required
+            />
+          </label>
+          <label className="flex flex-col text-sm">
+            <span className="font-semibold">Personal Photo<span className="text-red-600">*</span> </span>
+            <input
+              type="file"
+              name="nomineePersonalPhoto"
               accept="image/*"
               onChange={handleFileChange}
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"

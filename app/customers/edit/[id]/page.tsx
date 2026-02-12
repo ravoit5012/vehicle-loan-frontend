@@ -55,6 +55,18 @@ interface Customer {
     poaBackImageUrl: string;
     applicantSignatureUrl: string;
     personalPhotoUrl: string;
+    nomineePanNumber: string;
+    nomineePanImageUrl: string;
+    nomineePoiDocumentType: string;
+    nomineePoiDocumentNumber: string;
+    nomineePoiFrontImageUrl: string;
+    nomineePoiBackImageUrl: string;
+    nomineePoaDocumentType: string;
+    nomineePoaDocumentNumber: string;
+    nomineePoaFrontImageUrl: string;
+    nomineePoaBackImageUrl: string;
+    nomineeSignatureUrl: string;
+    nomineePersonalPhotoUrl: string;
     memberId: string;
     email: string;
     password: string;
@@ -320,6 +332,51 @@ const EditCustomer: React.FC = () => {
                     <FileUploadField label="POA Back" name="poaBackImage" onChange={handleFileChange} currentUrl={customer.poaBackImageUrl} />
                     <FileUploadField label="Signature" name="applicantSignature" onChange={handleFileChange} currentUrl={customer.applicantSignatureUrl} />
                     <FileUploadField label="Personal Photo" name="personalPhoto" onChange={handleFileChange} currentUrl={customer.personalPhotoUrl} />
+                </div>
+            </section>
+
+            {/* NomineeDocuments */}
+            <section className="mb-8">
+                <h2 className="bg-yellow-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+                    <FaFileAlt />Nominee Documents
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
+                    <ClickToActivateInput label="PAN Number" name="nomineePanNumber" value={customer.nomineePanNumber} onChange={handleInputChange} />
+                    <FileUploadField label="PAN Card" name="nomineePanImage" onChange={handleFileChange} currentUrl={customer.nomineePanImageUrl} />
+                    <ClickToActivateSelect
+                        label="Proof of Identity Document"
+                        name="nomineePoiDocumentType"
+                        value={customer.nomineePoiDocumentType || ""}
+                        onChange={handleInputChange}
+                        options={[
+                            { label: "Aadhar Card", value: "AADHAR" },
+                            { label: "Voter ID Card", value: "VOTER_ID" },
+                            { label: "Driving License", value: "DRIVING_LICENSE" },
+                            { label: "Passport", value: "PASSPORT" },
+                        ]}
+                    />
+                    <ClickToActivateInput label="POI Document Number" name="nomineePoiDocumentNumber" value={customer.nomineePoiDocumentNumber} onChange={handleInputChange} />
+                    <FileUploadField label="POI Front Image" name="nomineePoiFrontImage" onChange={handleFileChange} currentUrl={customer.nomineePoiFrontImageUrl} />
+                    <FileUploadField label="POI Back Image" name="nomineePoiBackImage" onChange={handleFileChange} currentUrl={customer.nomineePoiBackImageUrl} />
+                    <ClickToActivateSelect
+                        label="Proof of Address Document"
+                        name="nomineePoaDocumentType"
+                        value={customer.nomineePoaDocumentType || ""}
+                        onChange={handleInputChange}
+                        options={[
+                            { label: "Aadhar Card", value: "AADHAR" },
+                            { label: "Voter ID Card", value: "VOTER_ID" },
+                            { label: "Driving License", value: "DRIVING_LICENSE" },
+                            { label: "Electricity Bill", value: "ELECTRICITY_BILL" },
+                            { label: "Gas Bill", value: "GAS_BILL" },
+                            { label: "Bank Statement", value: "BANK_STATEMENT" },
+                        ]}
+                    />
+                    <ClickToActivateInput label="POA Document Number" name="nomineePoaDocumentNumber" value={customer.nomineePoaDocumentNumber} onChange={handleInputChange} />
+                    <FileUploadField label="POA Front" name="nomineePoaFrontImage" onChange={handleFileChange} currentUrl={customer.nomineePoaFrontImageUrl} />
+                    <FileUploadField label="POA Back" name="nomineePoaBackImage" onChange={handleFileChange} currentUrl={customer.nomineePoaBackImageUrl} />
+                    <FileUploadField label="Signature" name="nomineeSignature" onChange={handleFileChange} currentUrl={customer.nomineeSignatureUrl} />
+                    <FileUploadField label="Personal Photo" name="nomineePersonalPhoto" onChange={handleFileChange} currentUrl={customer.nomineePersonalPhotoUrl} />
                 </div>
             </section>
 

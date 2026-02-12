@@ -57,7 +57,17 @@ export const API_ENDPOINTS = {
   GET_ALL_REPAYMENTS: `${BASE_URL}/loan/all-repayments`,
   GET_REPAYMENTS_FOR_LOAN: `${BASE_URL}/loan/repayments`,
   PAY_REPAYMENT: `${BASE_URL}/loan/repayment/pay`,
-  ADD_PENALTY: `${BASE_URL}/loan/repayment/penalty`
+  ADD_PENALTY: `${BASE_URL}/loan/repayment/penalty`,
+
+  // ANALYTICS
+  GET_ALL_LOAN_COUNT : `${BASE_URL}/analytics/all-loan-count`,
+  GET_ALL_APPROVED_LOAN_COUNT : `${BASE_URL}/analytics/all-approved-loan-count`,
+  GET_ALL_REJECTED_LOAN_COUNT : `${BASE_URL}/analytics/all-rejected-loan-count`,
+  GET_TOTAL_PRINCIPAL_AMOUNT : `${BASE_URL}/analytics/total-principal-amount`,
+  GET_TOTAL_INTEREST_AMOUNT : `${BASE_URL}/analytics/total-interest-amount`,
+  GET_TOTAL_REPAID_AMOUNT : `${BASE_URL}/analytics/total-repaid-amount`,
+  GET_TOTAL_PENDING_AMOUNT : `${BASE_URL}/analytics/total-pending-amount`,
+  GET_TOTAL_REPAYABLE_AMOUNT : `${BASE_URL}/analytics/total-repayable-amount`,
 };
 
 export const FILES_URL = process.env.NEXT_PUBLIC_API_FILES_URL || "http://localhost:3001";

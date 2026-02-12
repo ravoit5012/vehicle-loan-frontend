@@ -54,6 +54,18 @@ interface Customer {
   poaBackImageUrl: string;
   applicantSignatureUrl: string;
   personalPhotoUrl: string;
+  nomineePanNumber: string;
+  nomineePanImageUrl: string;
+  nomineePoiDocumentType: string;
+  nomineePoiDocumentNumber: string;
+  nomineePoiFrontImageUrl: string;
+  nomineePoiBackImageUrl: string;
+  nomineePoaDocumentType: string;
+  nomineePoaDocumentNumber: string;
+  nomineePoaFrontImageUrl: string;
+  nomineePoaBackImageUrl: string;
+  nomineeSignatureUrl: string;
+  nomineePersonalPhotoUrl: string;
   memberId: string;
   email: string;
   accountStatus: string;
@@ -162,6 +174,27 @@ const ViewCustomer: React.FC = () => {
           <FileField label="POA Back Image" url={customer.poaBackImageUrl} />
           <FileField label="Signature" url={customer.applicantSignatureUrl} />
           <FileField label="Personal Photo" url={customer.personalPhotoUrl} />
+        </div>
+      </section>
+
+      {/* NOMINEE DOCUMENTS */}
+      <section className="mb-8">
+        <h2 className="bg-yellow-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+          <FaFileAlt /> Nominee Documents
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
+          <InputField label="PAN Card Number" value={customer.nomineePanNumber} readOnly />
+          <FileField label="PAN Card" url={customer.nomineePanImageUrl} />
+          <InputField label="Proof of Identity Document" value={customer.nomineePoiDocumentType} readOnly />
+          <InputField label="POI Document Number" value={customer.nomineePoiDocumentNumber} readOnly />
+          <FileField label="POI Front Image" url={customer.nomineePoiFrontImageUrl} />
+          <FileField label="POI Back Image" url={customer.nomineePoiBackImageUrl} />
+          <InputField label="Proof of Address Document" value={customer.nomineePoaDocumentType} readOnly />
+          <InputField label="POA Document Number" value={customer.nomineePoaDocumentNumber} readOnly />
+          <FileField label="POA Front Image" url={customer.nomineePoaFrontImageUrl} />
+          <FileField label="POA Back Image" url={customer.nomineePoaBackImageUrl} />
+          <FileField label="Signature" url={customer.nomineeSignatureUrl} />
+          <FileField label="Personal Photo" url={customer.nomineePersonalPhotoUrl} />
         </div>
       </section>
 
