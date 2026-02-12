@@ -13,10 +13,10 @@ export default function ViewAgentPage() {
     const router = useRouter();
     const [agent, setAgent] = useState<any>(null);
     const [showDelete, setShowDelete] = useState(false);
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
+        if (!id) return;
         fetchAgent();
-    }, []);
+    }, [id]);
 
     async function fetchAgent() {
         const res = await fetch(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${id}`, {
@@ -27,14 +27,14 @@ export default function ViewAgentPage() {
 
     async function handleUpdate(data: any) {
         const { id, agentCode, createdAt, ...rest } = data;
-        setLoading(true);
+
         const res = await fetch(`${API_ENDPOINTS.UPDATE_AGENT}/${id}`, {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(rest),
         });
-        setLoading(false);
+
 
         if (res.ok) {
             alert('Agent updated');
@@ -44,11 +44,13 @@ export default function ViewAgentPage() {
         }
     }
 
+    if (!agent) {
+        return <Loading visible={true} />;
+    }
 
 
     return (
         <>
-            <Loading visible={loading} />
             <div className="flex items-center m-2 my-4 space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
                 <FaPencil className="text-orange-400 text-3xl" />
                 <div>
