@@ -77,6 +77,9 @@ export default function LoanRow({
       }
     } catch (error: any) {
       alert("Error generating the contract: " + error.message);
+      const errorData = await error.json(); // read backend error
+      console.error("Error generating contract:", errorData);
+      alert(errorData.message || "Failed to generate contract");
     } finally {
       setIsLoading(false);
     }
