@@ -77,21 +77,47 @@ export default function ViewLoanPage() {
 
 
             {/* Rejection Remark */}
-            {loan.status.includes('REJECTED') && (
-                <div className="border-l-4 border-red-500 bg-red-50 p-4 rounded">
-                    <p className="font-medium text-red-700">
-                        Rejection Remark
+            {(loan.status.includes('REJECTED') || loan.status.includes('ADMIN_APPROVED') || loan.status.includes('DISBURSED')) && (
+                <div
+                    className={`border-l-4 p-4 rounded ${loan.status === 'REJECTED'
+                            ? 'border-red-500 bg-red-50'
+                            : loan.status === 'ADMIN_APPROVED'
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-green-500 bg-green-50'
+                        }`}
+                >
+                    <p
+                        className={`font-medium ${loan.status === 'REJECTED'
+                                ? 'text-red-700'
+                                : loan.status === 'ADMIN_APPROVED'
+                                    ? 'text-blue-700'
+                                    : 'text-green-700'
+                            }`}
+                    >
+                        {loan.status === 'REJECTED'
+                            ? 'Rejection Remark'
+                            : loan.status === 'ADMIN_APPROVED'
+                                ? 'Admin Approval Remark'
+                                : 'Disbursement Remark'}
                     </p>
-                    <p className="text-sm text-red-600">
-                        {loan.rejectionRemark || 'No remark provided'}
+                    <p
+                        className={`text-sm ${loan.status === 'REJECTED'
+                                ? 'text-red-600'
+                                : loan.status === 'ADMIN_APPROVED'
+                                    ? 'text-blue-600'
+                                    : 'text-green-600'
+                            }`}
+                    >
+                        {loan.remark || 'No remark provided'}
                     </p>
                 </div>
+
             )}
 
             {loan.status === 'CONTRACT_GENERATED' && (
                 <UploadSignedContract loanId={loan.id} />
-            )} 
-            
+            )}
+
             {/* Customer + Loan Info */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <CustomerInfoCard customer={customer} agent={agent} />
