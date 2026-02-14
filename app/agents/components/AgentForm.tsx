@@ -245,7 +245,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import ManagerSelect from './ManagerSelect';
-
 type AgentFormState = {
     agentCode: string;
     name: string;
@@ -257,7 +256,7 @@ type AgentFormState = {
     city: string;
     pincode: string;
     managerId: string;
-    status: 'ACTIVE' | 'INACTIVE';
+    status: string;
 };
 
 export default function AgentForm({
@@ -283,7 +282,7 @@ export default function AgentForm({
         city: '',
         pincode: '',
         managerId: '',
-        status: 'ACTIVE',
+        status: initialData?.status || 'INACTIVE',
         ...initialData,
     });
 
@@ -436,8 +435,7 @@ export default function AgentForm({
                         name="status"
                         value={form.status}
                         onChange={handleChange}
-                    >
-                        <option value="ACTIVE">ACTIVE</option>
+                    >   {user?.role === 'ADMIN' && <option value="ACTIVE">ACTIVE</option>}
                         <option value="INACTIVE">INACTIVE</option>
                     </select>
                 </FormField>

@@ -1,10 +1,49 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Eye } from 'lucide-react';
+import { Eye, User } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { API_ENDPOINTS } from '@/app/config/config';
 
 export default function AgentTable({ agents }: { agents: any[] }) {
   const router = useRouter();
+  const { user } = useAuth();
+
+  async function handleApprove(agentId: string) {
+    try {
+      const res = await fetch(
+        `${API_ENDPOINTS.APPROVE_AGENT}/${agentId}`,
+        {
+          method: 'POST', // or POST (depending on backend)
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const result = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const message =
+          typeof result?.message === 'string'
+            ? result.message
+            : result?.message?.message ||
+            'Failed to approve agent';
+
+        alert(`Error: ${message}`);
+        return;
+      }
+
+      alert('Agent approved successfully');
+
+      // optional: refresh list
+      router.refresh(); 
+      window.location.reload();
+    } catch (err) {
+      alert('Network error. Please try again.');
+    }
+  }
 
   return (
     <div className="w-full overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -45,24 +84,33 @@ export default function AgentTable({ agents }: { agents: any[] }) {
               <td className="px-4 py-4">
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold
-                    ${
-                      agent.status === 'ACTIVE'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                    ${agent.status === 'ACTIVE'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                     }`}
                 >
                   <span
-                    className={`h-2 w-2 rounded-full ${
-                      agent.status === 'ACTIVE'
-                        ? 'bg-green-600'
-                        : 'bg-red-600'
-                    }`}
+                    className={`h-2 w-2 rounded-full ${agent.status === 'ACTIVE'
+                      ? 'bg-green-600'
+                      : 'bg-red-600'
+                      }`}
                   />
                   {agent.status}
                 </span>
               </td>
 
-              <td className="px-4 py-4 text-right">
+              <td className="px-4 py-4 flex flex-col max-w-[200px] text-right">
+                {user?.role === 'ADMIN' && agent.status === 'INACTIVE' && (
+                  <button
+                    onClick={() => handleApprove(agent.id)}
+                    className="inline-flex flex-row my-1 cursor-pointer hover:scale-105 transition-all items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-xs font-semibold text-white shadow-sm ease-in-out duration-300
+                             hover:bg-green-700 hover:shadow-md
+                             focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    <User className='inline-block mr-2' size={14} />
+                    Approve Agent
+                  </button>
+                )}
                 <button
                   onClick={() => router.push(`/agents/view/${agent.id}`)}
                   className="inline-flex flex-row cursor-pointer hover:scale-105 transition-all items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm ease-in-out duration-300

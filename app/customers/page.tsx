@@ -25,8 +25,8 @@ interface Customer {
     mobileNumber: string;
     email: string;
     accountStatus: string;
-    manager?: { name: string };
-    agent?: { name: string };
+    managerId?: string;
+    agentId?: string;
 }
 
 const ViewCustomer: React.FC = () => {
@@ -39,6 +39,28 @@ const ViewCustomer: React.FC = () => {
     const [selectedManager, setSelectedManager] = useState("");
     const [selectedAgent, setSelectedAgent] = useState("");
     const [loading, setLoading] = useState(true);
+    const [managerMap, setManagerMap] = useState<Record<string, string>>({});
+    const [agentMap, setAgentMap] = useState<Record<string, string>>({});
+
+    // useEffect(() => {
+    //     const fetchCustomers = async () => {
+    //         setLoading(true);
+    //         try {
+    //             const res = await axios.get<Customer[]>(
+    //                 API_ENDPOINTS.GET_ALL_CUSTOMERS,
+    //                 {
+    //                     withCredentials: true,
+    //                 }
+    //             );
+    //             setCustomers(res.data);
+    //         } catch (err) {
+    //             console.error(err);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchCustomers();
+    // }, []);
 
     useEffect(() => {
         const fetchCustomers = async () => {
@@ -46,17 +68,55 @@ const ViewCustomer: React.FC = () => {
             try {
                 const res = await axios.get<Customer[]>(
                     API_ENDPOINTS.GET_ALL_CUSTOMERS,
-                    {
-                        withCredentials: true,
-                    }
+                    { withCredentials: true }
                 );
-                setCustomers(res.data);
+
+                const customersData = res.data;
+                setCustomers(customersData);
+
+                // Extract unique managerIds & agentIds
+                const managerIds = [
+                    ...new Set(customersData.map(c => c.managerId).filter(Boolean))
+                ];
+
+                const agentIds = [
+                    ...new Set(customersData.map(c => c.agentId).filter(Boolean))
+                ];
+
+                // Fetch all managers in parallel
+                const managerResponses = await Promise.all(
+                    managerIds.map(id =>
+                        axios.get(`${API_ENDPOINTS.GET_MANAGER_BY_ID}/${id}`)
+                    )
+                );
+
+                const agentResponses = await Promise.all(
+                    agentIds.map(id =>
+                        axios.get(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${id}`)
+                    )
+                );
+
+                // Create lookup maps
+                const managerLookup: Record<string, string> = {};
+                managerResponses.forEach(res => {
+                    managerLookup[res.data.id] = res.data.name;
+                });
+
+                const agentLookup: Record<string, string> = {};
+                agentResponses.forEach(res => {
+                    agentLookup[res.data.id] = res.data.name;
+                });
+
+                setManagerMap(managerLookup);
+                setAgentMap(agentLookup);
+
             } catch (err) {
                 console.error(err);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchCustomers();
     }, []);
 
@@ -80,8 +140,8 @@ const ViewCustomer: React.FC = () => {
                     c.memberId.toLowerCase().includes(search) ||
                     c.mobileNumber.includes(search) ||
                     c.email.toLowerCase().includes(search)) &&
-                (selectedManager === "" || c.manager?.name === selectedManager) &&
-                (selectedAgent === "" || c.agent?.name === selectedAgent)
+                (selectedManager === "" || managerMap[c.managerId!] === selectedManager) &&
+                (selectedAgent === "" || agentMap[c.agentId!] === selectedAgent)
             );
         });
     }, [customers, searchTerm, selectedManager, selectedAgent]);
@@ -185,10 +245,10 @@ const ViewCustomer: React.FC = () => {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className="px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-700">{c.manager?.name || "-"}
+                                            <span className="px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-700">{managerMap[c.managerId!] || "-"}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3"><span className="px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-700">{c.agent?.name || "-"}</span></td>
+                                        <td className="px-4 py-3"><span className="px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-700">{agentMap[c.agentId!] || "-"}</span></td>
                                         <td className="px-4 py-3 whitespace-nowrap">
                                             <button className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-xs mr-2">
                                                 <a

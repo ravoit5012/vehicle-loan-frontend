@@ -7,7 +7,9 @@ import {
     Percent,
     Wallet,
     Clock,
-    Landmark
+    Landmark,
+    CrossIcon,
+    XCircle
 } from "lucide-react";
 import { API_ENDPOINTS } from "../config/config";
 import StatCard from "./Components/StatCard";
@@ -32,7 +34,7 @@ export default function Stats() {
                 <StatCard
                     title="Rejected Loans"
                     endpoint={API_ENDPOINTS.GET_ALL_REJECTED_LOAN_COUNT}
-                    icon={<CheckCircle size={22} />}
+                    icon={<XCircle size={22} />}
                 />
 
                 <StatCard

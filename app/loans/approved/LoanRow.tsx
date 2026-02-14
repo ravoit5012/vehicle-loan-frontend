@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import StatusBadge from './StatusBadge';
 import { API_ENDPOINTS } from '@/app/config/config';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function LoanRow({
   loan,
@@ -14,7 +15,7 @@ export default function LoanRow({
   agent: any;
 }) {
   const router = useRouter();
-
+  const { user } = useAuth();
   // Function to handle loan disbursement
   const handleDisburseLoan = async (loanId: string) => {
     try {
@@ -110,7 +111,7 @@ export default function LoanRow({
 
       <td className="px-4 py-3 text-right">
         {/* Conditionally render buttons */}
-        {loan.status === 'ADMIN_APPROVED' && (
+        {loan.status === 'ADMIN_APPROVED' && user?.role == "ADMIN" && (
           <button
             onClick={() => handleDisburseLoan(loan.id)}
             className="cursor-pointer bg-blue-400 hover:scale-110 ease-in-out duration-300 transition-all py-1 px-4 rounded-lg btn-secondary"
@@ -118,7 +119,7 @@ export default function LoanRow({
             Disburse Loan
           </button>
         )}
-        {loan.status === 'DISBURSED' && (
+        {loan.status === 'DISBURSED' && user?.role == "ADMIN" && (
           <button
             onClick={() => handleCloseLoan(loan.id)}
             className="cursor-pointer bg-green-400 hover:scale-110 ease-in-out duration-300 transition-all py-1 px-4 rounded-lg btn-secondary"
@@ -126,7 +127,7 @@ export default function LoanRow({
             Close Loan
           </button>
         )}
-        {loan.status === 'CLOSED' && (
+        {loan.status === 'CLOSED'  && user?.role == "ADMIN" && (
           <button
             onClick={() => handleDeleteLoan(loan.id)}
             className="cursor-pointer bg-red-400 hover:scale-110 ease-in-out duration-300 transition-all py-1 px-4 rounded-lg btn-secondary"

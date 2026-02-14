@@ -28,14 +28,10 @@ interface LoanType {
   totalDisbursed: number;
 }
 
+import Stats from "./Stats";
 export default function LoanTypesPage() {
   const [loanTypes, setLoanTypes] = useState<LoanType[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const totalProducts = 5;
-  const activeProducts = 5;
-  const totalLoans = 4;
-  const totalDisbursed = 3090000;
 
   useEffect(() => {
     fetch(API_ENDPOINTS.GET_ALL_LOAN_TYPES)
@@ -61,52 +57,8 @@ export default function LoanTypesPage() {
       </header>
 
       {/* Stats cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-        {/* Total Products */}
-        <div className="border-l-4 border-blue-500 bg-white rounded-md p-4 shadow flex items-center gap-4">
-          <div className="bg-blue-100 p-2 rounded-md">
-            <FaBox className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="font-bold text-xl">{totalProducts}</h2>
-            <p className="text-sm">Total Products</p>
-          </div>
-        </div>
-
-        {/* Active Products */}
-        <div className="border-l-4 border-green-500 bg-white rounded-md p-4 shadow flex items-center gap-4">
-          <div className="bg-green-100 p-2 rounded-md">
-            <FaCheckCircle className="w-6 h-6 text-green-600" />
-          </div>
-          <div>
-            <h2 className="font-bold text-xl">{activeProducts}</h2>
-            <p className="text-sm">Active Products</p>
-          </div>
-        </div>
-
-        {/* Total Loans */}
-        <div className="border-l-4 border-teal-500 bg-white rounded-md p-4 shadow flex items-center gap-4">
-          <div className="bg-teal-100 p-2 rounded-md">
-            <FaClipboardList className="w-6 h-6 text-teal-600" />
-          </div>
-          <div>
-            <h2 className="font-bold text-xl">{totalLoans}</h2>
-            <p className="text-sm">Total Loans</p>
-          </div>
-        </div>
-
-        {/* Total Disbursed */}
-        <div className="border-l-4 border-yellow-500 bg-white rounded-md p-4 shadow flex items-center gap-4">
-          <div className="bg-yellow-100 p-2 rounded-md">
-            <FaRupeeSign className="w-6 h-6 text-yellow-600" />
-          </div>
-          <div>
-            <h2 className="font-bold text-xl">
-              ₹{totalDisbursed.toLocaleString()}
-            </h2>
-            <p className="text-sm">Total Disbursed</p>
-          </div>
-        </div>
+      <section className="bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl p-6 text-white mb-2">
+        <Stats />
       </section>
 
       {/* Add New Product */}
@@ -126,7 +78,7 @@ export default function LoanTypesPage() {
               <th className="px-6 py-3 font-semibold">PRODUCT DETAILS</th>
               <th className="px-6 py-3 font-semibold text-center">INTEREST RATE</th>
               <th className="px-6 py-3 font-semibold text-center">AMOUNT RANGE</th>
-              <th className="px-6 py-3 font-semibold text-center">LOAN STATS</th>
+              {/* <th className="px-6 py-3 font-semibold text-center">LOAN STATS</th> */}
               <th className="px-6 py-3 font-semibold text-center">STATUS</th>
               <th className="px-6 py-3 font-semibold text-center">ACTIONS</th>
             </tr>
@@ -153,7 +105,7 @@ export default function LoanTypesPage() {
                   {lt.maxAmount.toLocaleString()}
                 </td>
 
-                <td className="px-6 py-4 text-center flex justify-center items-center gap-4 text-xs">
+                {/* <td className="px-6 py-4 text-center flex justify-center items-center gap-4 text-xs">
                   <FaFileAlt className="text-blue-600" />
                   <span className="font-semibold text-blue-800">
                     {lt.totalLoans || 0}
@@ -161,15 +113,14 @@ export default function LoanTypesPage() {
 
                   <FaCheck className="text-green-600 ml-4" />
                   <span>{lt.activeProducts || 0}</span>
-                </td>
+                </td> */}
 
                 <td className="px-6 py-4 text-center">
                   <span
-                    className={`inline-block rounded-full px-3 py-1 text-xs font-semibold capitalize ${
-                      lt.status === "active"
+                    className={`inline-block rounded-full px-3 py-1 text-xs font-semibold capitalize ${lt.status === "active"
                         ? "bg-green-100 text-green-700"
                         : "bg-gray-200 text-gray-700"
-                    }`}
+                      }`}
                   >
                     {lt.status}
                   </span>

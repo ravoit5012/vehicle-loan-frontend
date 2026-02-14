@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
 
   //AGENT DETAILS ENDPOINTS
   CREATE_AGENT: `${BASE_URL}/agent`,
+  APPROVE_AGENT: `${BASE_URL}/agent/approve/id`,
   UPDATE_AGENT: `${BASE_URL}/agent/update/id`,
   DELETE_AGENT: `${BASE_URL}/agent/delete/id`,
   GET_ALL_AGENTS: `${BASE_URL}/agent/all`,
@@ -62,6 +63,7 @@ export const API_ENDPOINTS = {
 
   // ANALYTICS
   GET_ALL_LOAN_COUNT : `${BASE_URL}/analytics/all-loan-count`,
+  GET_ALL_LOAN_TYPE_COUNT : `${BASE_URL}/analytics/all-loan-type-count`,
   GET_ALL_APPROVED_LOAN_COUNT : `${BASE_URL}/analytics/all-approved-loan-count`,
   GET_ALL_REJECTED_LOAN_COUNT : `${BASE_URL}/analytics/all-rejected-loan-count`,
   GET_TOTAL_PRINCIPAL_AMOUNT : `${BASE_URL}/analytics/total-principal-amount`,
