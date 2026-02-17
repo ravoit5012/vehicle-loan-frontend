@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, AlertTriangle } from "lucide-react";
 
 type StatCardProps = {
   title: string;
   endpoint: string;
   icon: React.ReactNode;
+  href: string; // <-- new prop
   formatter?: (value: any) => string | number;
 };
 
@@ -14,11 +16,14 @@ export default function StatCard({
   title,
   endpoint,
   icon,
+  href,
   formatter,
 }: StatCardProps) {
   const [value, setValue] = useState<number | string>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStat = async () => {
@@ -29,7 +34,6 @@ export default function StatCard({
 
         const result = await res.json();
 
-        // If API returns just number
         const dataValue =
           typeof result === "number"
             ? result
@@ -47,7 +51,12 @@ export default function StatCard({
   }, [endpoint, formatter]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition">
+    <div
+      onClick={() => router.push(href)}
+      className="bg-white rounded-2xl shadow-sm border p-6 
+                 hover:shadow-md transition 
+                 cursor-pointer active:scale-[0.98]"
+    >
       {loading ? (
         <div className="flex justify-center items-center h-16">
           <Loader2 className="animate-spin text-indigo-500" />

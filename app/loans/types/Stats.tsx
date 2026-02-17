@@ -21,12 +21,14 @@ export default function Stats() {
                     title="Total Products"
                     endpoint={API_ENDPOINTS.GET_ALL_LOAN_TYPE_COUNT}
                     icon={<FileText size={22} />}
+                    href="/loans/types"
                 />
 
                 <StatCard
                     title="Total Principal Amount"
                     endpoint={API_ENDPOINTS.GET_TOTAL_PRINCIPAL_AMOUNT}
                     icon={<Landmark size={22} />}
+                    href='#'
                 />
 
             </StatsContainer>

@@ -99,9 +99,9 @@ export default function AdminDashboard() {
                     <div>
                         <div className="flex items-center gap-3">
                             <LayoutDashboard size={32} />
-                            <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+                            <h1 className="text-4xl font-bold">{user.role === "ADMIN" ? "Admin" : user.role === "MANAGER" ? "Manager" : "Agent"} Dashboard</h1>
                         </div>
-                        <p className="mt-2 text-white/80">Welcome back, {user.role}!</p>
+                        <p className="mt-2 text-white/80">Welcome back, {user.name}!</p>
                     </div>
 
                     <div className="flex items-center gap-2 mt-4 text-white/90">
