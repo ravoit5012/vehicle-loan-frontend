@@ -6,6 +6,7 @@ import { API_ENDPOINTS } from "../config/config";
 /* ================= TYPES ================= */
 
 export type User = {
+  name?: string;
   username: string;
   role: "ADMIN" | "MANAGER" | "AGENT";
   id:string;
