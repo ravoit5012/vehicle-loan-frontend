@@ -121,7 +121,7 @@ const menu: MenuItem[] = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, company } = useAuth();
 
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -161,7 +161,20 @@ export default function Navbar() {
     <>
       {/* Mobile Header */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b bg-white">
-        <span className="font-bold">{user?.role} PANEL</span>
+        <div className="flex items-center gap-2">
+          {company?.logoUrl ? (
+            <img
+              src={company.logoUrl}
+              alt="Logo"
+              className="w-8 h-8 object-cover rounded-lg"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
+              {company?.companyName?.charAt(0) || "C"}
+            </div>
+          )}
+          <span className="font-bold">{user?.role} PANEL</span>
+        </div>
         <button onClick={() => setOpen(true)}>
           <Menu size={26} />
         </button>
@@ -184,9 +197,22 @@ export default function Navbar() {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <span className="text-lg font-bold tracking-wide">
-            {user?.role} PANEL
-          </span>
+          <div className="flex items-center gap-3">
+            {company?.logoUrl ? (
+              <img
+                src={company.logoUrl}
+                alt="Logo"
+                className="w-9 h-9 object-cover rounded-lg shadow-sm"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+                {company?.companyName?.charAt(0) || "C"}
+              </div>
+            )}
+            <span className="text-lg font-bold tracking-wide">
+              {user?.role} PANEL
+            </span>
+          </div>
           <button className="lg:hidden" onClick={() => setOpen(false)}>
             <X />
           </button>

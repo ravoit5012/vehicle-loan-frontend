@@ -15,6 +15,7 @@ export type User = {
 export type Company = {
   companyName?: string;
   companyEmail?: string;
+  logoUrl?: string;
 }
 
 type LoginPayload = {
@@ -25,10 +26,11 @@ type LoginPayload = {
 
 type AuthContextType = {
   user: User | null;
-  company: Company | null; // ✅ add this
+  company: Company | null;
   loading: boolean;
   login: (data: LoginPayload) => Promise<void>;
   logout: () => Promise<void>;
+  refreshCompany: () => Promise<void>;
 };
 
 /* ================= CONTEXT ================= */
@@ -67,7 +69,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!res.ok) throw new Error("Failed to fetch company");
 
       const data = await res.json();
-      console.log(data)
       setCompany(data ?? null);
     } catch {
       setCompany(null);
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, company, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, company, logout, refreshCompany: fetchCompany }}>
       {children}
     </AuthContext.Provider>
   );

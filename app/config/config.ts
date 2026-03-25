@@ -71,10 +71,17 @@ export const API_ENDPOINTS = {
   GET_TOTAL_REPAID_AMOUNT : `${BASE_URL}/analytics/total-repaid-amount`,
   GET_TOTAL_PENDING_AMOUNT : `${BASE_URL}/analytics/total-pending-amount`,
   GET_TOTAL_REPAYABLE_AMOUNT : `${BASE_URL}/analytics/total-repayable-amount`,
+  MANAGER_ANALYTICS : `${BASE_URL}/analytics/manager-analytics`,
+  AGENT_ANALYTICS : `${BASE_URL}/analytics/agent-analytics`,
 
   // COMPANY SETTINGS
   GET_COMPANY_SETTINGS: `${BASE_URL}/company-settings`,
   UPDATE_COMPANY_SETTINGS: `${BASE_URL}/company-settings`,
+  UPLOAD_COMPANY_LOGO: `${BASE_URL}/company-settings/upload-logo`,
+
+  // BACKUP AND RESTORE
+  EXPORT_BACKUP: `${BASE_URL}/backup/export`,
+  IMPORT_BACKUP: `${BASE_URL}/backup/import`,
 };
 
 export const FILES_URL = process.env.NEXT_PUBLIC_API_FILES_URL || "http://localhost:3001";

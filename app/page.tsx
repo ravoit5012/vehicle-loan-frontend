@@ -13,6 +13,19 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-black px-6">
       {/* Hero Section */}
       <div className="text-center max-w-3xl space-y-6 py-16">
+        {/* Company Logo */}
+        {company?.logoUrl ? (
+          <img
+            src={company.logoUrl}
+            alt="Company Logo"
+            className="w-20 h-20 object-cover rounded-full mx-auto shadow-lg border-2 border-white"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-indigo-600 flex items-center justify-center mx-auto shadow-lg text-white text-3xl font-bold">
+            {company?.companyName?.charAt(0) || "C"}
+          </div>
+        )}
+
         <h1 className="text-5xl md:text-6xl font-extrabold text-indigo-700 dark:text-indigo-300">
           Welcome to <span className="text-blue-500">{company?.companyName}</span>
         </h1>
@@ -60,7 +73,7 @@ export default function Home() {
 
       {/* Footer Info */}
       <footer className="mt-16 text-sm text-gray-500 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} Champanand Motors — All Rights Reserved.
+        &copy; {new Date().getFullYear()} {company?.companyName || "Champanand Motors"} — All Rights Reserved.
       </footer>
     </div>
   );

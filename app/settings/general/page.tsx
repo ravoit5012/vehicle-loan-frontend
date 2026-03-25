@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { API_ENDPOINTS } from "../../config/config";
 import ProtectedPageMessage from "../../components/ProtectedPageMessage";
 import { Toast } from "../../components/Toast";
+import Cropper from "react-easy-crop";
+import type { Area } from "react-easy-crop";
 import {
   Settings,
   Building2,
@@ -14,6 +16,10 @@ import {
   CreditCard,
   Save,
   Loader2,
+  Upload,
+  ImageIcon,
+  Crop,
+  X,
 } from "lucide-react";
 
 type CompanySettingsData = {
@@ -22,6 +28,7 @@ type CompanySettingsData = {
   companyPhone: string;
   companyAddress: string;
   panNumber: string;
+  logoUrl: string;
 };
 
 const emptySettings: CompanySettingsData = {
@@ -30,15 +37,61 @@ const emptySettings: CompanySettingsData = {
   companyPhone: "",
   companyAddress: "",
   panNumber: "",
+  logoUrl: "",
 };
 
+/* ===== Crop helper: canvas -> blob ===== */
+async function getCroppedImg(imageSrc: string, crop: Area): Promise<Blob> {
+  const image = new Image();
+  image.crossOrigin = "anonymous";
+  image.src = imageSrc;
+  await new Promise((res) => (image.onload = res));
+
+  const canvas = document.createElement("canvas");
+  const size = Math.min(crop.width, crop.height);
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+
+  ctx.drawImage(
+    image,
+    crop.x,
+    crop.y,
+    crop.width,
+    crop.height,
+    0,
+    0,
+    size,
+    size
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error("Canvas to blob failed"));
+      },
+      "image/png",
+      1
+    );
+  });
+}
+
 export default function GeneralSettingsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refreshCompany } = useAuth();
   const [settings, setSettings] = useState<CompanySettingsData>(emptySettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  /* ===== Crop modal state ===== */
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   /* ===== Fetch current settings ===== */
   useEffect(() => {
@@ -58,6 +111,7 @@ export default function GeneralSettingsPage() {
               companyPhone: data.companyPhone || "",
               companyAddress: data.companyAddress || "",
               panNumber: data.panNumber || "",
+              logoUrl: data.logoUrl || "",
             });
           }
         }
@@ -111,6 +165,57 @@ export default function GeneralSettingsPage() {
     }
   };
 
+  /* ===== Logo file select ===== */
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+    };
+    reader.readAsDataURL(file);
+    // Reset so the same file can be re-selected
+    e.target.value = "";
+  };
+
+  const onCropComplete = useCallback((_: Area, areaPixels: Area) => {
+    setCroppedAreaPixels(areaPixels);
+  }, []);
+
+  /* ===== Crop & Upload ===== */
+  const handleCropUpload = async () => {
+    if (!cropSrc || !croppedAreaPixels) return;
+    setUploading(true);
+    try {
+      const blob = await getCroppedImg(cropSrc, croppedAreaPixels);
+      const formData = new FormData();
+      formData.append("logo", blob, "logo.png");
+
+      const res = await fetch(API_ENDPOINTS.UPLOAD_COMPANY_LOGO, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(errData?.message || "Logo upload failed");
+      }
+
+      const data = await res.json();
+      setSettings((prev) => ({ ...prev, logoUrl: data.logoUrl }));
+      setCropSrc(null);
+      setToast("Logo uploaded successfully!");
+      await refreshCompany();
+    } catch (err: any) {
+      setError(err.message || "Logo upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   /* ===== Auth guard ===== */
   if (authLoading) return null;
   if (!user) return <ProtectedPageMessage />;
@@ -135,7 +240,7 @@ export default function GeneralSettingsPage() {
 
   /* ===== Field config ===== */
   const fields: {
-    key: keyof CompanySettingsData;
+    key: keyof Omit<CompanySettingsData, "logoUrl">;
     label: string;
     icon: React.ReactNode;
     type: string;
@@ -179,7 +284,7 @@ export default function GeneralSettingsPage() {
   ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 mx-auto space-y-6">
       {/* ===== Header ===== */}
       <div className="rounded-2xl p-6 sm:p-8 text-white bg-gradient-to-r from-indigo-500 to-purple-600">
         <div className="flex items-center gap-3">
@@ -193,6 +298,134 @@ export default function GeneralSettingsPage() {
           application.
         </p>
       </div>
+
+      {/* ===== Logo Upload Card ===== */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <ImageIcon size={20} className="text-indigo-500" />
+            Company Logo
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Upload a square logo for your company. It will be shown across the app.
+          </p>
+        </div>
+
+        <div className="p-6 flex flex-col sm:flex-row items-center gap-6">
+          {/* Logo preview */}
+          <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+            {settings.logoUrl ? (
+              <img
+                src={settings.logoUrl}
+                alt="Company Logo"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <ImageIcon size={36} className="text-gray-300" />
+            )}
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-gray-600">
+              Recommended: Square image, at least 256×256 pixels. PNG or JPG.
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-600 font-semibold rounded-xl
+                hover:bg-indigo-100 transition-all duration-200 text-sm cursor-pointer w-fit"
+            >
+              <Upload size={16} />
+              {settings.logoUrl ? "Change Logo" : "Upload Logo"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Crop Modal ===== */}
+      {cropSrc && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Crop size={20} className="text-indigo-500" />
+                Crop Logo
+              </h3>
+              <button
+                onClick={() => setCropSrc(null)}
+                className="p-1 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Crop area */}
+            <div className="relative w-full h-80 bg-gray-900">
+              <Cropper
+                image={cropSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+
+            {/* Zoom slider */}
+            <div className="px-6 py-3 flex items-center gap-3">
+              <span className="text-xs text-gray-500">Zoom</span>
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.1}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="flex-1 accent-indigo-500"
+              />
+            </div>
+
+            {/* Modal footer */}
+            <div className="flex justify-end gap-3 px-6 py-4 border-t">
+              <button
+                onClick={() => setCropSrc(null)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCropUpload}
+                disabled={uploading}
+                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600
+                  text-white font-semibold rounded-xl shadow-md hover:shadow-lg
+                  hover:from-indigo-600 hover:to-purple-700
+                  disabled:opacity-60 disabled:cursor-not-allowed
+                  transition-all duration-200 text-sm cursor-pointer"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload size={16} />
+                    Crop & Upload
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ===== Form Card ===== */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

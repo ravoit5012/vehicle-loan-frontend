@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
+import CropModal from "@/app/components/CropModal";
 import { API_ENDPOINTS } from "@/app/config/config";
 import { useEffect } from "react";
 import {
@@ -142,19 +143,50 @@ export default function AddCustomer() {
     accountStatus: "",
   });
 
+  /* ===== Crop modal state ===== */
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [cropFieldName, setCropFieldName] = useState<string>("");
+  const [cropTitle, setCropTitle] = useState<string>("Crop Image");
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (!files || !files[0]) return;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: files[0],
-    }));
+    const file = files[0];
+    // Only open crop modal for images
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCropSrc(reader.result as string);
+        setCropFieldName(name);
+        // derive a friendly title from the field name
+        const title = name
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (s) => s.toUpperCase())
+          .trim();
+        setCropTitle(`Crop — ${title}`);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // non-image files go straight through
+      setForm((prev) => ({ ...prev, [name]: file }));
+      setErrors((prev) => ({ ...prev, [name]: false }));
+    }
+    // Reset so same file can be re-selected
+    e.target.value = "";
+  };
 
-    setErrors((prev) => ({
-      ...prev,
-      [name]: false,
-    }));
+  const handleCropDone = (croppedFile: File) => {
+    setForm((prev) => ({ ...prev, [cropFieldName]: croppedFile }));
+    setErrors((prev) => ({ ...prev, [cropFieldName]: false }));
+    setCropSrc(null);
+    setCropFieldName("");
+  };
+
+  const handleCropCancel = () => {
+    setCropSrc(null);
+    setCropFieldName("");
   };
 
   const handleChange = (
@@ -397,6 +429,15 @@ export default function AddCustomer() {
 
   return (<>
   <Loading visible={isLoading} />
+    {/* ===== Crop Modal ===== */}
+    {cropSrc && (
+      <CropModal
+        imageSrc={cropSrc}
+        title={cropTitle}
+        onCropDone={handleCropDone}
+        onCancel={handleCropCancel}
+      />
+    )}
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">
       <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
         <FaUserPlus className="text-orange-400 text-3xl" />
@@ -680,6 +721,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.panImage && <img src={URL.createObjectURL(form.panImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
 
           <SelectField
@@ -715,6 +757,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.poiFrontImage && <img src={URL.createObjectURL(form.poiFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POI Document Back Image<span className="text-red-600">*</span></span>
@@ -726,6 +769,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.poiBackImage && <img src={URL.createObjectURL(form.poiBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
 
           <SelectField
@@ -762,6 +806,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.poaFrontImage && <img src={URL.createObjectURL(form.poaFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POA Document Back Image <span className="text-red-600">*</span> </span>
@@ -773,6 +818,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.poaBackImage && <img src={URL.createObjectURL(form.poaBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">Applicant Signature<span className="text-red-600">*</span> </span>
@@ -784,6 +830,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.applicantSignature && <img src={URL.createObjectURL(form.applicantSignature)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">Personal Photo<span className="text-red-600">*</span> </span>
@@ -795,6 +842,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.personalPhoto && <img src={URL.createObjectURL(form.personalPhoto)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
         </div>
       </section>
@@ -825,6 +873,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineePanImage && <img src={URL.createObjectURL(form.nomineePanImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
 
           <SelectField
@@ -860,6 +909,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineePoiFrontImage && <img src={URL.createObjectURL(form.nomineePoiFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POI Document Back Image<span className="text-red-600">*</span></span>
@@ -871,6 +921,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineePoiBackImage && <img src={URL.createObjectURL(form.nomineePoiBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
 
           <SelectField
@@ -907,6 +958,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineePoaFrontImage && <img src={URL.createObjectURL(form.nomineePoaFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POA Document Back Image <span className="text-red-600">*</span> </span>
@@ -918,6 +970,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineePoaBackImage && <img src={URL.createObjectURL(form.nomineePoaBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">Nominee Signature<span className="text-red-600">*</span> </span>
@@ -929,6 +982,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineeSignature && <img src={URL.createObjectURL(form.nomineeSignature)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
           <label className="flex flex-col text-sm">
             <span className="font-semibold">Nominee Photo<span className="text-red-600">*</span> </span>
@@ -940,6 +994,7 @@ export default function AddCustomer() {
               className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
+            {form.nomineePersonalPhoto && <img src={URL.createObjectURL(form.nomineePersonalPhoto)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
           </label>
         </div>
       </section>

@@ -52,6 +52,19 @@ export default function LoginPage() {
       {/* LEFT PANEL */}
       <div className="lg:flex md:w-1/2 bg-white p-12 flex-col justify-center">
         <div className="max-w-md">
+          {/* Company Logo */}
+          {company?.logoUrl ? (
+            <img
+              src={company.logoUrl}
+              alt="Company Logo"
+              className="w-16 h-16 object-cover rounded-xl shadow-md mb-4"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-xl bg-blue-700 flex items-center justify-center shadow-md mb-4 text-white text-2xl font-bold">
+              {company?.companyName?.charAt(0) || "C"}
+            </div>
+          )}
+
           <h1 className="text-3xl font-bold text-blue-700 mb-6">
             {company?.companyName}
           </h1>
