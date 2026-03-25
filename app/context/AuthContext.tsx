@@ -9,8 +9,13 @@ export type User = {
   name?: string;
   username: string;
   role: "ADMIN" | "MANAGER" | "AGENT";
-  id:string;
+  id: string;
 };
+
+export type Company = {
+  companyName?: string;
+  companyEmail?: string;
+}
 
 type LoginPayload = {
   username: string;
@@ -20,6 +25,7 @@ type LoginPayload = {
 
 type AuthContextType = {
   user: User | null;
+  company: Company | null; // ✅ add this
   loading: boolean;
   login: (data: LoginPayload) => Promise<void>;
   logout: () => Promise<void>;
@@ -35,6 +41,7 @@ export const AuthContext =
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [company, setCompany] = useState<Company | null>(null);
 
   /* ===== Fetch current user ===== */
   const fetchMe = async () => {
@@ -52,10 +59,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+
+  /* ===== Fetch Company Details ===== */
+  const fetchCompany = async () => {
+    try {
+      const res = await fetch(API_ENDPOINTS.GET_COMPANY_SETTINGS);
+      if (!res.ok) throw new Error("Failed to fetch company");
+
+      const data = await res.json();
+      console.log(data)
+      setCompany(data ?? null);
+    } catch {
+      setCompany(null);
+    }
+  };
+
   /* ===== On first load ===== */
+  // useEffect(() => {
+  //   (async () => {
+  //     await fetchMe();
+  //     setLoading(false);
+  //   })();
+  // }, []);
   useEffect(() => {
     (async () => {
       await fetchMe();
+      await fetchCompany(); // ✅ add this
       setLoading(false);
     })();
   }, []);
@@ -88,7 +117,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, company, logout }}>
       {children}
     </AuthContext.Provider>
   );

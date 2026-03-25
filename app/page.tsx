@@ -1,16 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useAuth } from "./hooks/useAuth";
 
 export default function Home() {
   const router = useRouter();
 
+  const { company, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-black px-6">
       {/* Hero Section */}
       <div className="text-center max-w-3xl space-y-6 py-16">
         <h1 className="text-5xl md:text-6xl font-extrabold text-indigo-700 dark:text-indigo-300">
-          Welcome to <span className="text-blue-500">Champanand Motors</span>
+          Welcome to <span className="text-blue-500">{company?.companyName}</span>
         </h1>
 
         <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300">
@@ -41,7 +45,7 @@ export default function Home() {
           </p>
         </div>
 
-      
+
 
         {/* Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:scale-105 transition-transform">
