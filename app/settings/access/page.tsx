@@ -105,9 +105,32 @@ export default function AssignAccessPage() {
 
   if (user?.role !== "ADMIN") {
     return (
-      <NavbarWrapper>
-        <ProtectedPageMessage message="Only Administrators can assign access roles." />
-      </NavbarWrapper>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-gray-100">
+        <div className="bg-white p-10 rounded-2xl shadow-xl max-w-md w-full text-center">
+
+          <div className="text-5xl mb-4">🔒</div>
+
+          <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+            Access Denied
+          </h1>
+
+          <p className="text-gray-600 mb-1">
+            Only administrators can assign access roles.
+          </p>
+
+          <p className="text-sm text-gray-400 mb-6">
+            Contact your admin if you think this is a mistake.
+          </p>
+
+          <button
+            onClick={() => window.history.back()}
+            className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+          >
+            Go Back
+          </button>
+
+        </div>
+      </div>
     );
   }
 
@@ -117,7 +140,7 @@ export default function AssignAccessPage() {
 
   return (
     <div>
-      <Loading loading={loading} />
+      <Loading visible={loading} />
       <div className="mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-500 pb-12">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
@@ -214,7 +237,7 @@ export default function AssignAccessPage() {
         toast && (
           <Toast
             message={toast.message}
-            type={toast.type}
+            // type={toast.type}
             onClose={() => setToast(null)}
           />
         )
