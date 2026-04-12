@@ -34,7 +34,9 @@ export default function UploadSignedContract({
             );
 
             if (!response.ok) {
-                throw new Error('Upload failed');
+                const data = await response.json().catch(() => ({}));
+                const msg = data.message;
+                throw new Error(typeof msg === 'string' ? msg : (msg?.message || 'Upload failed'));
             }
 
             alert('Signed contract uploaded successfully');

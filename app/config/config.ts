@@ -54,7 +54,7 @@ export const API_ENDPOINTS = {
   // FEES PAYMENTS
   GET_ALL_FEES: `${BASE_URL}/loan/get-all-fees`,
   FEES_PAYMENT: `${BASE_URL}/loan/collect-fees`,
-  
+
   // REPAYMENTS
   GET_ALL_REPAYMENTS: `${BASE_URL}/loan/all-repayments`,
   GET_REPAYMENTS_FOR_LOAN: `${BASE_URL}/loan/repayments`,
@@ -62,22 +62,26 @@ export const API_ENDPOINTS = {
   ADD_PENALTY: `${BASE_URL}/loan/repayment/penalty`,
 
   // ANALYTICS
-  GET_ALL_LOAN_COUNT : `${BASE_URL}/analytics/all-loan-count`,
-  GET_ALL_LOAN_TYPE_COUNT : `${BASE_URL}/analytics/all-loan-type-count`,
-  GET_ALL_APPROVED_LOAN_COUNT : `${BASE_URL}/analytics/all-approved-loan-count`,
-  GET_ALL_REJECTED_LOAN_COUNT : `${BASE_URL}/analytics/all-rejected-loan-count`,
-  GET_TOTAL_PRINCIPAL_AMOUNT : `${BASE_URL}/analytics/total-principal-amount`,
-  GET_TOTAL_INTEREST_AMOUNT : `${BASE_URL}/analytics/total-interest-amount`,
-  GET_TOTAL_REPAID_AMOUNT : `${BASE_URL}/analytics/total-repaid-amount`,
-  GET_TOTAL_PENDING_AMOUNT : `${BASE_URL}/analytics/total-pending-amount`,
-  GET_TOTAL_REPAYABLE_AMOUNT : `${BASE_URL}/analytics/total-repayable-amount`,
-  MANAGER_ANALYTICS : `${BASE_URL}/analytics/manager-analytics`,
-  AGENT_ANALYTICS : `${BASE_URL}/analytics/agent-analytics`,
+  GET_ALL_LOAN_COUNT: `${BASE_URL}/analytics/all-loan-count`,
+  GET_ALL_LOAN_TYPE_COUNT: `${BASE_URL}/analytics/all-loan-type-count`,
+  GET_ALL_APPROVED_LOAN_COUNT: `${BASE_URL}/analytics/all-approved-loan-count`,
+  GET_ALL_REJECTED_LOAN_COUNT: `${BASE_URL}/analytics/all-rejected-loan-count`,
+  GET_TOTAL_PRINCIPAL_AMOUNT: `${BASE_URL}/analytics/total-principal-amount`,
+  GET_TOTAL_INTEREST_AMOUNT: `${BASE_URL}/analytics/total-interest-amount`,
+  GET_TOTAL_REPAID_AMOUNT: `${BASE_URL}/analytics/total-repaid-amount`,
+  GET_TOTAL_PENDING_AMOUNT: `${BASE_URL}/analytics/total-pending-amount`,
+  GET_TOTAL_REPAYABLE_AMOUNT: `${BASE_URL}/analytics/total-repayable-amount`,
+  MANAGER_ANALYTICS: `${BASE_URL}/analytics/manager-analytics`,
+  AGENT_ANALYTICS: `${BASE_URL}/analytics/agent-analytics`,
 
   // COMPANY SETTINGS
   GET_COMPANY_SETTINGS: `${BASE_URL}/company-settings`,
   UPDATE_COMPANY_SETTINGS: `${BASE_URL}/company-settings`,
   UPLOAD_COMPANY_LOGO: `${BASE_URL}/company-settings/upload-logo`,
+
+  // ACCESS CONTROL
+  GET_ACCESS_CONTROL: `${BASE_URL}/access-control`,
+  UPDATE_ACCESS_CONTROL: `${BASE_URL}/access-control`,
 
   // BACKUP AND RESTORE
   EXPORT_BACKUP: `${BASE_URL}/backup/export`,

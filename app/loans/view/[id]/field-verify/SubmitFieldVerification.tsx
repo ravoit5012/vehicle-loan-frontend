@@ -32,7 +32,12 @@ export default function SubmitFieldVerification({
         credentials: 'include',
       });
 
-      if (!res.ok) throw new Error('Submission failed');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const msg = data.message;
+        const errText = typeof msg === 'string' ? msg : (msg?.message || 'Submission failed');
+        throw new Error(errText);
+      }
 
       alert('Field verification completed');
       window.location.href = '/loans/pending';

@@ -111,6 +111,7 @@ const menu: MenuItem[] = [
     roles: ["ADMIN"],
     children: [
       { label: "General Settings", href: "/settings/general" },
+      { label: "Assign Access", href: "/settings/access" },
       { label: "Backup and Restore", href: "/settings/backup" },
     ],
   },

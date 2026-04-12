@@ -7,6 +7,15 @@ import { API_ENDPOINTS } from '@/app/config/config';
 import { useAuth } from '@/hooks/useAuth';
 import Loading from '@/app/components/Loading';
 import RemarkModal from './RemarkModal';
+// Extract the actual error string from the nested exception filter response
+function getErrorMessage(data: any, fallback: string): string {
+  if (!data) return fallback;
+  const msg = data.message;
+  if (typeof msg === 'string') return msg;
+  if (msg && typeof msg === 'object' && typeof msg.message === 'string') return msg.message;
+  return fallback;
+}
+
 export default function LoanRow({
   loan,
   customer,
@@ -33,7 +42,8 @@ export default function LoanRow({
         alert("Call Verified Successfully");
         window.location.reload();
       } else {
-        alert("Failed to verify the call");
+        const data = await response.json().catch(() => ({}));
+        alert(getErrorMessage(data, "Failed to verify the call"));
       }
     } catch (error: any) {
       alert("Error call verifying loan: " + error.message);
@@ -68,13 +78,11 @@ export default function LoanRow({
       }
 
       else {
-        alert("Failed to generate contract");
+        const errorData = await response.json().catch(() => ({}));
+        alert(getErrorMessage(errorData, "Failed to generate contract"));
       }
     } catch (error: any) {
       alert("Error generating the contract: " + error.message);
-      const errorData = await error.json(); // read backend error
-      console.error("Error generating contract:", errorData);
-      alert(errorData.message || "Failed to generate contract");
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +117,7 @@ export default function LoanRow({
       const result = await response.json();
 
       if (!response.ok) {
-        alert(result?.message || "Failed to reject loan");
+        alert(getErrorMessage(result, "Failed to reject loan"));
         return;
       }
 
@@ -132,7 +140,7 @@ export default function LoanRow({
       const result = await response.json();
 
       if (!response.ok) {
-        alert(result?.message || "Failed to approve loan");
+        alert(getErrorMessage(result, "Failed to approve loan"));
         return;
       }
 
