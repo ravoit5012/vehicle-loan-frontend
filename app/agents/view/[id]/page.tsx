@@ -26,21 +26,41 @@ export default function ViewAgentPage() {
     }
 
     async function handleUpdate(data: any) {
-        const { id, agentCode, createdAt, ...rest } = data;
+        const { id, agentCode, createdAt, tokenVersion, ...rest } = data;
 
-        const res = await fetch(`${API_ENDPOINTS.UPDATE_AGENT}/${id}`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(rest),
-        });
+        try {
+            const res = await fetch(`${API_ENDPOINTS.UPDATE_AGENT}/${id}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rest),
+            });
 
+            const result = await res.json();
 
-        if (res.ok) {
-            alert('Agent updated');
-            router.push('/agents');
-        } else {
-            alert('Failed to update agent');
+            if (res.ok) {
+                alert('Agent updated successfully');
+                router.push('/agents');
+            } else {
+                console.log("Full response:", result);
+
+                let message = 'Failed to update agent';
+
+                // if (typeof result?.message === 'string') {
+                //     message = result.message;
+                // }
+                // else if (Array.isArray(result?.message)) {
+                //     message = result.message.join(', ');
+                // }
+                // else if (typeof result?.message === 'object') {
+                //     message = result.message?.message || JSON.stringify(result.message);
+                // }
+                alert(
+                    result?.message?.message?.[0]?.constraints?.minLength || result?.message?.message || "Unknown error"
+                );
+            }
+        } catch (err) {
+            alert('Server error. Please try again.');
         }
     }
 

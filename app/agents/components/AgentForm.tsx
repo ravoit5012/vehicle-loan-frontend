@@ -388,7 +388,7 @@ export default function AgentForm({
                     />
                 </FormField>
 
-                <FormField label="Password">
+                <FormField label="Password (min 6 characters)">
                     <input
                         className={inputClass}
                         type="password"
