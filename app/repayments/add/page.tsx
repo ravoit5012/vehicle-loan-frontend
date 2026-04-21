@@ -6,32 +6,54 @@ import LoanSearchList from './LoanSearchList';
 import RepaymentTable from './RepaymentTable';
 import Loading from '@/app/components/Loading';
 import { FaPlus } from 'react-icons/fa';
+import { useAuth } from "@/hooks/useAuth";
 export default function RepaymentPage() {
     const [loans, setLoans] = useState<any[]>([]);
     const [selectedLoan, setSelectedLoan] = useState<any | null>(null);
     const [repayments, setRepayments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     useEffect(() => {
         fetchLoans();
     }, []);
 
-    const fetchLoans = async () => {
-        setLoading(true);
+   const fetchLoans = async () => {
+    setLoading(true);
+
+    try {
         const res = await fetch(API_ENDPOINTS.GET_ALL_LOAN_APPLICATIONS, {
             credentials: 'include',
         });
         const data = await res.json();
 
-        const validLoans = data.filter(
-            (l: any) =>
-                l.status === 'DISBURSED' || l.status === 'ACTIVE'
-        );
+        const validLoans = data.filter((l: any) => {
+            // ✅ Status filter
+            const isValidStatus =
+                l.status === 'DISBURSED' || l.status === 'ACTIVE';
+
+            if (!isValidStatus) return false;
+
+            // ✅ Role-based filter
+            if (user.role === "AGENT") {
+                return l.agentId === user.id;
+            }
+
+            if (user.role === "MANAGER") {
+                return l.managerId === user.id;
+            }
+
+            // ADMIN → no restriction
+            return true;
+        });
 
         setLoans(validLoans);
+    } catch (err) {
+        console.error(err);
+    } finally {
         setLoading(false);
-    };
-
+    }
+};
     const selectLoan = async (loan: any) => {
         setSelectedLoan(loan);
 

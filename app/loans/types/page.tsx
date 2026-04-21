@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { API_ENDPOINTS } from "@/app/config/config";
+import { useAuth } from "@/hooks/useAuth";
 import {
   FaHandHoldingUsd,
   FaEye,
@@ -32,7 +33,7 @@ import Stats from "./Stats";
 export default function LoanTypesPage() {
   const [loanTypes, setLoanTypes] = useState<LoanType[]>([]);
   const [loading, setLoading] = useState(true);
-
+ const { user } = useAuth();
   useEffect(() => {
     fetch(API_ENDPOINTS.GET_ALL_LOAN_TYPES)
       .then((res) => res.json())
@@ -133,13 +134,13 @@ export default function LoanTypesPage() {
                       View
                     </button>
                   </Link>
-
+{(user.role === "ADMIN" || user.role === "MANAGER") &&
                   <Link href={`/loans/types/${lt.id}?mode=edit`}>
                     <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded cursor-pointer">
                       <FaPen className="inline-block mr-1" />
                       Edit
                     </button>
-                  </Link>
+                  </Link>}
                 </td>
               </tr>
             ))}

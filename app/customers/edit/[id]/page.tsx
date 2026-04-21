@@ -3,6 +3,7 @@ import React, { useEffect, useState, ChangeEvent } from "react";
 import { useParams, useRouter } from "next/navigation"; // Next.js 13+ app router
 import axios from "axios";
 import { API_ENDPOINTS } from "../../../config/config";
+import { useAuth } from "@/hooks/useAuth";
 import {
     FaUser,
     FaUserTie,
@@ -79,7 +80,7 @@ const EditCustomer: React.FC = () => {
     const params = useParams();
     const router = useRouter();
     const id = params.id;
-
+    const { user } = useAuth();
     const [customer, setCustomer] = useState<Partial<Customer>>({});
     const [loading, setLoading] = useState(true);
     const [files, setFiles] = useState<{ [key: string]: File | null }>({});
@@ -184,12 +185,13 @@ const EditCustomer: React.FC = () => {
                         <p className="text-gray-600 mt-1">Click to Update customer details</p>
                     </div>
                 </div>
+                {(user.role === "ADMIN" || user.role === "MANAGER" ) &&
                 <button
                     onClick={handleDelete}
                     className="cursor-pointer flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                 >
                     <FaTrash /> Delete Customer
-                </button>
+                </button>}
             </div>
 
             {/* Personal Information */}

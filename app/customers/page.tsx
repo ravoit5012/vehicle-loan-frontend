@@ -64,58 +64,71 @@ const ViewCustomer: React.FC = () => {
 
     useEffect(() => {
         const fetchCustomers = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.get<Customer[]>(
-                    API_ENDPOINTS.GET_ALL_CUSTOMERS,
-                    { withCredentials: true }
-                );
+    setLoading(true);
+    try {
+        const res = await axios.get<Customer[]>(
+            API_ENDPOINTS.GET_ALL_CUSTOMERS,
+            { withCredentials: true }
+        );
 
-                const customersData = res.data;
-                setCustomers(customersData);
+        let customersData = res.data;
 
-                // Extract unique managerIds & agentIds
-                const managerIds = [
-                    ...new Set(customersData.map(c => c.managerId).filter(Boolean))
-                ];
+        // ✅ Apply role-based filtering
+        if (user.role === "AGENT") {
+            customersData = customersData.filter(
+                c => c.agentId === user.id
+            );
+        } else if (user.role === "MANAGER") {
+            customersData = customersData.filter(
+                c => c.managerId === user.id
+            );
+        }
+        // ADMIN → no filter
 
-                const agentIds = [
-                    ...new Set(customersData.map(c => c.agentId).filter(Boolean))
-                ];
+        setCustomers(customersData);
 
-                // Fetch all managers in parallel
-                const managerResponses = await Promise.all(
-                    managerIds.map(id =>
-                        axios.get(`${API_ENDPOINTS.GET_MANAGER_BY_ID}/${id}`)
-                    )
-                );
+        // Extract unique managerIds & agentIds
+        const managerIds = [
+            ...new Set(customersData.map(c => c.managerId).filter(Boolean))
+        ];
 
-                const agentResponses = await Promise.all(
-                    agentIds.map(id =>
-                        axios.get(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${id}`)
-                    )
-                );
+        const agentIds = [
+            ...new Set(customersData.map(c => c.agentId).filter(Boolean))
+        ];
 
-                // Create lookup maps
-                const managerLookup: Record<string, string> = {};
-                managerResponses.forEach(res => {
-                    managerLookup[res.data.id] = res.data.name;
-                });
+        // Fetch all managers in parallel
+        const managerResponses = await Promise.all(
+            managerIds.map(id =>
+                axios.get(`${API_ENDPOINTS.GET_MANAGER_BY_ID}/${id}`)
+            )
+        );
 
-                const agentLookup: Record<string, string> = {};
-                agentResponses.forEach(res => {
-                    agentLookup[res.data.id] = res.data.name;
-                });
+        const agentResponses = await Promise.all(
+            agentIds.map(id =>
+                axios.get(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${id}`)
+            )
+        );
 
-                setManagerMap(managerLookup);
-                setAgentMap(agentLookup);
+        // Create lookup maps
+        const managerLookup: Record<string, string> = {};
+        managerResponses.forEach(res => {
+            managerLookup[res.data.id] = res.data.name;
+        });
 
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
+        const agentLookup: Record<string, string> = {};
+        agentResponses.forEach(res => {
+            agentLookup[res.data.id] = res.data.name;
+        });
+
+        setManagerMap(managerLookup);
+        setAgentMap(agentLookup);
+
+    } catch (err) {
+        console.error(err);
+    } finally {
+        setLoading(false);
+    }
+};
 
         fetchCustomers();
     }, []);

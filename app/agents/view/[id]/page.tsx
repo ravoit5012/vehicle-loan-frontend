@@ -46,18 +46,17 @@ export default function ViewAgentPage() {
 
                 let message = 'Failed to update agent';
 
-                // if (typeof result?.message === 'string') {
-                //     message = result.message;
-                // }
-                // else if (Array.isArray(result?.message)) {
-                //     message = result.message.join(', ');
-                // }
-                // else if (typeof result?.message === 'object') {
-                //     message = result.message?.message || JSON.stringify(result.message);
-                // }
-                alert(
-                    result?.message?.message?.[0]?.constraints?.minLength || result?.message?.message || "Unknown error"
-                );
+                if (typeof result?.message === 'string') {
+                    message = result.message;
+                }
+                else if (Array.isArray(result?.message)) {
+                    message = result.message.join(', ');
+                }
+                else if (typeof result?.message === 'object') {
+                    message = result.message?.message || JSON.stringify(result.message);
+                }
+
+                alert(`Error: ${message}`);
             }
         } catch (err) {
             alert('Server error. Please try again.');

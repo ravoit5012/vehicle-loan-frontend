@@ -7,19 +7,58 @@ import Loading from '@/app/components/Loading';
 import { FaClock, FaSearch } from 'react-icons/fa';
 import UpcomingEmiCards from './components/UpcomingEmiCards';
 import OverdueEmiCards from './components/OverdueEmiCards';
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AllRepaymentsPage() {
     const [data, setData] = useState<any[]>([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     useEffect(() => {
         loadData();
     }, []);
 
-    async function loadData() {
-        setLoading(true);
+    // async function loadData() {
+    //     setLoading(true);
 
+    //     const res = await fetch(API_ENDPOINTS.GET_ALL_REPAYMENTS, {
+    //         credentials: 'include',
+    //     });
+    //     const loans = await res.json();
+
+    //     const enriched = [];
+
+    //     for (const loan of loans) {
+    //         const loanRes = await fetch(
+    //             `${API_ENDPOINTS.GET_LOAN_APPLICATION_BY_ID}/${loan.loanId}`,
+    //             { credentials: 'include' }
+    //         );
+    //         const loanDetails = await loanRes.json();
+
+    //         const customerRes = await fetch(
+    //             `${API_ENDPOINTS.GET_CUSTOMER_BY_ID}/${loanDetails.customerId}`,
+    //             { credentials: 'include' }
+    //         );
+    //         const customer = await customerRes.json();
+
+    //         enriched.push({
+    //             loanId: loan.loanId,
+    //             remainingAmount: loan.remainingAmount,
+    //             repayments: loan.repayments,
+    //             customerName: customer.applicantName,
+    //             customerMobile: customer.mobileNumber,
+    //         });
+    //     }
+
+    //     setData(enriched);
+    //     setLoading(false);
+    // }
+
+    async function loadData() {
+    setLoading(true);
+
+    try {
         const res = await fetch(API_ENDPOINTS.GET_ALL_REPAYMENTS, {
             credentials: 'include',
         });
@@ -33,6 +72,17 @@ export default function AllRepaymentsPage() {
                 { credentials: 'include' }
             );
             const loanDetails = await loanRes.json();
+
+            // ✅ Role-based filtering
+            if (user.role === "AGENT" && loanDetails.agentId !== user.id) {
+                continue;
+            }
+
+            if (user.role === "MANAGER" && loanDetails.managerId !== user.id) {
+                continue;
+            }
+
+            // ADMIN → no filter
 
             const customerRes = await fetch(
                 `${API_ENDPOINTS.GET_CUSTOMER_BY_ID}/${loanDetails.customerId}`,
@@ -50,8 +100,12 @@ export default function AllRepaymentsPage() {
         }
 
         setData(enriched);
+    } catch (err) {
+        console.error(err);
+    } finally {
         setLoading(false);
     }
+}
 
     const today = new Date();
 
