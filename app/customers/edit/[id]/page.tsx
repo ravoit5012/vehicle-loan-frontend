@@ -185,7 +185,7 @@ const EditCustomer: React.FC = () => {
                         <p className="text-gray-600 mt-1">Click to Update customer details</p>
                     </div>
                 </div>
-                {(user.role === "ADMIN" || user.role === "MANAGER" ) &&
+                {(user?.role === "ADMIN" || user?.role === "MANAGER" ) &&
                 <button
                     onClick={handleDelete}
                     className="cursor-pointer flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

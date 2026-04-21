@@ -74,11 +74,11 @@ const ViewCustomer: React.FC = () => {
         let customersData = res.data;
 
         // ✅ Apply role-based filtering
-        if (user.role === "AGENT") {
+        if (user?.role === "AGENT") {
             customersData = customersData.filter(
                 c => c.agentId === user.id
             );
-        } else if (user.role === "MANAGER") {
+        } else if (user?.role === "MANAGER") {
             customersData = customersData.filter(
                 c => c.managerId === user.id
             );

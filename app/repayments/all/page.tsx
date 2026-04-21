@@ -71,11 +71,11 @@ export default function AllRepaymentsPage() {
             const loanDetails = await loanRes.json();
 
             // ✅ Apply role-based filtering here
-            if (user.role === "AGENT" && loanDetails.agentId !== user.id) {
+            if (user?.role === "AGENT" && loanDetails.agentId !== user.id) {
                 continue;
             }
 
-            if (user.role === "MANAGER" && loanDetails.managerId !== user.id) {
+            if (user?.role === "MANAGER" && loanDetails.managerId !== user.id) {
                 continue;
             }
 

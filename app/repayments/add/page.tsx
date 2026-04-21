@@ -35,11 +35,11 @@ export default function RepaymentPage() {
             if (!isValidStatus) return false;
 
             // ✅ Role-based filter
-            if (user.role === "AGENT") {
+            if (user?.role === "AGENT") {
                 return l.agentId === user.id;
             }
 
-            if (user.role === "MANAGER") {
+            if (user?.role === "MANAGER") {
                 return l.managerId === user.id;
             }
 
