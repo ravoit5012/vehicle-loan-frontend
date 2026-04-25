@@ -22,6 +22,7 @@ import {
   FaIdCard,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
+import { extractErrorMessage } from "@/lib/errors";
 interface FormState {
   applicantName: string;
   guardianName: string;
@@ -149,6 +150,32 @@ export default function AddCustomer() {
   const [cropTitle, setCropTitle] = useState<string>("Crop Image");
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
+  /* ===== Duplicate-check warnings ===== */
+  const [dupWarnings, setDupWarnings] = useState<Record<string, string>>({});
+
+  const DUP_FIELDS = [
+    "panNumber",
+    "mobileNumber",
+    "email",
+    "poiDocumentNumber",
+    "poaDocumentNumber",
+    "nomineePanNumber",
+    "nomineePoiDocumentNumber",
+    "nomineePoaDocumentNumber",
+  ] as const;
+
+  type DupField = (typeof DUP_FIELDS)[number];
+
+  const fieldDisplayName = (f: string) => {
+    const map: Record<string, string> = {
+      poiDocumentNumber: "POI",
+      poaDocumentNumber: "POA",
+      nomineePoiDocumentNumber: "nominee POI",
+      nomineePoaDocumentNumber: "nominee POA",
+    };
+    return map[f] || f;
+  };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (!files || !files[0]) return;
@@ -268,6 +295,12 @@ export default function AddCustomer() {
       return;
     }
 
+    const activeWarnings = Object.values(dupWarnings).filter(Boolean);
+    if (activeWarnings.length > 0) {
+      alert("Resolve duplicate-value warnings before submitting:\n• " + activeWarnings.join("\n• "));
+      return;
+    }
+
     setIsLoading(true); // ✅ Start loading
 
     const { sameAddress, confirmPassword, manager, agent, ...payload } = form;
@@ -288,20 +321,20 @@ export default function AddCustomer() {
         body: formData,
       });
 
-      const data = await response.json();
+      let data: any = null;
+      try { data = await response.json(); } catch { /* ignore */ }
 
-      console.log(data);
-      console.log(response);
       if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+        alert(extractErrorMessage(data, `Failed to add customer (${response.status})`));
+        return;
       }
 
       alert("Customer added successfully");
       window.location.reload();
-    } catch (error: unknown) {
-      alert(error instanceof Error ? error.message : "Unexpected error");
+    } catch (error) {
+      alert(extractErrorMessage(error, "Unexpected error while adding customer"));
     } finally {
-      setIsLoading(false); // ✅ Stop loading
+      setIsLoading(false);
     }
   };
 
@@ -426,6 +459,59 @@ export default function AddCustomer() {
   const normalizeArray = <T,>(data: T | T[]): T[] => {
     return Array.isArray(data) ? data : [data];
   };
+
+  useEffect(() => {
+    const handlers = DUP_FIELDS.map((field) => {
+      const value = (form as any)[field] as string | undefined;
+      const timer = setTimeout(async () => {
+        if (!value || !value.trim()) {
+          setDupWarnings((prev) => {
+            if (!prev[field]) return prev;
+            const next = { ...prev };
+            delete next[field];
+            return next;
+          });
+          return;
+        }
+        try {
+          const res = await fetch(API_ENDPOINTS.CHECK_CUSTOMER_DUPLICATE, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ field, value }),
+          });
+          if (!res.ok) return;
+          const data = await res.json();
+          setDupWarnings((prev) => {
+            const next = { ...prev };
+            if (data.exists) {
+              const owner = data.applicantName ? ` (used by ${data.applicantName})` : "";
+              if (data.conflictField && data.conflictField !== field) {
+                next[field] = `Already used as ${fieldDisplayName(data.conflictField)}${owner}`;
+              } else {
+                next[field] = `Already exists${owner}`;
+              }
+            } else {
+              delete next[field];
+            }
+            return next;
+          });
+        } catch {
+          // network failure — silently ignore
+        }
+      }, 400);
+      return timer;
+    });
+    return () => handlers.forEach((t) => clearTimeout(t));
+  }, [
+    form.panNumber,
+    form.mobileNumber,
+    form.email,
+    form.poiDocumentNumber,
+    form.poaDocumentNumber,
+    form.nomineePanNumber,
+    form.nomineePoiDocumentNumber,
+    form.nomineePoaDocumentNumber,
+  ]);
 
   return (<>
   <Loading visible={isLoading} />
@@ -556,6 +642,7 @@ export default function AddCustomer() {
             required
             type="tel"
             error={errors.mobileNumber}
+            warning={dupWarnings.mobileNumber}
           />
           <RadioGroup
             label="Marital Status"
@@ -710,6 +797,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.panNumber}
+            warning={dupWarnings.panNumber}
           />
           <label className="flex flex-col gap-2 text-sm">
             <span className="font-semibold">PAN Card Image<span className="text-red-600">*</span></span>
@@ -746,6 +834,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.poiDocumentNumber}
+            warning={dupWarnings.poiDocumentNumber}
           />
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POI Document Front Image<span className="text-red-600">*</span></span>
@@ -795,6 +884,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.poaDocumentNumber}
+            warning={dupWarnings.poaDocumentNumber}
           />
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POA Document Front Image<span className="text-red-600">*</span></span>
@@ -862,6 +952,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.nomineePanNumber}
+            warning={dupWarnings.nomineePanNumber}
           />
           <label className="flex flex-col gap-2 text-sm">
             <span className="font-semibold">PAN Card Image<span className="text-red-600">*</span></span>
@@ -898,6 +989,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.nomineePoiDocumentNumber}
+            warning={dupWarnings.nomineePoiDocumentNumber}
           />
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POI Document Front Image<span className="text-red-600">*</span></span>
@@ -947,6 +1039,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.nomineePoaDocumentNumber}
+            warning={dupWarnings.nomineePoaDocumentNumber}
           />
           <label className="flex flex-col text-sm">
             <span className="font-semibold">POA Document Front Image<span className="text-red-600">*</span></span>
@@ -1046,6 +1139,7 @@ export default function AddCustomer() {
             onChange={handleChange}
             required
             error={errors.email}
+            warning={dupWarnings.email}
           />
           <InputField
             label="Password"
@@ -1108,6 +1202,7 @@ interface InputFieldProps {
   disabled?: boolean;
   placeholder?: string;
   error?: boolean;
+  warning?: string;
 }
 
 function InputField({
@@ -1122,7 +1217,9 @@ function InputField({
   disabled = false,
   placeholder = "",
   error = false,
+  warning = "",
 }: InputFieldProps) {
+  const showWarning = !!warning && !error;
   return (
     <label className="cursor-pointer flex flex-col text-sm">
       <span className="cursor-pointer mb-1 font-semibold flex items-center gap-2">
@@ -1134,8 +1231,8 @@ function InputField({
         name={name}
         value={value}
         onChange={onChange}
-        className={`cursor-pointer border rounded-md px-3 py-2 focus:ring-2 
-          ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}
+        className={`cursor-pointer border rounded-md px-3 py-2 focus:ring-2
+          ${error ? "border-red-500 focus:ring-red-500" : showWarning ? "border-amber-500 focus:ring-amber-500" : "border-gray-300 focus:ring-blue-500"}
           ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}
         `}
         required={required}
@@ -1148,6 +1245,9 @@ function InputField({
         <span className="text-red-600 text-xs mt-1">
           Fill the required field
         </span>
+      )}
+      {showWarning && (
+        <span className="text-amber-600 text-xs mt-1">{warning}</span>
       )}
     </label>
   );

@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation"; // Next.js 13+ app route
 import axios from "axios";
 import { API_ENDPOINTS } from "../../../config/config";
 import { useAuth } from "@/hooks/useAuth";
+import { extractErrorMessage } from "@/lib/errors";
 import {
     FaUser,
     FaUserTie,
@@ -21,8 +22,16 @@ import {
     FaTrash,
 } from "react-icons/fa";
 
+interface ExtraDocument {
+    id: string;
+    name: string;
+    url: string;
+    uploadedAt: string;
+}
+
 interface Customer {
     id: string;
+    extraDocuments?: ExtraDocument[];
     applicantName: string;
     guardianName: string;
     relationType: string;
@@ -84,6 +93,9 @@ const EditCustomer: React.FC = () => {
     const [customer, setCustomer] = useState<Partial<Customer>>({});
     const [loading, setLoading] = useState(true);
     const [files, setFiles] = useState<{ [key: string]: File | null }>({});
+    const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
+    const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
+    const isAdmin = user?.role === "ADMIN";
 
     useEffect(() => {
         if (!id) return;
@@ -106,6 +118,50 @@ const EditCustomer: React.FC = () => {
         fetchCustomer();
     }, [id]);
 
+    useEffect(() => {
+        if (!isAdmin) return;
+        const fetchManagers = async () => {
+            try {
+                const res = await axios.get(API_ENDPOINTS.GET_ALL_MANAGERS);
+                const data = Array.isArray(res.data) ? res.data : [];
+                setManagers(data);
+            } catch (err) {
+                console.error("Error fetching managers:", err);
+            }
+        };
+        fetchManagers();
+    }, [isAdmin]);
+
+    useEffect(() => {
+        if (!isAdmin || !customer.managerId) {
+            setAgents([]);
+            return;
+        }
+        const fetchAgents = async () => {
+            try {
+                const res = await axios.get(
+                    `${API_ENDPOINTS.GET_AGENTS_OF_MANAGER}/${customer.managerId}`
+                );
+                const data = Array.isArray(res.data) ? res.data : [];
+                setAgents(data);
+            } catch (err) {
+                console.error("Error fetching agents:", err);
+                setAgents([]);
+            }
+        };
+        fetchAgents();
+    }, [isAdmin, customer.managerId]);
+
+    const handleManagerChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const managerId = e.target.value;
+        setCustomer((prev) => ({ ...prev, managerId, agentId: "" }));
+    };
+
+    const handleAgentChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const agentId = e.target.value;
+        setCustomer((prev) => ({ ...prev, agentId }));
+    };
+
     if (loading) return <p className="p-6">Loading customer...</p>;
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -123,19 +179,36 @@ const EditCustomer: React.FC = () => {
         try {
             const formData = new FormData();
 
-            // Add only allowed fields (exclude id, memberId, managerId, agentId)
-            Object.entries(customer).forEach(([key, value]) => {
-                if (
-                    value !== undefined &&
-                    value !== null &&
-                    key !== "id" &&        // ❌ exclude id
-                    key !== "memberId" &&
-                    key !== "managerId" &&
-                    key !== "agentId"
-                ) {
-                    formData.append(key, value as string);
-                }
+            const EDITABLE_FIELDS: (keyof Customer)[] = [
+                "applicantName", "guardianName", "relationType", "religion",
+                "village", "postOffice", "policeStation", "district", "pinCode",
+                "mobileNumber", "maritalStatus", "gender", "dateOfBirth",
+                "nomineeName", "nomineeMobileNumber", "nomineeRelation",
+                "nomineeVillage", "nomineePostOffice", "nomineePoliceStation",
+                "nomineeDistrict", "nomineePinCode",
+                "panNumber", "panImageUrl",
+                "poiDocumentType", "poiDocumentNumber", "poiFrontImageUrl", "poiBackImageUrl",
+                "poaDocumentType", "poaDocumentNumber", "poaFrontImageUrl", "poaBackImageUrl",
+                "applicantSignatureUrl", "personalPhotoUrl",
+                "nomineePanNumber", "nomineePanImageUrl",
+                "nomineePoiDocumentType", "nomineePoiDocumentNumber",
+                "nomineePoiFrontImageUrl", "nomineePoiBackImageUrl",
+                "nomineePoaDocumentType", "nomineePoaDocumentNumber",
+                "nomineePoaFrontImageUrl", "nomineePoaBackImageUrl",
+                "nomineeSignatureUrl", "nomineePersonalPhotoUrl",
+                "email", "password", "accountStatus",
+            ];
+
+            EDITABLE_FIELDS.forEach((key) => {
+                const value = customer[key];
+                if (value === undefined || value === null || value === "") return;
+                formData.append(key, value as string);
             });
+
+            if (isAdmin) {
+                if (customer.managerId) formData.append("managerId", customer.managerId);
+                if (customer.agentId) formData.append("agentId", customer.agentId);
+            }
 
             // Add files
             Object.entries(files).forEach(([key, file]) => {
@@ -155,7 +228,7 @@ const EditCustomer: React.FC = () => {
             router.push("/customers"); // Redirect after update
         } catch (err: any) {
             console.error(err);
-            alert(err.response?.data?.message || "Failed to update customer");
+            alert(extractErrorMessage(err, "Failed to update customer"));
         }
     };
 
@@ -170,7 +243,24 @@ const EditCustomer: React.FC = () => {
             router.push("/customers"); // Redirect after delete
         } catch (err: any) {
             console.error(err);
-            alert(err.response?.data?.message || "Failed to delete customer");
+            alert(extractErrorMessage(err, "Failed to delete customer"));
+        }
+    };
+
+    const handleDeleteExtraDoc = async (docId: string, docName: string) => {
+        if (!confirm(`Delete extra document "${docName}"?`)) return;
+        try {
+            await axios.delete(
+                `${API_ENDPOINTS.DELETE_EXTRA_DOCUMENT}/${id}/extra-documents/${docId}`,
+                { withCredentials: true }
+            );
+            setCustomer((prev) => ({
+                ...prev,
+                extraDocuments: (prev.extraDocuments || []).filter((d) => d.id !== docId),
+            }));
+        } catch (err: any) {
+            console.error(err);
+            alert(extractErrorMessage(err, "Failed to delete document"));
         }
     };
 
@@ -382,6 +472,49 @@ const EditCustomer: React.FC = () => {
                 </div>
             </section>
 
+            {/* Extra Documents */}
+            <section className="mb-8">
+                <h2 className="bg-teal-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center justify-between">
+                    <span className="flex items-center gap-3"><FaFileAlt /> Extra Documents</span>
+                    <span className="text-xs font-normal opacity-90">
+                        {(customer.extraDocuments?.length || 0)} / 20
+                    </span>
+                </h2>
+                <div className="p-4 border border-t-0 border-teal-600 rounded-b-md">
+                    {(customer.extraDocuments && customer.extraDocuments.length > 0) ? (
+                        <ul className="divide-y divide-gray-200">
+                            {customer.extraDocuments.map((doc) => (
+                                <li key={doc.id} className="flex items-center justify-between py-2 gap-4">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-semibold text-gray-800 truncate">{doc.name}</p>
+                                        <p className="text-xs text-gray-500">
+                                            Uploaded {new Date(doc.uploadedAt).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <a
+                                        href={doc.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:text-blue-800 text-sm underline"
+                                    >
+                                        View
+                                    </a>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleDeleteExtraDoc(doc.id, doc.name)}
+                                        className="cursor-pointer flex items-center gap-1 text-red-600 hover:text-red-800 text-sm"
+                                    >
+                                        <FaTrash /> Delete
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-sm text-gray-500">No extra documents uploaded.</p>
+                    )}
+                </div>
+            </section>
+
             {/* Account Information */}
             <section className="mb-8">
                 <h2 className="bg-purple-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
@@ -402,6 +535,45 @@ const EditCustomer: React.FC = () => {
                     />
                 </div>
             </section>
+
+            {isAdmin && (
+                <section className="mb-8">
+                    <h2 className="bg-orange-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+                        <FaUserTie /> Assignment
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border border-t-0 border-orange-600 rounded-b-md">
+                        <label className="flex flex-col text-gray-700 text-sm">
+                            <span className="mb-1 font-semibold">Manager</span>
+                            <select
+                                name="managerId"
+                                value={customer.managerId || ""}
+                                onChange={handleManagerChange}
+                                className="border border-gray-300 rounded-md px-3 py-2 bg-white"
+                            >
+                                <option value="" disabled>Select Manager</option>
+                                {managers.map((m) => (
+                                    <option key={m.id} value={m.id}>{m.name}</option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="flex flex-col text-gray-700 text-sm">
+                            <span className="mb-1 font-semibold">Agent</span>
+                            <select
+                                name="agentId"
+                                value={customer.agentId || ""}
+                                onChange={handleAgentChange}
+                                disabled={!customer.managerId}
+                                className="border border-gray-300 rounded-md px-3 py-2 bg-white disabled:bg-gray-100"
+                            >
+                                <option value="" disabled>Select Agent</option>
+                                {agents.map((a) => (
+                                    <option key={a.id} value={a.id}>{a.name}</option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
+                </section>
+            )}
 
             <div className="flex justify-end">
                 <button

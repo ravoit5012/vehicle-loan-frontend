@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import StatusBadge from './StatusBadge';
 import { API_ENDPOINTS } from '@/app/config/config';
 import { useAuth } from '@/hooks/useAuth';
+import { extractErrorMessage } from '@/lib/errors';
 
 export default function LoanRow({
   loan,
@@ -17,60 +18,35 @@ export default function LoanRow({
   const router = useRouter();
   const { user } = useAuth();
   // Function to handle loan disbursement
-  const handleDisburseLoan = async (loanId: string) => {
+  const callLoanAction = async (
+    url: string,
+    method: 'POST' | 'DELETE',
+    successMsg: string,
+    failPrefix: string,
+  ) => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.DISBURSE_LOAN}/${loanId}`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-
+      const response = await fetch(url, { method, credentials: 'include' });
       if (response.ok) {
-        alert("Loan Disbursed Successfully");
+        alert(successMsg);
         window.location.reload();
-      } else {
-        alert("Failed to disburse loan");
+        return;
       }
-    } catch (error: any) {
-      alert("Error disbursing loan: " + error.message);
+      let body: any = null;
+      try { body = await response.json(); } catch { /* ignore */ }
+      alert(`${failPrefix}: ${extractErrorMessage(body, 'Unknown error')}`);
+    } catch (error) {
+      alert(`${failPrefix}: ${extractErrorMessage(error, 'Network error')}`);
     }
   };
 
-  const handleDeleteLoan = async (loanId: string) => {
-    try {
-      const response = await fetch(`${API_ENDPOINTS.DELETE_LOAN_APPLICATION}/${loanId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+  const handleDisburseLoan = (loanId: string) =>
+    callLoanAction(`${API_ENDPOINTS.DISBURSE_LOAN}/${loanId}`, 'POST', 'Loan Disbursed Successfully', 'Failed to disburse loan');
 
-      if (response.ok) {
-        alert("Loan Deleted Successfully");
-        window.location.reload();
-      } else {
-        alert("Failed to delete loan");
-      }
-    } catch (error: any) {
-      alert("Error deleting loan: " + error.message);
-    }
-  };
-  // Function to handle loan closure
-  const handleCloseLoan = async (loanId: string) => {
-    try {
-      const response = await fetch(`${API_ENDPOINTS.CLOSE_LOAN}/${loanId}`, {
-        method: 'POST',
-        credentials: 'include',
-      });
+  const handleDeleteLoan = (loanId: string) =>
+    callLoanAction(`${API_ENDPOINTS.DELETE_LOAN_APPLICATION}/${loanId}`, 'DELETE', 'Loan Deleted Successfully', 'Failed to delete loan');
 
-      if (response.ok) {
-        alert("Loan Closed Successfully");
-        window.location.reload();
-      } else {
-        alert("Failed to close loan");
-        window.location.reload();
-      }
-    } catch (error: any) {
-      alert("Error closing loan: " + error.message);
-    }
-  };
+  const handleCloseLoan = (loanId: string) =>
+    callLoanAction(`${API_ENDPOINTS.CLOSE_LOAN}/${loanId}`, 'POST', 'Loan Closed Successfully', 'Failed to close loan');
 
   // Filter loans based on status
   if (loan.status !== 'ADMIN_APPROVED' && loan.status !== 'DISBURSED' && loan.status !== 'CLOSED') {

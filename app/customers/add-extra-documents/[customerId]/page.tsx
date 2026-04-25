@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { API_ENDPOINTS } from "@/app/config/config";
-import { FaUser, FaPlus, FaTrash, FaUpload, FaArrowLeft } from "react-icons/fa";
+import CropModal from "@/app/components/CropModal";
+import { extractErrorMessage } from "@/lib/errors";
+import { FaUser, FaPlus, FaTrash, FaUpload, FaArrowLeft, FaCrop } from "react-icons/fa";
 
 interface UploadItem {
   file: File | null;
@@ -19,6 +21,9 @@ export default function AddExtraDocumentsPage() {
     { file: null, name: "" },
   ]);
   const [loading, setLoading] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const [cropIndex, setCropIndex] = useState<number | null>(null);
+  const [cropTitle, setCropTitle] = useState("Crop Image");
 
   // Fetch Customer
   useEffect(() => {
@@ -42,11 +47,53 @@ export default function AddExtraDocumentsPage() {
     setUploads(updated);
   };
 
-  // Handle File Change
+  // Handle File Change — open crop modal for images, set directly for non-images
   const handleFileChange = (index: number, file: File | null) => {
+    if (!file) {
+      const updated = [...uploads];
+      updated[index].file = null;
+      setUploads(updated);
+      return;
+    }
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCropSrc(reader.result as string);
+        setCropIndex(index);
+        setCropTitle(uploads[index].name ? `Crop — ${uploads[index].name}` : "Crop Image");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const updated = [...uploads];
+      updated[index].file = file;
+      setUploads(updated);
+    }
+  };
+
+  const openCropForExisting = (index: number) => {
+    const file = uploads[index].file;
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setCropIndex(index);
+      setCropTitle(uploads[index].name ? `Crop — ${uploads[index].name}` : "Crop Image");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropDone = (croppedFile: File) => {
+    if (cropIndex === null) return;
     const updated = [...uploads];
-    updated[index].file = file;
+    updated[cropIndex].file = croppedFile;
     setUploads(updated);
+    setCropSrc(null);
+    setCropIndex(null);
+  };
+
+  const handleCropCancel = () => {
+    setCropSrc(null);
+    setCropIndex(null);
   };
 
   // Handle Name Change
@@ -74,24 +121,26 @@ export default function AddExtraDocumentsPage() {
 
     setLoading(true);
 
-    const res = await fetch(
-      `${API_ENDPOINTS.UPLOAD_EXTRA_DOCUMENTS}/${customerId}`,
-      {
-        method: "POST",
-        body: formData,
+    try {
+      const res = await fetch(
+        `${API_ENDPOINTS.UPLOAD_EXTRA_DOCUMENTS}/${customerId}`,
+        { method: "POST", body: formData, credentials: "include" }
+      );
+
+      let data: any = null;
+      try { data = await res.json(); } catch { /* ignore */ }
+
+      if (!res.ok) {
+        alert(extractErrorMessage(data, `Upload failed (${res.status})`));
+        return;
       }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Upload failed");
-    } else {
       alert("Documents uploaded successfully");
       router.back();
+    } catch (err) {
+      alert(extractErrorMessage(err, "Upload failed"));
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (!customer) {
@@ -104,6 +153,14 @@ export default function AddExtraDocumentsPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-10">
+      {cropSrc && (
+        <CropModal
+          imageSrc={cropSrc}
+          title={cropTitle}
+          onCropDone={handleCropDone}
+          onCancel={handleCropCancel}
+        />
+      )}
 
       {/* Back Button */}
       <button
@@ -177,11 +234,32 @@ export default function AddExtraDocumentsPage() {
                 </label>
                 <input
                   type="file"
-                  onChange={(e) =>
-                    handleFileChange(index, e.target.files?.[0] || null)
-                  }
+                  accept="image/*,application/pdf"
+                  onChange={(e) => {
+                    handleFileChange(index, e.target.files?.[0] || null);
+                    e.target.value = "";
+                  }}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 file:mr-4 file:px-4 file:py-1 file:rounded-lg file:border-0 file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition"
                 />
+                {item.file && item.file.type.startsWith("image/") && (
+                  <div className="mt-2 flex items-center gap-3">
+                    <img
+                      src={URL.createObjectURL(item.file)}
+                      alt="Preview"
+                      className="h-16 w-auto rounded border border-gray-200 object-contain"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => openCropForExisting(index)}
+                      className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800"
+                    >
+                      <FaCrop /> Re-crop
+                    </button>
+                  </div>
+                )}
+                {item.file && !item.file.type.startsWith("image/") && (
+                  <p className="mt-2 text-xs text-gray-500">{item.file.name}</p>
+                )}
               </div>
 
               {uploads.length > 1 && (

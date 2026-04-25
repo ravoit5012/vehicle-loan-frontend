@@ -15,6 +15,7 @@ import {
     calculateDisbursedAmount,
 } from '@/app/config/getPeriodsPerYear';
 import { API_ENDPOINTS } from '@/app/config/config';
+import { extractErrorMessage } from '@/lib/errors';
 import { CollectionFrequency } from '@/app/config/collection-frequency.enum';
 import { FeesPaymentMethod } from '@/app/config/fee-payment.enum';
 
@@ -123,13 +124,17 @@ export default function ApplyLoanPage() {
     // Submit Handler
     // =========================
     const onSubmit = async (formData: any) => {
-        if (!selectedLoanType || !selectedCustomer) return;
+        if (!selectedLoanType) {
+            alert("Select Loan type");
+            return;
+        }
+        if (!selectedCustomer) {
+            alert("Select customer");
+            return;
+        }
 
-        if (!selectedLoanType) alert("Select Loan type")
-        if (!selectedCustomer) alert("select customer")
-            console.log(selectedCustomer)
         const payload = {
-            customerId: selectedCustomer.id, // Use selectedCustomer directly
+            customerId: selectedCustomer.id,
             loanTypeId: formData.loanTypeId,
             agentId: selectedCustomer.agentId,
             loanAmount,
@@ -141,11 +146,14 @@ export default function ApplyLoanPage() {
             additionalFees,
         };
 
-
-        await axios.post(API_ENDPOINTS.CREATE_LOAN, payload, { withCredentials: true });
-
-        alert('Loan application created successfully');
-        window.location.reload();
+        try {
+            await axios.post(API_ENDPOINTS.CREATE_LOAN, payload, { withCredentials: true });
+            alert('Loan application created successfully');
+            window.location.reload();
+        } catch (err) {
+            console.error(err);
+            alert(extractErrorMessage(err, 'Failed to create loan application'));
+        }
     };
 
 
