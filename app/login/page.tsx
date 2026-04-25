@@ -82,7 +82,7 @@ export default function LoginPage() {
   href="https://www.champanandmotors.com/"
   target="_blank"
   rel="noopener noreferrer"
-  className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white backdrop-blur-md bg-white/10 border border-white/20 rounded-xl shadow-lg hover:bg-white/20 transition-all duration-300"
+  className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-black backdrop-blur-md bg-white/10 border border-white/20 rounded-xl shadow-lg hover:bg-white/20 transition-all duration-300"
 >
   Go to Site Home Page
 </a>
