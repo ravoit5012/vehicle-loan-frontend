@@ -78,12 +78,14 @@ export default function LoginPage() {
             administrator backend.
           </p>
 
-          <a
-            href="/"
-            className="text-blue-600 underline text-sm"
-          >
-            Go to site home page
-          </a>
+<a
+  href="https://www.champanandmotors.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white backdrop-blur-md bg-white/10 border border-white/20 rounded-xl shadow-lg hover:bg-white/20 transition-all duration-300"
+>
+  Go to Site Home Page
+</a>
 
         </div>
       </div>
