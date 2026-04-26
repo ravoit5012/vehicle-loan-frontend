@@ -36,7 +36,7 @@ export default function LoanTypesPage() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   useEffect(() => {
-    fetch(API_ENDPOINTS.GET_ALL_LOAN_TYPES)
+    fetch(API_ENDPOINTS.GET_ALL_LOAN_TYPES, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setLoanTypes(data);
@@ -94,57 +94,58 @@ export default function LoanTypesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100/50">
-              {loanTypes.map((lt) => (
-                <tr
-                  key={lt.id}
-                  className="hover:bg-white/90 transition duration-150 group"
-                >
-                  <td className="px-6 py-5">
-                    <div className="font-extrabold text-slate-800 text-base capitalize mb-1">{lt.loanName}</div>
-                    <div className="text-sm text-slate-500 max-w-xs truncate">{lt.description}</div>
-                  </td>
+              {Array.isArray(loanTypes) &&
+                loanTypes.map((lt) => (
+                  <tr
+                    key={lt.id}
+                    className="hover:bg-white/90 transition duration-150 group"
+                  >
+                    <td className="px-6 py-5">
+                      <div className="font-extrabold text-slate-800 text-base capitalize mb-1">{lt.loanName}</div>
+                      <div className="text-sm text-slate-500 max-w-xs truncate">{lt.description}</div>
+                    </td>
 
-                  <td className="px-6 py-5 text-center">
-                    <span className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-bold shadow-sm">
-                      {lt.interestRate.toFixed(2)}%
-                    </span>
-                  </td>
+                    <td className="px-6 py-5 text-center">
+                      <span className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                        {lt.interestRate.toFixed(2)}%
+                      </span>
+                    </td>
 
-                  <td className="px-6 py-5 text-center font-semibold text-slate-600">
-                    <span className="text-slate-800 bg-slate-100 px-2 py-1 rounded-md text-xs">₹{lt.minAmount.toLocaleString()}</span>
-                    <span className="mx-2 text-slate-300">→</span>
-                    <span className="text-slate-800 bg-slate-100 px-2 py-1 rounded-md text-xs">₹{lt.maxAmount.toLocaleString()}</span>
-                  </td>
+                    <td className="px-6 py-5 text-center font-semibold text-slate-600">
+                      <span className="text-slate-800 bg-slate-100 px-2 py-1 rounded-md text-xs">₹{lt.minAmount.toLocaleString()}</span>
+                      <span className="mx-2 text-slate-300">→</span>
+                      <span className="text-slate-800 bg-slate-100 px-2 py-1 rounded-md text-xs">₹{lt.maxAmount.toLocaleString()}</span>
+                    </td>
 
-                  <td className="px-6 py-5 text-center">
-                    <span
-                      className={`inline-flex items-center justify-center rounded-full px-4 py-1 text-xs font-bold uppercase tracking-wide border shadow-sm ${lt.status === "active"
-                        ? "bg-green-50 border-green-200 text-green-700 shadow-green-100"
-                        : "bg-slate-50 border-slate-200 text-slate-600"
-                        }`}
-                    >
-                      {lt.status}
-                    </span>
-                  </td>
+                    <td className="px-6 py-5 text-center">
+                      <span
+                        className={`inline-flex items-center justify-center rounded-full px-4 py-1 text-xs font-bold uppercase tracking-wide border shadow-sm ${lt.status === "active"
+                          ? "bg-green-50 border-green-200 text-green-700 shadow-green-100"
+                          : "bg-slate-50 border-slate-200 text-slate-600"
+                          }`}
+                      >
+                        {lt.status}
+                      </span>
+                    </td>
 
-                  <td className="px-6 py-5 text-center">
-                    <div className="flex items-center justify-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                      <Link href={`/loans/types/${lt.id}?mode=view`}>
-                        <button className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg font-semibold transition-all shadow-sm">
-                          <FaEye /> View
-                        </button>
-                      </Link>
-                      {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
-                        <Link href={`/loans/types/${lt.id}?mode=edit`}>
-                          <button className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50 px-3 py-1.5 rounded-lg font-semibold transition-all shadow-sm">
-                            <FaPen /> Edit
+                    <td className="px-6 py-5 text-center">
+                      <div className="flex items-center justify-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                        <Link href={`/loans/types/${lt.id}?mode=view`}>
+                          <button className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg font-semibold transition-all shadow-sm">
+                            <FaEye /> View
                           </button>
                         </Link>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
+                          <Link href={`/loans/types/${lt.id}?mode=edit`}>
+                            <button className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50 px-3 py-1.5 rounded-lg font-semibold transition-all shadow-sm">
+                              <FaPen /> Edit
+                            </button>
+                          </Link>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </section>

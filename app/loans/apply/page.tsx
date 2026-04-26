@@ -52,7 +52,7 @@ export default function ApplyLoanPage() {
             ]);
 
             setCustomers(customersRes.data);
-            setLoanTypes(loanTypesRes.data);
+            setLoanTypes(loanTypesRes.data.filter((lt: any) => lt.status === 'APPROVED'));
         })();
     }, []);
 

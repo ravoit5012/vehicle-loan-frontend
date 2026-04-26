@@ -26,7 +26,7 @@ export default function ViewAgentPage() {
     }
 
     async function handleUpdate(data: any) {
-        const { id, agentCode, createdAt, tokenVersion, ...rest } = data;
+        const { id, agentCode, createdAt, manager, tokenVersion, ...rest } = data;
 
         try {
             const res = await fetch(`${API_ENDPOINTS.UPDATE_AGENT}/${id}`, {

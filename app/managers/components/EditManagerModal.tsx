@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { API_ENDPOINTS } from '@/app/config/config';
 
 export default function EditManagerModal({ manager, onClose, onUpdated }: any) {
@@ -54,9 +55,14 @@ export default function EditManagerModal({ manager, onClose, onUpdated }: any) {
         }
     }
 
-    return (
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
+
+    return createPortal(
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-2xl w-full md:w-[75%] overflow-y-auto max-h-[90vh] p-6 sm:p-8 animate-fadeIn">
+            <div className="bg-white rounded-xl shadow-2xl w-full md:w-[75%] max-w-4xl overflow-y-auto max-h-[90vh] p-6 sm:p-8 animate-fadeIn">
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Edit Manager</h3>
 
                 {message && (
@@ -125,6 +131,7 @@ export default function EditManagerModal({ manager, onClose, onUpdated }: any) {
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

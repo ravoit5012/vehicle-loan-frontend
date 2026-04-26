@@ -38,7 +38,7 @@ export default function AgentTable({ agents }: { agents: any[] }) {
       alert('Agent approved successfully');
 
       // optional: refresh list
-      router.refresh(); 
+      router.refresh();
       window.location.reload();
     } catch (err) {
       alert('Network error. Please try again.');
@@ -51,7 +51,7 @@ export default function AgentTable({ agents }: { agents: any[] }) {
         <thead>
           <tr className="bg-linear-to-r from-gray-50 border-b border-gray-200 bg-white to-gray-100 text-gray-600">
             <th className="px-4 py-4 text-left font-semibold">Agent</th>
-            <th className="px-4 py-4 text-left font-semibold">Code</th>
+            <th className="px-4 py-4 text-left font-semibold">Manager</th>
             <th className="px-4 py-4 text-left font-semibold">Phone</th>
             <th className="px-4 py-4 text-left font-semibold">Email</th>
             <th className="px-4 py-4 text-left font-semibold">Status</th>
@@ -70,7 +70,7 @@ export default function AgentTable({ agents }: { agents: any[] }) {
               </td>
 
               <td className="px-4 py-4 text-gray-600">
-                {agent.agentCode}
+                {agent.manager?.name}
               </td>
 
               <td className="px-4 py-4 text-gray-600">

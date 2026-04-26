@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaCar } from "react-icons/fa";
+import { FaCar, FaInfoCircle } from "react-icons/fa";
 import CropModal from "@/app/components/CropModal";
 import axios from "axios";
 import { API_ENDPOINTS } from "@/app/config/config";
@@ -20,13 +20,13 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const [duplicateConflicts, setDuplicateConflicts] = useState<Record<string, string>>({});
 
-  // Throttle check for duplication
   const registrationNumber = watch("registrationNumber");
   const chassisNumber = watch("chassisNumber");
   const engineNumber = watch("engineNumber");
   const repoFinancerName = watch("repoFinancerName");
 
   useEffect(() => {
+    if (!isUsed) return;
     if (!registrationNumber && !chassisNumber && !engineNumber && !repoFinancerName) {
       setDuplicateConflicts({});
       return;
@@ -55,8 +55,7 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
       }
     }, 600);
     return () => clearTimeout(timer);
-  }, [registrationNumber, chassisNumber, engineNumber, repoFinancerName]);
-
+  }, [registrationNumber, chassisNumber, engineNumber, repoFinancerName, isUsed]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string, title: string) => {
     if (!customer) {
@@ -73,7 +72,7 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
         }
       };
       reader.readAsDataURL(file);
-      e.target.value = ""; // reset
+      e.target.value = "";
     }
   };
 
@@ -113,7 +112,7 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
     return (
       <div key={field} className="flex flex-col space-y-2">
         <label className="text-sm font-medium text-gray-700">
-          {title} {isUsed ? <span className="text-red-500">*</span> : <span className="text-gray-400 text-xs">(optional)</span>}
+          {title} <span className="text-red-500">*</span>
         </label>
         {currentValue ? (
           <div className="relative border-2 border-green-500 rounded-lg p-2 flex items-center justify-between bg-green-50">
@@ -140,6 +139,28 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
     );
   };
 
+  // ─── NEW VEHICLE: show info box only, skip the form ───────────────────────
+  if (!isUsed) {
+    return (
+      <section className="card p-6 shadow-xl rounded-lg mt-8 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center flex-shrink-0 mt-0.5">
+            <FaCar className="text-indigo-600 text-xl" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-lg font-bold text-indigo-900">Vehicle Details — Captured After Disbursement</h2>
+            <p className="text-sm text-indigo-700 mt-1 leading-relaxed">
+              This is a <strong>New Vehicle</strong> loan. The registration number, chassis number, engine number,
+              and document images will be captured from the <strong>Loan Profile page</strong> after the loan is disbursed.
+            </p>
+          </div>
+          <FaInfoCircle className="text-indigo-400 text-2xl flex-shrink-0 mt-0.5" />
+        </div>
+      </section>
+    );
+  }
+
+  // ─── USED VEHICLE: full form ───────────────────────────────────────────────
   return (
     <section className="card p-6 shadow-xl rounded-lg bg-white mt-8">
       {cropTarget && (
@@ -152,16 +173,16 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
       )}
 
       <h2 className="text-2xl font-semibold bg-[#4f46e5] text-white rounded-4xl p-4">
-        <FaCar className="inline-block mx-1 md:mx-3" /> Vehicle Details {isUsed ? "(Required for Used Vehicles)" : "(Optional for New Vehicles)"}
+        <FaCar className="inline-block mx-1 md:mx-3" /> Vehicle Details (Required for Used Vehicles)
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div className="form-group space-y-2">
           <label className="text-sm font-medium text-gray-700">
-            Registration Number {isUsed && <span className="text-red-500">*</span>}
+            Registration Number <span className="text-red-500">*</span>
           </label>
           <input
-            {...register("registrationNumber", { required: isUsed })}
+            {...register("registrationNumber", { required: true })}
             className={`input-field border-2 py-2 px-4 rounded-lg w-full ${duplicateConflicts.registrationNumber ? 'border-red-500 focus:border-red-500' : ''}`}
             placeholder="e.g. MH12AB1234"
           />
@@ -169,10 +190,10 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
         </div>
         <div className="form-group space-y-2">
           <label className="text-sm font-medium text-gray-700">
-            Chassis Number {isUsed && <span className="text-red-500">*</span>}
+            Chassis Number <span className="text-red-500">*</span>
           </label>
           <input
-            {...register("chassisNumber", { required: isUsed })}
+            {...register("chassisNumber", { required: true })}
             className={`input-field border-2 py-2 px-4 rounded-lg w-full ${duplicateConflicts.chassisNumber ? 'border-red-500 focus:border-red-500' : ''}`}
             placeholder="e.g. MA123456789"
           />
@@ -180,10 +201,10 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
         </div>
         <div className="form-group space-y-2">
           <label className="text-sm font-medium text-gray-700">
-            Engine Number {isUsed && <span className="text-red-500">*</span>}
+            Engine Number <span className="text-red-500">*</span>
           </label>
           <input
-            {...register("engineNumber", { required: isUsed })}
+            {...register("engineNumber", { required: true })}
             className={`input-field border-2 py-2 px-4 rounded-lg w-full ${duplicateConflicts.engineNumber ? 'border-red-500 focus:border-red-500' : ''}`}
             placeholder="e.g. EN123456"
           />
@@ -191,10 +212,10 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
         </div>
         <div className="form-group space-y-2">
           <label className="text-sm font-medium text-gray-700">
-            Financer Name {isUsed && <span className="text-red-500">*</span>}
+            Financer Name <span className="text-red-500">*</span>
           </label>
           <input
-            {...register("repoFinancerName", { required: isUsed })}
+            {...register("repoFinancerName", { required: true })}
             className={`input-field border-2 py-2 px-4 rounded-lg w-full ${duplicateConflicts.repoFinancerName ? 'border-red-500 focus:border-red-500' : ''}`}
             placeholder="e.g. HDFC Bank"
           />
@@ -209,13 +230,13 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
         {renderUploadBox("Repossed Financer Image", "repoFinancerImageUrl")}
       </div>
 
-      {/* Hidden inputs to bind react-hook-form to the urls so it blocks submission if required but missing */}
-      <input type="hidden" {...register("registrationImageUrl", { required: isUsed })} />
-      <input type="hidden" {...register("chassisImageUrl", { required: isUsed })} />
-      <input type="hidden" {...register("engineImageUrl", { required: isUsed })} />
-      <input type="hidden" {...register("repoFinancerImageUrl", { required: isUsed })} />
+      {/* Hidden inputs */}
+      <input type="hidden" {...register("registrationImageUrl", { required: true })} />
+      <input type="hidden" {...register("chassisImageUrl", { required: true })} />
+      <input type="hidden" {...register("engineImageUrl", { required: true })} />
+      <input type="hidden" {...register("repoFinancerImageUrl", { required: true })} />
 
-      {isUsed && (!watch("registrationImageUrl") || !watch("chassisImageUrl") || !watch("engineImageUrl") || !watch("repoFinancerImageUrl")) && (
+      {(!watch("registrationImageUrl") || !watch("chassisImageUrl") || !watch("engineImageUrl") || !watch("repoFinancerImageUrl")) && (
         <p className="text-xs text-red-500 font-medium mt-4">For Used vehicles, all 4 vehicle image documents are mandatory to proceed.</p>
       )}
     </section>

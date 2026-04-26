@@ -119,6 +119,21 @@ export default function ViewLoanPage() {
                 <UploadSignedContract loanId={loan.id} />
             )}
 
+            {/* New Vehicle Post-Disbursement Prompt */}
+            {loan.status === 'DISBURSED' && loan.vehicleCondition === 'NEW' && !loan.registrationNumber && (
+                <div className="bg-amber-50 border border-amber-300 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-amber-600 text-lg">🚗</span>
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-amber-900">Vehicle Details Pending</h3>
+                        <p className="text-sm text-amber-700 mt-0.5">
+                            This is a <strong>New Vehicle</strong> loan. Please fill in the registration number, chassis number, and engine number below now that the loan has been disbursed.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {/* Customer + Loan Info */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <CustomerInfoCard customer={customer} agent={agent} />

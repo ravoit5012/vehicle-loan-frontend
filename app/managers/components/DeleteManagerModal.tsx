@@ -1,8 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { API_ENDPOINTS } from '@/app/config/config';
 
 export default function DeleteManagerModal({ managerId, onClose, onDeleted }: any) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   async function confirm() {
     await fetch(`${API_ENDPOINTS.DELETE_MANAGER}/${managerId}`, {
       method: 'DELETE',
@@ -11,7 +16,9 @@ export default function DeleteManagerModal({ managerId, onClose, onDeleted }: an
     onDeleted();
   }
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 sm:p-8 space-y-6 transform transition-transform duration-300 ease-in-out scale-100 hover:scale-[1.02]">
         <h3 className="text-xl sm:text-2xl font-bold text-red-600 text-center">Delete Manager?</h3>
@@ -33,6 +40,7 @@ export default function DeleteManagerModal({ managerId, onClose, onDeleted }: an
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -28,7 +28,7 @@ export default function StatCard({
   useEffect(() => {
     const fetchStat = async () => {
       try {
-        const res = await fetch(endpoint);
+        const res = await fetch(endpoint, { credentials: "include" });
 
         if (!res.ok) throw new Error("Failed to fetch");
 

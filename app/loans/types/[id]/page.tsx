@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { API_ENDPOINTS } from '@/app/config/config';
+import { useAuth } from '@/hooks/useAuth';
 
 /* ============================== TYPES ============================= */
 
@@ -16,13 +17,13 @@ interface Fee {
 interface LoanType {
   id: string;
   loanName: string;
-  status: 'ACTIVE' | 'INACTIVE';
+  status: 'APPROVED' | 'NOT_APPROVED';
   vehicleCondition: 'NEW' | 'USED';
   description: string;
   minAmount: number;
   maxAmount: number;
   interestRate: number;
-  interestType: 'FLAT' | 'REDUCING';
+  interestType: 'FLAT' | 'REDUCING_BALANCE';
   loanDuration: number;
   collectionFreq: 'MONTHLY' | 'WEEKLY' | 'BIWEEKLY' | 'QUARTERLY';
   processingFees: Fee;
@@ -42,6 +43,7 @@ export default function LoanTypePage() {
   const mode = searchParams.get('mode') ?? 'view';
   const isEdit = mode === 'edit';
 
+  const { user } = useAuth() ?? {};
   const [loading, setLoading] = useState(true);
   const [loan, setLoan] = useState<LoanType | null>(null);
   const [form, setForm] = useState<Partial<LoanType>>({});
@@ -53,7 +55,7 @@ export default function LoanTypePage() {
     if (!id) return;
 
     const fetchLoan = async () => {
-      const res = await axios.get(`${API_ENDPOINTS.GET_LOAN_TYPE_BY_ID}/${id}`);
+      const res = await axios.get(`${API_ENDPOINTS.GET_LOAN_TYPE_BY_ID}/${id}`, { withCredentials: true, });
       setLoan(res.data);
       setForm(res.data);
       setLoading(false);
@@ -61,6 +63,7 @@ export default function LoanTypePage() {
 
     fetchLoan();
   }, [id]);
+
 
   /* ============================ HELPERS =========================== */
 
@@ -90,15 +93,35 @@ export default function LoanTypePage() {
       return;
     }
 
-    setSaving(true);
-    await axios.patch(`${API_ENDPOINTS.UPDATE_LOAN_TYPE}/${id}`, diffPayload);
-    router.refresh();
-    router.push(`/loans/types/${id}?mode=view`);
+    try {
+      setSaving(true);
+
+      await axios.patch(
+        `${API_ENDPOINTS.UPDATE_LOAN_TYPE}/${id}`,
+        diffPayload,
+        { withCredentials: true }
+      );
+
+      // ✅ success feedback (replace with toast if you have one)
+      alert('Loan type updated successfully');
+
+      router.refresh();
+      router.push(`/loans/types/${id}?mode=view`);
+    } catch (error: any) {
+      // ❌ error feedback
+      const message =
+        error?.response?.data?.message ||
+        'Failed to update loan type. Please try again.';
+
+      alert(message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async () => {
     if (!confirm('Delete this loan type permanently?')) return;
-    await axios.delete(`${API_ENDPOINTS.DELETE_LOAN_TYPE}/${id}`);
+    await axios.delete(`${API_ENDPOINTS.DELETE_LOAN_TYPE}/${id}`, { withCredentials: true });
     router.push('/loans/types');
   };
 
@@ -149,11 +172,11 @@ export default function LoanTypePage() {
             </Row>
 
             <Row label="Status">
-              {isEdit ? (
+              {isEdit && user?.role === 'ADMIN' ? (
                 <Select
-                  value={form.status ?? 'ACTIVE'}
+                  value={form.status ?? 'APPROVED'}
                   onChange={(v) => updateField('status', v)}
-                  options={['ACTIVE', 'INACTIVE']}
+                  options={['APPROVED', 'NOT_APPROVED']}
                 />
               ) : (
                 <Badge value={loan.status} />
@@ -202,7 +225,7 @@ export default function LoanTypePage() {
                 <Select
                   value={form.interestType ?? 'FLAT'}
                   onChange={(v) => updateField('interestType', v)}
-                  options={['FLAT', 'REDUCING']}
+                  options={['FLAT', 'REDUCING_BALANCE']}
                 />
               ) : (
                 <Badge value={loan.interestType} />
@@ -493,12 +516,11 @@ function Select({ value, onChange, options }: { value: string; options: string[]
 }
 
 function Badge({ value }: { value: string }) {
-  const isActive = value === 'ACTIVE';
+  const isApproved = value === 'APPROVED';
   return (
     <span
-      className={`px-3 py-1 rounded-full text-sm font-medium ${
-        isActive ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-      }`}
+      className={`px-3 py-1 rounded-full text-sm font-medium ${isApproved ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+        }`}
     >
       {value}
     </span>
