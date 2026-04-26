@@ -391,6 +391,7 @@ type OtherFee = {
 type LoanForm = {
     loanName: string;
     status: 'ACTIVE' | 'INACTIVE';
+    vehicleCondition: 'NEW' | 'USED';
     description: string;
     minAmount: string;
     maxAmount: string;
@@ -418,6 +419,7 @@ export default function CreateLoanTypePage() {
     const [form, setForm] = useState<LoanForm>({
         loanName: '',
         status: 'ACTIVE',
+        vehicleCondition: 'NEW',
         description: '',
         minAmount: '',
         maxAmount: '',
@@ -478,6 +480,7 @@ export default function CreateLoanTypePage() {
         const payload = {
             loanName: form.loanName,
             status: form.status,
+            vehicleCondition: form.vehicleCondition,
             description: form.description,
             minAmount: Number(form.minAmount),
             maxAmount: Number(form.maxAmount),
@@ -521,10 +524,26 @@ export default function CreateLoanTypePage() {
     /* ================= UI ================= */
 
     return (
-        <div className="p-6 bg-[#F8F9FA] min-h-screen">
-            <h1 className="font-bold text-2xl mb-6">Add New Loan Product</h1>
+        <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 relative overflow-hidden">
+            {/* Ambient Background Glow */}
+            <div className="fixed top-0 -left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
+            <div className="fixed top-20 -right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
+            <div className="fixed -bottom-20 left-1/3 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="max-w-7xl mx-auto space-y-8 relative z-10">
+                <header className="bg-white/80 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-8 flex items-center justify-between transition-all duration-300 hover:shadow-indigo-500/10 mb-8">
+                    <div className="flex items-center space-x-5">
+                        <div className="h-16 w-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg flex items-center justify-center transform -rotate-3 hover:rotate-0 transition duration-300">
+                            <FaPlus className="text-white text-3xl drop-shadow-md" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 tracking-tight">Add New Loan Product</h1>
+                            <p className="text-slate-500 font-medium mt-1 text-sm tracking-wide">Design and configure a new loan type strategy</p>
+                        </div>
+                    </div>
+                </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 z-10 relative">
                 <Card title="Basic Information" color="bg-blue-500" icon={<FaInfoCircle />}>
                     <Input
                         label="Loan Name"
@@ -537,6 +556,12 @@ export default function CreateLoanTypePage() {
                         value={form.status}
                         options={['ACTIVE', 'INACTIVE']}
                         onChange={v => update('status', v)}
+                    />
+                    <Select
+                        label="Vehicle Condition"
+                        value={form.vehicleCondition}
+                        options={['NEW', 'USED']}
+                        onChange={v => update('vehicleCondition', v)}
                     />
                     <Textarea
                         label="Description"
@@ -670,15 +695,24 @@ export default function CreateLoanTypePage() {
                 </Card>
             </div>
 
-            <button
-                onClick={submit}
-                disabled={loading}
-                className="mt-8 w-64 py-3 rounded-lg bg-[#304CDD] text-white font-semibold disabled:opacity-50"
-            >
-                {loading ? 'Creating...' : 'Create Loan Product'}
-            </button>
+            <div className="flex justify-center mt-12 mb-16 relative z-10 w-full">
+                <button
+                    onClick={submit}
+                    disabled={loading}
+                    className="group relative cursor-pointer overflow-hidden rounded-2xl w-[80%] md:w-[60%] lg:w-[40%] bg-gradient-to-r from-blue-600 to-indigo-600 transition-all hover:scale-[1.02] active:scale-95 shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+                    <div className="relative px-8 py-5 flex flex-row items-center justify-center space-x-3 text-white">
+                        <FaPlus className="text-2xl drop-shadow-md group-hover:animate-bounce" />
+                        <span className="text-xl font-bold tracking-wider drop-shadow-md">
+                            {loading ? 'CREATING...' : 'CREATE LOAN PRODUCT'}
+                        </span>
+                    </div>
+                </button>
+            </div>
 
             {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}
+            </div>
         </div>
     );
 }
@@ -784,12 +818,12 @@ const FeeBlock = ({
 );
 
 const Card = ({ title, icon, color, children }: any) => (
-    <div className="rounded-lg bg-white shadow-sm overflow-hidden">
-        <div className={`flex items-center gap-2 px-6 py-4 text-white font-bold ${color}`}>
-            {icon}
-            <span>{title}</span>
+    <div className="bg-white/70 backdrop-blur-xl border border-white shadow-xl rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-blue-500/10">
+        <div className={`flex items-center gap-2 px-6 py-5 text-white font-bold tracking-wide ${color.replace('bg-', 'bg-gradient-to-r from-').replace('-500', '-500 to-indigo-600')}`}>
+            <span className="text-xl">{icon}</span>
+            <span className="text-lg">{title}</span>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="p-6">{children}</div>
     </div>
 );
 

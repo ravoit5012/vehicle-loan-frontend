@@ -12,6 +12,7 @@ import HousePhotosGrid from './HousePhotosGrid';
 import RepaymentScheduleTable from './RepaymentScheduleTable';
 import { useAuth } from '@/hooks/useAuth';
 import UploadSignedContract from './UploadSignedContract';
+import VehicleDetailsCard from './VehicleDetailsCard';
 
 export default function ViewLoanPage() {
     const { id } = useParams();
@@ -56,42 +57,42 @@ export default function ViewLoanPage() {
     }
 
     return (
-        <div className="w-full mx-auto p-6 space-y-8">
-            {/* Header */}
-            {/* <div className="flex flex-col md:flex-row justify-start gap-4 items-center md:items-start"> */}
+        <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 relative overflow-hidden">
+            {/* Ambient Background Glow */}
+            <div className="fixed top-0 -left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
+            <div className="fixed top-20 -right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
+            <div className="fixed -bottom-20 left-1/3 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
 
-            <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4 w-full md:w-auto">
-                <FaInfo className="text-orange-400 text-3xl" />
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Loan Application Details</h2>
-                    <p className="text-gray-600 mt-1">
-                        Loan ID: {loan.id}
-                    </p>
-                </div>
-            </div>
-
-            {/* Assuming StatusBadge is a custom component that takes a 'status' prop */}
-
-
-            {/* </div> */}
+            <div className="max-w-7xl mx-auto space-y-8 relative z-10">
+                <header className="bg-white/80 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-8 flex items-center justify-between transition-all duration-300 hover:shadow-indigo-500/10">
+                    <div className="flex items-center space-x-5">
+                        <div className="h-16 w-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg flex items-center justify-center transform -rotate-3 hover:rotate-0 transition duration-300">
+                            <FaInfo className="text-white text-3xl drop-shadow-md" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 tracking-tight">Loan Profile Context</h1>
+                            <p className="text-slate-500 font-medium mt-1 text-sm tracking-wide">Reference Registry: {loan.id}</p>
+                        </div>
+                    </div>
+                </header>
 
 
             {/* Rejection Remark */}
             {(loan.status.includes('REJECTED') || loan.status.includes('ADMIN_APPROVED') || loan.status.includes('DISBURSED')) && (
                 <div
                     className={`border-l-4 p-4 rounded ${loan.status === 'REJECTED'
-                            ? 'border-red-500 bg-red-50'
-                            : loan.status === 'ADMIN_APPROVED'
-                                ? 'border-blue-500 bg-blue-50'
-                                : 'border-green-500 bg-green-50'
+                        ? 'border-red-500 bg-red-50'
+                        : loan.status === 'ADMIN_APPROVED'
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-green-500 bg-green-50'
                         }`}
                 >
                     <p
                         className={`font-medium ${loan.status === 'REJECTED'
-                                ? 'text-red-700'
-                                : loan.status === 'ADMIN_APPROVED'
-                                    ? 'text-blue-700'
-                                    : 'text-green-700'
+                            ? 'text-red-700'
+                            : loan.status === 'ADMIN_APPROVED'
+                                ? 'text-blue-700'
+                                : 'text-green-700'
                             }`}
                     >
                         {loan.status === 'REJECTED'
@@ -102,10 +103,10 @@ export default function ViewLoanPage() {
                     </p>
                     <p
                         className={`text-sm ${loan.status === 'REJECTED'
-                                ? 'text-red-600'
-                                : loan.status === 'ADMIN_APPROVED'
-                                    ? 'text-blue-600'
-                                    : 'text-green-600'
+                            ? 'text-red-600'
+                            : loan.status === 'ADMIN_APPROVED'
+                                ? 'text-blue-600'
+                                : 'text-green-600'
                             }`}
                     >
                         {loan.remark || 'No remark provided'}
@@ -124,6 +125,14 @@ export default function ViewLoanPage() {
                 <LoanInfoCard loan={loan} />
             </div>
 
+            {/* Vehicle Info */}
+            <VehicleDetailsCard
+                loan={loan}
+                user={user}
+                customer={customer}
+                onUpdate={() => window.location.reload()}
+            />
+
             {/* Documents */}
             <DocumentsSection loan={loan} customer={customer} />
 
@@ -134,6 +143,7 @@ export default function ViewLoanPage() {
 
             {/* Repayment Schedule */}
             <RepaymentScheduleTable repayments={loan.repayments} />
+            </div>
         </div>
     );
 }

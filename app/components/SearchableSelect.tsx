@@ -33,9 +33,8 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
       >
         <span>{value ? value.label : placeholder}</span>
         <svg
-          className={`w-5 h-5 transform transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-5 h-5 transform transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

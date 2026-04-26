@@ -17,6 +17,7 @@ interface LoanType {
   id: string;
   loanName: string;
   status: 'ACTIVE' | 'INACTIVE';
+  vehicleCondition: 'NEW' | 'USED';
   description: string;
   minAmount: number;
   maxAmount: number;
@@ -156,6 +157,18 @@ export default function LoanTypePage() {
                 />
               ) : (
                 <Badge value={loan.status} />
+              )}
+            </Row>
+
+            <Row label="Vehicle Condition">
+              {isEdit ? (
+                <Select
+                  value={form.vehicleCondition ?? 'NEW'}
+                  onChange={(v) => updateField('vehicleCondition', v)}
+                  options={['NEW', 'USED']}
+                />
+              ) : (
+                <span className="font-semibold text-gray-700">{loan.vehicleCondition}</span>
               )}
             </Row>
 
