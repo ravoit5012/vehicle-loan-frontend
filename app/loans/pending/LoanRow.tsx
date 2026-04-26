@@ -167,14 +167,18 @@ export default function LoanRow({
           </div>
         </td>
 
-        <td className="px-4 py-3">₹ {loan.loanAmount}</td>
-
         <td className="px-4 py-3">
-          {loan.interestRate}% ({loan.interestType})
+          <div className="font-medium"> ₹ {loan.loanAmount}</div>
+          <div className="text-xs text-gray-500">
+            {loan.interestRate}% ({loan.interestType})
+          </div>
+          <div className="text-xs text-gray-500">
+            {loan.loanDuration} months
+          </div>
         </td>
 
         <td className="px-4 py-3">
-          {loan.loanDuration} months
+          <div>{loan.loanType?.loanName}</div> <div>{loan.loanType?.vehicleCondition.charAt(0).toUpperCase() + loan.loanType?.vehicleCondition.slice(1).toLowerCase()} Vehicle Loan</div>
         </td>
 
         <td className="px-4 py-3">

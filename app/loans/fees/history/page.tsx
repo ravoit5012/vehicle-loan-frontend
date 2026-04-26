@@ -20,7 +20,6 @@ export default function CollectFeesPage() {
                     credentials: 'include',
                 });
                 const data = await res.json();
-
                 const paid = data.filter((f: any) => f.paid);
                 setFees(paid);
                 setFilteredFees(paid);
@@ -37,17 +36,30 @@ export default function CollectFeesPage() {
         const q = search.toLowerCase();
 
         setFilteredFees(
-            fees.filter(f =>
-                f.customerName.toLowerCase().includes(q) ||
-                f.customermobileNumber.includes(q) ||
-                f.loanId.toLowerCase().includes(q)
-            )
+            fees.filter(f => {
+                const customerName = f.customer.applicantName?.toLowerCase() || '';
+                const mobile = f.customer.mobileNumber || '';
+                const loanId = f.loan.id?.toLowerCase() || '';
+
+                const reg = f.loan?.registrationNumber?.toLowerCase() || '';
+                const chassis = f.loan?.chassisNumber?.toLowerCase() || '';
+                const engine = f.loan?.engineNumber?.toLowerCase() || '';
+
+                return (
+                    customerName.includes(q) ||
+                    mobile.includes(q) ||
+                    loanId.includes(q) ||
+                    reg.includes(q) ||
+                    chassis.includes(q) ||
+                    engine.includes(q)
+                );
+            })
         );
     }, [search, fees]);
 
 
     return (<>
-    <Loading visible={loading} />
+        <Loading visible={loading} />
         <div className="max-w-7xl mx-auto space-y-6 relative z-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -79,5 +91,5 @@ export default function CollectFeesPage() {
 
             <FeesTable fees={filteredFees} />
         </div>
-  </>  );
+    </>);
 }

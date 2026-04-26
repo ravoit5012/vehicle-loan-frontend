@@ -6,64 +6,94 @@ import { FaFile } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { API_ENDPOINTS } from '@/app/config/config';
 import LoanTable from './LoanTable';
+import { useAuth } from '@/hooks/useAuth';
 import LoanFilters from './LoanFilters';
 
 export default function ViewLoansPage() {
     const router = useRouter();
+    const { user } = useAuth();
 
     const [loans, setLoans] = useState<any[]>([]);
     const [customersMap, setCustomersMap] = useState<Record<string, any>>({});
     const [agentsMap, setAgentsMap] = useState<Record<string, any>>({});
     const [agentFilter, setAgentFilter] = useState<string>('');
     const [search, setSearch] = useState('');
-
     // =========================
     // Fetch all data
     // =========================
     useEffect(() => {
         (async () => {
-            const [loansRes, customersRes, agentsRes] = await Promise.all([
+            const [loansRes, customersRes, agentsRes, loanTypesRes] = await Promise.all([
                 axios.get(API_ENDPOINTS.GET_ALL_LOAN_APPLICATIONS, { withCredentials: true }),
                 axios.get(API_ENDPOINTS.GET_ALL_CUSTOMERS, { withCredentials: true }),
                 axios.get(API_ENDPOINTS.GET_ALL_AGENTS, { withCredentials: true }),
+                axios.get(API_ENDPOINTS.GET_ALL_LOAN_TYPES, { withCredentials: true }), // 👈 new
             ]);
-
-            setLoans(loansRes.data);
-
+            const loans = loansRes.data;
+            const customers = customersRes.data;
+            const agents = agentsRes.data;
+            const loanTypes = loanTypesRes.data;
             // Build lookup maps
-            setCustomersMap(
-                Object.fromEntries(customersRes.data.map((c: any) => [c.id, c]))
-            );
-            setAgentsMap(
-                Object.fromEntries(agentsRes.data.map((a: any) => [a.id, a]))
-            );
+            const customersMap = Object.fromEntries(customers.map((c: any) => [c.id, c]));
+            const agentsMap = Object.fromEntries(agents.map((a: any) => [a.id, a]));
+            const loanTypesMap = Object.fromEntries(loanTypes.map((lt: any) => [lt.id, lt]));
+            // Merge data into loans
+            const enrichedLoans = loans.map((loan: any) => ({
+                ...loan,
+                customer: customersMap[loan.customerId] || null,
+                agent: agentsMap[loan.agentId] || null,
+                loanType: loanTypesMap[loan.loanTypeId] || null, // 👈 key part
+            }));
+
+            setLoans(enrichedLoans);
+            setCustomersMap(customersMap);
+            setAgentsMap(agentsMap);
         })();
     }, []);
-
     // =========================
     // Filtered loans
     // =========================
     const filteredLoans = useMemo(() => {
-        return loans.filter(loan => {
+        if (!user) return [];
+
+        return loans.filter((loan: any) => {
             const customer = customersMap[loan.customerId];
             const agent = agentsMap[loan.agentId];
+            const loanType = loan.loanType; // already merged
 
-            if (agentFilter && loan.agentId !== agentFilter) return false;
+            // 🔒 Role-based filtering
+            if (user.role === "MANAGER" && loan.managerId !== user.id) {
+                return false;
+            }
 
+            if (user.role === "AGENT" && loan.agentId !== user.id) {
+                return false;
+            }
+
+            // 🎯 Agent filter (UI filter)
+            if (agentFilter && loan.agentId !== agentFilter) {
+                return false;
+            }
+
+            // 🔍 Search
             if (search) {
                 const term = search.toLowerCase();
+
                 return (
                     customer?.applicantName?.toLowerCase().includes(term) ||
                     customer?.mobileNumber?.includes(term) ||
                     loan?.registrationNumber?.toLowerCase().includes(term) ||
                     loan?.chassisNumber?.toLowerCase().includes(term) ||
-                    loan?.engineNumber?.toLowerCase().includes(term)
+                    loan?.engineNumber?.toLowerCase().includes(term) ||
+                    loanType?.loanName?.toLowerCase().includes(term) ||              // 👈 added
+                    loanType?.vehicleCondition?.toLowerCase().includes(term)         // 👈 added
                 );
             }
 
             return true;
         });
-    }, [loans, customersMap, agentsMap, agentFilter, search]);
+    }, [loans, customersMap, agentsMap, agentFilter, search, user]);
+
 
     return (
         <div className="max-w-7xl mx-auto space-y-6 relative z-10">

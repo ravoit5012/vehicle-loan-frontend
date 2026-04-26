@@ -42,7 +42,6 @@ export default function ViewAgentPage() {
                 alert('Agent updated successfully');
                 router.push('/agents');
             } else {
-                console.log("Full response:", result);
 
                 let message = 'Failed to update agent';
 

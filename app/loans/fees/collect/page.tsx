@@ -20,7 +20,6 @@ export default function CollectFeesPage() {
                     credentials: 'include',
                 });
                 const data = await res.json();
-
                 const unpaid = data.filter((f: any) => !f.paid);
                 setFees(unpaid);
                 setFilteredFees(unpaid);
@@ -37,46 +36,59 @@ export default function CollectFeesPage() {
         const q = search.toLowerCase();
 
         setFilteredFees(
-            fees.filter(f =>
-                f.customerName.toLowerCase().includes(q) ||
-                f.customermobileNumber.includes(q) ||
-                f.loanId.toLowerCase().includes(q)
-            )
+            fees.filter(f => {
+                const customerName = f.customer.applicantName?.toLowerCase() || '';
+                const mobile = f.customer.mobileNumber || '';
+                const loanId = f.loan.id?.toLowerCase() || '';
+
+                const reg = f.loan?.registrationNumber?.toLowerCase() || '';
+                const chassis = f.loan?.chassisNumber?.toLowerCase() || '';
+                const engine = f.loan?.engineNumber?.toLowerCase() || '';
+
+                return (
+                    customerName.includes(q) ||
+                    mobile.includes(q) ||
+                    loanId.includes(q) ||
+                    reg.includes(q) ||
+                    chassis.includes(q) ||
+                    engine.includes(q)
+                );
+            })
         );
     }, [search, fees]);
 
     return (
         <>
-        <Loading visible={loading} />
-        <div className="max-w-7xl mx-auto space-y-6 relative z-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
-                    <FaMoneyCheckAlt className="text-orange-400 text-3xl" />
-                    <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Collect Fees</h2>
-                        <p className="text-gray-600 mt-1">
-                            Pending loan fees awaiting payment
-                        </p>
+            <Loading visible={loading} />
+            <div className="max-w-7xl mx-auto space-y-6 relative z-10">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
+                        <FaMoneyCheckAlt className="text-orange-400 text-3xl" />
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Collect Fees</h2>
+                            <p className="text-gray-600 mt-1">
+                                Pending loan fees awaiting payment
+                            </p>
+                        </div>
                     </div>
+
+                    {/* 🔍 Search Box */}
+                    <div className="relative hover:scale-105 ease-in-out transition-all duration-300 border-2 p-2 rounded-xl border-black">
+                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2" />
+
+                        <input
+                            type="text"
+                            placeholder="Search by name / mobile / loan ID"
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            className="input text-gray-800 md:w-80 pl-10"
+                        />
+                    </div>
+
                 </div>
 
-                {/* 🔍 Search Box */}
-                <div className="relative hover:scale-105 ease-in-out transition-all duration-300 border-2 p-2 rounded-xl border-black">
-                    <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2" />
-
-                    <input
-                        type="text"
-                        placeholder="Search by name / mobile / loan ID"
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                        className="input text-gray-800 md:w-80 pl-10"
-                    />
-                </div>
-
-            </div>
-
-            <FeesTable fees={filteredFees} />
-        </div></>
+                <FeesTable fees={filteredFees} />
+            </div></>
     );
 }

@@ -59,7 +59,11 @@ const menu: MenuItem[] = [
       { label: "Approved Loans", href: "/loans/approved" },
       { label: "Rejected Loans", href: "/loans/rejected" },
       { label: "All Loans", href: "/loans/view" },
-      { label: "Loan Type", href: "/loans/types" },
+      {
+        label: "Loan Type",
+        href: "/loans/types",
+        roles: ["ADMIN", "MANAGER"], // ❌ exclude AGENT
+      },
       { label: "Collect Fees", href: "/loans/fees/collect" },
       { label: "Fees History", href: "/loans/fees/history" },
     ],
@@ -123,7 +127,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout, company } = useAuth();
-
+  if (!user) router.push('/login');
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -142,11 +146,32 @@ export default function Navbar() {
   }, [pathname]);
 
   /* ===== Filter menu by role ===== */
-  const filteredMenu = menu.filter((item) => {
-    if (!item.roles) return true;
-    if (!user?.role) return false;
-    return item.roles.includes(user.role as Role);
-  });
+  // const filteredMenu = menu.filter((item) => {
+  //   if (!item.roles) return true;
+  //   if (!user?.role) return false;
+  //   return item.roles.includes(user.role as Role);
+  // });
+
+  const filteredMenu = menu
+    .filter((item) => {
+      if (!item.roles) return true;
+      if (!user?.role) return false;
+      return item.roles.includes(user.role as Role);
+    })
+    .map((item) => {
+      if (!item.children) return item;
+
+      const filteredChildren = item.children.filter((child) => {
+        if (!child.roles) return true;
+        return child.roles.includes(user?.role as Role);
+      });
+
+      return {
+        ...item,
+        children: filteredChildren,
+      };
+    })
+    .filter((item) => !item.children || item.children.length > 0);
 
   /* ===== Logout handler ===== */
   const handleLogout = async () => {
@@ -211,12 +236,12 @@ export default function Navbar() {
               </div>
             )}
             <div className="flex flex-col">
-                <span className="text-sm font-black text-slate-800 tracking-tight leading-tight">
-                  {user?.role}
-                </span>
-                <span className="text-[10px] uppercase font-bold text-indigo-600 tracking-widest">
-                  Terminal
-                </span>
+              <span className="text-sm font-black text-slate-800 tracking-tight leading-tight">
+                {user?.role}
+              </span>
+              <span className="text-[10px] uppercase font-bold text-indigo-600 tracking-widest">
+                Terminal
+              </span>
             </div>
           </div>
           <button className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 transition" onClick={() => setOpen(false)}>
@@ -240,11 +265,10 @@ export default function Navbar() {
                   href={item.href!}
                   onClick={() => setOpen(false)}
                   className={`flex items-center gap-3.5 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                  ${
-                    isActive
+                  ${isActive
                       ? "bg-gradient-to-r from-indigo-50 to-blue-50/50 text-indigo-700 shadow-sm border border-indigo-100/50"
                       : "text-slate-600 hover:bg-white/60 hover:shadow-sm"
-                  }`}
+                    }`}
                 >
                   <div className={`h-8 w-8 flex items-center justify-center rounded-[10px] transition-colors
                       ${isActive ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'bg-slate-100/80 text-slate-500 group-hover:bg-white group-hover:text-indigo-600'}
@@ -265,13 +289,12 @@ export default function Navbar() {
                     )
                   }
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group
-                  ${
-                    expanded === item.label
+                  ${expanded === item.label
                       ? "bg-slate-50/80 text-slate-800"
-                      : isActive 
+                      : isActive
                         ? "bg-indigo-50/50 text-indigo-700"
                         : "text-slate-600 hover:bg-white/60"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3.5">
                     <div className={`h-8 w-8 flex items-center justify-center rounded-[10px] transition-colors
@@ -283,42 +306,40 @@ export default function Navbar() {
                   </div>
                   <ChevronDown
                     size={16}
-                    className={`text-slate-400 transition-transform duration-300 ${
-                      expanded === item.label ? "rotate-180 text-indigo-500" : ""
-                    }`}
+                    className={`text-slate-400 transition-transform duration-300 ${expanded === item.label ? "rotate-180 text-indigo-500" : ""
+                      }`}
                   />
                 </button>
 
                 {/* Submenu Drawer */}
-                <div 
-                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out
+                <div
+                  className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out
                     ${expanded === item.label ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
                 >
-                    <div className="overflow-hidden">
-                      <div className="mt-1.5 mb-1.5 ml-[22px] pl-4 border-l-2 border-indigo-100/60 space-y-1 py-1">
-                        {item.children.map((child) => {
-                          const active = pathname === child.href;
-                          return (
-                            <Link
-                              key={child.label}
-                              href={child.href!}
-                              onClick={() => setOpen(false)}
-                              className={`relative block px-3 py-2 rounded-lg text-sm transition-all duration-200
-                              ${
-                                active
-                                  ? "bg-white text-indigo-700 font-bold shadow-sm shadow-indigo-100/50 border border-indigo-50 text-[13.5px]"
-                                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80 text-[13.5px] font-medium"
+                  <div className="overflow-hidden">
+                    <div className="mt-1.5 mb-1.5 ml-[22px] pl-4 border-l-2 border-indigo-100/60 space-y-1 py-1">
+                      {item.children.map((child) => {
+                        const active = pathname === child.href;
+                        return (
+                          <Link
+                            key={child.label}
+                            href={child.href!}
+                            onClick={() => setOpen(false)}
+                            className={`relative block px-3 py-2 rounded-lg text-sm transition-all duration-200
+                              ${active
+                                ? "bg-white text-indigo-700 font-bold shadow-sm shadow-indigo-100/50 border border-indigo-50 text-[13.5px]"
+                                : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80 text-[13.5px] font-medium"
                               }`}
-                            >
-                              {active && (
-                                <span className="absolute left-0 top-1/2 -translate-y-1/2 -ml-[19px] h-1.5 w-1.5 bg-indigo-500 rounded-full ring-4 ring-white" />
-                              )}
-                              {child.label}
-                            </Link>
-                          );
-                        })}
-                      </div>
+                          >
+                            {active && (
+                              <span className="absolute left-0 top-1/2 -translate-y-1/2 -ml-[19px] h-1.5 w-1.5 bg-indigo-500 rounded-full ring-4 ring-white" />
+                            )}
+                            {child.label}
+                          </Link>
+                        );
+                      })}
                     </div>
+                  </div>
                 </div>
               </div>
             );

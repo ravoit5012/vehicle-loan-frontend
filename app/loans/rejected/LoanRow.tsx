@@ -15,24 +15,6 @@ export default function LoanRow({
 }) {
   const router = useRouter();
 
-  // Function to handle loan disbursement
-  //   const handleDisburseLoan = async (loanId: string) => {
-  //     try {
-  //       const response = await fetch(`${API_ENDPOINTS.DISBURSE_LOAN}/${loanId}`, {
-  //         method: 'POST',
-  //         credentials : 'include',
-  //       });
-
-  //       if (response.ok) {
-  //         alert("Loan Disbursed Successfully");
-  //         window.location.reload();
-  //       } else {
-  //         alert("Failed to disburse loan");
-  //       }
-  //     } catch (error : any) {
-  //       alert("Error disbursing loan: " + error.message);
-  //     }
-  //   };
 
   const handleDeleteLoan = async (loanId: string) => {
     try {
@@ -51,25 +33,6 @@ export default function LoanRow({
       alert("Error deleting loan: " + error.message);
     }
   };
-  //   // Function to handle loan closure
-  //   const handleCloseLoan = async (loanId: string) => {
-  //     try {
-  //       const response = await fetch(`${API_ENDPOINTS.CLOSE_LOAN}/${loanId}`, {
-  //         method: 'POST',
-  //         credentials : 'include',
-  //       });
-
-  //       if (response.ok) {
-  //         alert("Loan Closed Successfully");
-  //         window.location.reload();
-  //       } else {
-  //         alert("Failed to close loan");
-  //         window.location.reload();
-  //       }
-  //     } catch (error : any) {
-  //       alert("Error closing loan: " + error.message);
-  //     }
-  //   };
 
   // Filter loans based on status
   if (loan.status !== 'REJECTED') {
@@ -85,14 +48,18 @@ export default function LoanRow({
         </div>
       </td>
 
-      <td className="px-4 py-3">₹ {loan.loanAmount}</td>
-
       <td className="px-4 py-3">
-        {loan.interestRate}% ({loan.interestType})
+        <div className="font-medium"> ₹ {loan.loanAmount}</div>
+        <div className="text-xs text-gray-500">
+          {loan.interestRate}% ({loan.interestType})
+        </div>
+        <div className="text-xs text-gray-500">
+          {loan.loanDuration} months
+        </div>
       </td>
 
       <td className="px-4 py-3">
-        {loan.loanDuration} months
+        <div>{loan.loanType?.loanName}</div> <div>{loan.loanType?.vehicleCondition.charAt(0).toUpperCase() + loan.loanType?.vehicleCondition.slice(1).toLowerCase()} Vehicle Loan</div>
       </td>
 
       <td className="px-4 py-3">

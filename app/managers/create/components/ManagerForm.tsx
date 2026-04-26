@@ -25,18 +25,45 @@ export default function ManagerForm() {
 
 
   useEffect(() => {
+    const cleanName = form.name.replace(/\s+/g, '');
+    const cleanPhone = form.phoneNumber.replace(/\s+/g, '');
+
     const code =
-      form.name && form.phoneNumber
-        ? `MGR-${form.name.substring(0, 4).toUpperCase()}-${form.phoneNumber.substring(3, 8)}`
+      cleanName && cleanPhone
+        ? `MGR-${cleanName.substring(0, 4).toUpperCase()}-${cleanPhone.substring(3, 8)}`
         : '';
+
     setForm(prev => ({ ...prev, managerCode: code }));
   }, [form.name, form.phoneNumber]);
-  
+
   function updateField(key: string, value: any) {
     setForm(prev => ({ ...prev, [key]: value }));
   }
 
+  function validateForm() {
+    if (!form.email) {
+      alert('Email is required');
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      alert('Enter a valid email');
+      return false;
+    }
+
+    if (form.managerCode.includes(' ')) {
+      alert('Manager code should not contain spaces');
+      return false;
+    }
+
+    return true;
+  }
   async function handleSubmit() {
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch(API_ENDPOINTS.CREATE_MANAGER, {

@@ -3,30 +3,62 @@
 import { useState } from 'react';
 import { API_ENDPOINTS } from '@/app/config/config';
 import Loading from '@/app/components/Loading';
+import CropModal from '@/app/components/CropModal';
+import { Image as ImageIcon } from 'lucide-react';
 
 export default function CollectFeeForm({ fee }: { fee: any }) {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [transactionId, setTransactionId] = useState('');
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Crop Modal state
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageToCrop(reader.result as string);
+        setCropModalOpen(true);
+      };
+      reader.readAsDataURL(file);
+      e.target.value = ''; // reset input
+    }
+  };
+
+  const handleCropDone = (croppedFile: File) => {
+    setReceiptFile(croppedFile);
+    setReceiptPreview(URL.createObjectURL(croppedFile));
+    setCropModalOpen(false);
+    setImageToCrop(null);
+  };
 
   const submit = async () => {
     if (!paymentMethod || !transactionId) {
       return alert('Please fill all fields');
     }
+    if (!receiptFile) {
+      return alert('Please upload a payment receipt');
+    }
 
     try {
       setLoading(true);
 
+      const formData = new FormData();
+      formData.append('id', fee.id);
+      formData.append('loanId', fee.loanId);
+      formData.append('paymentMethod', paymentMethod);
+      formData.append('transactionId', transactionId);
+      formData.append('receipt', receiptFile);
+
       const res = await fetch(API_ENDPOINTS.FEES_PAYMENT, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: fee.id,
-          loanId: fee.loanId,
-          paymentMethod,
-          transactionId,
-        }),
+        body: formData,
       });
 
       if (!res.ok) throw new Error('Payment failed');
@@ -43,7 +75,7 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
   return (
     <>
       <Loading visible={loading} />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
         <div>
           <label className="text-sm m-2 text-gray-800">
             Payment Method
@@ -74,13 +106,48 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
           />
         </div>
 
+        <div>
+          <label className="text-sm m-2 text-gray-800 flex items-center justify-between">
+            <span>Payment Receipt</span>
+            {receiptPreview && <span className="text-green-600 font-bold text-xs">Added</span>}
+          </label>
+          <div className="relative mt-2">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+              id={`receipt-upload-${fee.id}`}
+            />
+            <label
+              htmlFor={`receipt-upload-${fee.id}`}
+              className="flex items-center justify-center gap-2 w-full cursor-pointer border-2 border-black rounded-lg p-2 hover:bg-gray-100 transition-colors bg-white text-gray-700 h-[44px]"
+            >
+              <ImageIcon size={18} />
+              {receiptPreview ? 'Change Receipt' : 'Upload Receipt'}
+            </label>
+          </div>
+        </div>
+
         <button
           onClick={submit}
-          className="bg-green-600 hover:scale-105 ease-in-out cursor-pointer transition-all duration-300 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          className="bg-green-600 hover:scale-105 ease-in-out cursor-pointer transition-all duration-300 text-white px-6 py-2 rounded-lg hover:bg-green-700 h-[44px]"
         >
           Collect Fees
         </button>
       </div>
+
+      {cropModalOpen && imageToCrop && (
+        <CropModal
+          imageSrc={imageToCrop}
+          title="Crop Receipt"
+          onCropDone={handleCropDone}
+          onCancel={() => {
+            setCropModalOpen(false);
+            setImageToCrop(null);
+          }}
+        />
+      )}
     </>
   );
 }

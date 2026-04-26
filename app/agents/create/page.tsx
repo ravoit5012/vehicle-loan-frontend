@@ -44,7 +44,6 @@ export default function CreateAgentPage() {
             const result = await res.json(); // 👈 always parse body
 
             if (!res.ok) {
-                console.log("Full response:", result);
 
                 let message = 'Something went wrong';
 

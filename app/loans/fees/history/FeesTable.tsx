@@ -20,9 +20,10 @@ export default function FeesTable({ fees }: { fees: any[] }) {
         <thead className="bg-transparent border-t border-white/40">
           <tr>
             <th className="px-4 py-3">Customer</th>
-            <th className="px-4 py-3">Mobile</th>
-            <th className="px-4 py-3">Loan ID</th>
+            <th className="px-4 py-3">Loan Details</th>
+            <th className="px-4 py-3">Loan Type Details</th>
             <th className="px-4 py-3">Total Fees</th>
+            <th className="px-4 py-3">Receipt</th>
             <th className="px-4 py-3 text-right">Collected at </th>
           </tr>
         </thead>

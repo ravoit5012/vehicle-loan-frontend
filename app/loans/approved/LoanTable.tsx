@@ -19,9 +19,8 @@ export default function LoanTable({
         <thead className="bg-transparent border-t border-white/40 text-left">
           <tr>
             <th className="px-4 py-3">Customer</th>
-            <th className="px-4 py-3">Loan</th>
-            <th className="px-4 py-3">Interest</th>
-            <th className="px-4 py-3">Duration</th>
+            <th className="px-4 py-3">Loan Details</th>
+            <th className="px-4 py-3">Loan Type Details</th>
             <th className="px-4 py-3">Totals</th>
             <th className="px-4 py-3">Status</th>
             <th className="px-4 py-3">Applied By</th>
