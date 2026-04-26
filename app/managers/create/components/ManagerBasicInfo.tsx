@@ -54,7 +54,7 @@ export default function ManagerBasicInfo({ form, update }: any) {
       </div>
 
       <div className="space-y-4">
-        <label className="block text-sm font-medium text-gray-700">Email (optional)</label>
+        <label className="block text-sm font-medium text-gray-700">Email</label>
         <input
           className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
           placeholder="Email"
