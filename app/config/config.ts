@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   GET_CUSTOMER_BY_ID: `${BASE_URL}/customers/id`,
   UPDATE_CUSTOMER: `${BASE_URL}/customers/update/id`,
   DELETE_CUSTOMER: `${BASE_URL}/customers/delete/id`,
+  UPLOAD_SINGLE_DOCUMENT: `${BASE_URL}/customers/upload-single-document`,
   UPLOAD_EXTRA_DOCUMENTS: `${BASE_URL}/customers/upload-extra`,
   CHECK_CUSTOMER_DUPLICATE: `${BASE_URL}/customers/check-duplicate`,
   DELETE_EXTRA_DOCUMENT: `${BASE_URL}/customers`,

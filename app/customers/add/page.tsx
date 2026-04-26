@@ -144,6 +144,7 @@ export default function AddCustomer() {
     accountStatus: "",
   });
 
+  const [currentStep, setCurrentStep] = useState(1);
   /* ===== Crop modal state ===== */
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [cropFieldName, setCropFieldName] = useState<string>("");
@@ -284,9 +285,39 @@ export default function AddCustomer() {
   //     alert(error instanceof Error ? error.message : "Unexpected error");
   //   }
   // };
+  const uploadSingleDocument = async (file: File, documentType: string) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("applicantName", form.applicantName);
+    formData.append("mobileNumber", form.mobileNumber);
+    formData.append("documentType", documentType);
+
+    const response = await fetch(API_ENDPOINTS.UPLOAD_SINGLE_DOCUMENT, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to upload ${documentType}`);
+    }
+
+    const data = await response.json();
+    return data.url;
+  };
+
+  const handleNextStep = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentStep((prev) => prev + 1);
+  };
+
+  const handlePrevStep = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentStep((prev) => prev - 1);
+  };
+
   const handleSubmit = async () => {
     if (!validateForm()) {
-      alert("Fill all required fields");
+      alert("Fill all required fields or ensure all documents are selected");
       return;
     }
 
@@ -301,24 +332,56 @@ export default function AddCustomer() {
       return;
     }
 
-    setIsLoading(true); // ✅ Start loading
-
-    const { sameAddress, confirmPassword, manager, agent, ...payload } = form;
-    const formData = new FormData();
-
-    Object.entries(payload).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, value as any);
-      }
-    });
-
-    formData.append("managerId", manager);
-    formData.append("agentId", agent);
+    setIsLoading(true);
 
     try {
+      // 1. Sequentially upload all document files
+      const uploadMap: Record<string, string> = {
+        panImage: "pan",
+        poiFrontImage: "poiFrontImage",
+        poiBackImage: "poiBackImage",
+        poaFrontImage: "poaFrontImage",
+        poaBackImage: "poaBackImage",
+        applicantSignature: "signature",
+        personalPhoto: "photo",
+        nomineePanImage: "nomineePan",
+        nomineePoiFrontImage: "nomineePoiFront",
+        nomineePoiBackImage: "nomineePoiBack",
+        nomineePoaFrontImage: "nomineePoaFront",
+        nomineePoaBackImage: "nomineePoaBack",
+        nomineeSignature: "nomineeSignature",
+        nomineePersonalPhoto: "nomineePhoto",
+      };
+
+      const finalUrls: Record<string, string> = {};
+
+      for (const [formKey, backendType] of Object.entries(uploadMap)) {
+        const file = (form as any)[formKey];
+        if (file instanceof File) {
+          const url = await uploadSingleDocument(file, backendType);
+          finalUrls[formKey + "Url"] = url; 
+        }
+      }
+
+      // 2. Submit the JSON payload
+      const { 
+        sameAddress, confirmPassword, manager, agent, 
+        panImage, poiFrontImage, poiBackImage, poaFrontImage, poaBackImage, applicantSignature, personalPhoto,
+        nomineePanImage, nomineePoiFrontImage, nomineePoiBackImage, nomineePoaFrontImage, nomineePoaBackImage, nomineeSignature, nomineePersonalPhoto,
+        ...remainingForm 
+      } = form;
+
+      const payload = {
+        ...remainingForm,
+        ...finalUrls,
+        managerId: manager,
+        agentId: agent,
+      };
+
       const response = await fetch(API_ENDPOINTS.ADD_CUSTOMER, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       let data: any = null;
@@ -527,13 +590,21 @@ export default function AddCustomer() {
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">
       <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
         <FaUserPlus className="text-orange-400 text-3xl" />
-        <div>
+        <div className="flex-1">
           <h2 className="text-2xl font-bold text-gray-900">Add New Customer</h2>
           <p className="text-gray-600 mt-1">
             Create a comprehensive customer profile with personal and account information
           </p>
         </div>
+        <div className="hidden lg:flex gap-2">
+          <div className={`px-4 py-2 rounded-full text-sm font-bold ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'}`}>1. Details</div>
+          <div className={`px-4 py-2 rounded-full text-sm font-bold ${currentStep >= 2 ? 'bg-yellow-600 text-white' : 'bg-gray-300 text-gray-700'}`}>2. Cust. Docs</div>
+          <div className={`px-4 py-2 rounded-full text-sm font-bold ${currentStep === 3 ? 'bg-orange-600 text-white' : 'bg-gray-300 text-gray-700'}`}>3. Nom. Docs</div>
+        </div>
       </div>
+      
+      <div className={currentStep === 1 ? "block" : "hidden"}>
+
       {/* PERSONAL INFORMATION */}
       <section className="mb-8">
         <h2 className="bg-blue-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
@@ -783,6 +854,91 @@ export default function AddCustomer() {
         </div>
       </section>
 
+      {/* ACCOUNT INFORMATION (Moved to Step 1) */}
+      <section className="mb-8">
+        <h2 className="bg-purple-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+          <FaLock /> Account Information
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-purple-600 rounded-b-md">
+
+          <SelectField
+            label="Manager"
+            name="manager"
+            value={form.manager}
+            onChange={handleManagerChange}
+            options={managers.map(m => ({ label: m.name, value: m.id }))}
+            required
+            error={errors.manager}
+          />
+
+          <SelectField
+            label="Agent"
+            name="agent"
+            value={form.agent}
+            onChange={handleChange}
+            options={(Array.isArray(agents) ? agents : []).map(a => ({ label: a.name, value: a.id }))}
+            required
+            error={errors.agent}
+          />
+
+          <InputField
+            label="Member ID"
+            name="memberId"
+            value={form.memberId}
+            onChange={handleChange}
+            readOnly
+            placeholder="Auto Generated"
+            icon={<FaUser />}
+            required
+          />
+          <InputField
+            label="Email Address"
+            name="email"
+            type="email"
+            icon={<FaEnvelope />}
+            value={form.email}
+            onChange={handleChange}
+            required
+            error={errors.email}
+            warning={dupWarnings.email}
+          />
+          <InputField
+            label="Password"
+            name="password"
+            type="password"
+            icon={<FaLock />}
+            value={form.password}
+            onChange={handleChange}
+            required
+            error={errors.password}
+          />
+          <InputField
+            label="Confirm Password"
+            name="confirmPassword"
+            type="password"
+            icon={<FaLock />}
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+            error={errors.confirmPassword}
+          />
+          <SelectField
+            label="Account Status"
+            name="accountStatus"
+            value={form.accountStatus}
+            onChange={handleChange}
+            options={[
+              { label: "Active", value: "ACTIVE" },
+            ]}
+            required
+            error={errors.accountStatus}
+          />
+        </div>
+      </section>
+      </div>
+
+      <div className={currentStep === 2 ? "block" : "hidden"}>
+
       {/* DOCUMENT DETAILS */}
       <section className="mb-8">
         <h2 className="bg-yellow-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
@@ -936,8 +1092,9 @@ export default function AddCustomer() {
           </label>
         </div>
       </section>
+      </div>
 
-
+      <div className={currentStep === 3 ? "block" : "hidden"}>
       {/* NOMINEE DOCUMENT DETAILS */}
       <section className="mb-8">
         <h2 className="bg-orange-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
@@ -1091,100 +1248,39 @@ export default function AddCustomer() {
           </label>
         </div>
       </section>
-
-      {/* ACCOUNT INFORMATION */}
-      <section className="mb-8">
-        <h2 className="bg-purple-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
-          <FaLock /> Account Information
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-purple-600 rounded-b-md">
-
-          {/* Manager */}
-          <SelectField
-            label="Manager"
-            name="manager"
-            value={form.manager}
-            onChange={handleManagerChange}
-            options={managers.map(m => ({ label: m.name, value: m.id }))}
-            required
-            error={errors.manager}
-          />
-
-          <SelectField
-            label="Agent"
-            name="agent"
-            value={form.agent}
-            onChange={handleChange}
-            options={(Array.isArray(agents) ? agents : []).map(a => ({ label: a.name, value: a.id }))}
-            required
-            error={errors.agent}
-          />
-
-          <InputField
-            label="Member ID"
-            name="memberId"
-            value={form.memberId}
-            onChange={handleChange}
-            readOnly
-            placeholder="Auto Generated"
-            icon={<FaUser />}
-            required
-          />
-          <InputField
-            label="Email Address"
-            name="email"
-            type="email"
-            icon={<FaEnvelope />}
-            value={form.email}
-            onChange={handleChange}
-            required
-            error={errors.email}
-            warning={dupWarnings.email}
-          />
-          <InputField
-            label="Password"
-            name="password"
-            type="password"
-            icon={<FaLock />}
-            value={form.password}
-            onChange={handleChange}
-            required
-            error={errors.password}
-          />
-          <InputField
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            icon={<FaLock />}
-            value={form.confirmPassword}
-            onChange={handleChange}
-            required
-            error={errors.confirmPassword}
-          />
-          <SelectField
-            label="Account Status"
-            name="accountStatus"
-            value={form.accountStatus}
-            onChange={handleChange}
-            options={[
-              { label: "Active", value: "ACTIVE" },
-            ]}
-            required
-            error={errors.accountStatus}
-          />
-        </div>
-      </section>
-
-      {/* Submit Button */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="cursor-pointer bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-          onClick={handleSubmit}
-        >
-          Submit
-        </button>
       </div>
+
+      <div className="flex justify-between items-center mt-6 border-t pt-4">
+        {currentStep > 1 ? (
+          <button
+            type="button"
+            onClick={handlePrevStep}
+            className="cursor-pointer bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition"
+          >
+            ← Back
+          </button>
+        ) : <div />}
+        
+        {currentStep < 3 ? (
+          <button
+            type="button"
+            onClick={handleNextStep}
+            className="cursor-pointer bg-blue-600 text-white px-8 py-2 rounded-md shadow hover:bg-blue-700 transition"
+          >
+            Next Step →
+          </button>
+        ) : (
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className={`cursor-pointer text-white px-8 py-2 rounded-md shadow transition ${isLoading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"}`}
+          >
+            {isLoading ? "Submitting..." : "Submit Application"}
+          </button>
+        )}
+      </div>
+
     </div></>
   );
 }
