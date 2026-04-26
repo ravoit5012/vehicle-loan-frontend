@@ -64,71 +64,71 @@ const ViewCustomer: React.FC = () => {
 
     useEffect(() => {
         const fetchCustomers = async () => {
-    setLoading(true);
-    try {
-        const res = await axios.get<Customer[]>(
-            API_ENDPOINTS.GET_ALL_CUSTOMERS,
-            { withCredentials: true }
-        );
+            setLoading(true);
+            try {
+                const res = await axios.get<Customer[]>(
+                    API_ENDPOINTS.GET_ALL_CUSTOMERS,
+                    { withCredentials: true }
+                );
 
-        let customersData = res.data;
+                let customersData = res.data;
 
-        // ✅ Apply role-based filtering
-        if (user?.role === "AGENT") {
-            customersData = customersData.filter(
-                c => c.agentId === user.id
-            );
-        } else if (user?.role === "MANAGER") {
-            customersData = customersData.filter(
-                c => c.managerId === user.id
-            );
-        }
-        // ADMIN → no filter
+                // ✅ Apply role-based filtering
+                if (user?.role === "AGENT") {
+                    customersData = customersData.filter(
+                        c => c.agentId === user.id
+                    );
+                } else if (user?.role === "MANAGER") {
+                    customersData = customersData.filter(
+                        c => c.managerId === user.id
+                    );
+                }
+                // ADMIN → no filter
 
-        setCustomers(customersData);
+                setCustomers(customersData);
 
-        // Extract unique managerIds & agentIds
-        const managerIds = [
-            ...new Set(customersData.map(c => c.managerId).filter(Boolean))
-        ];
+                // Extract unique managerIds & agentIds
+                const managerIds = [
+                    ...new Set(customersData.map(c => c.managerId).filter(Boolean))
+                ];
 
-        const agentIds = [
-            ...new Set(customersData.map(c => c.agentId).filter(Boolean))
-        ];
+                const agentIds = [
+                    ...new Set(customersData.map(c => c.agentId).filter(Boolean))
+                ];
 
-        // Fetch all managers in parallel
-        const managerResponses = await Promise.all(
-            managerIds.map(id =>
-                axios.get(`${API_ENDPOINTS.GET_MANAGER_BY_ID}/${id}`)
-            )
-        );
+                // Fetch all managers in parallel
+                const managerResponses = await Promise.all(
+                    managerIds.map(id =>
+                        axios.get(`${API_ENDPOINTS.GET_MANAGER_BY_ID}/${id}`)
+                    )
+                );
 
-        const agentResponses = await Promise.all(
-            agentIds.map(id =>
-                axios.get(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${id}`)
-            )
-        );
+                const agentResponses = await Promise.all(
+                    agentIds.map(id =>
+                        axios.get(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${id}`)
+                    )
+                );
 
-        // Create lookup maps
-        const managerLookup: Record<string, string> = {};
-        managerResponses.forEach(res => {
-            managerLookup[res.data.id] = res.data.name;
-        });
+                // Create lookup maps
+                const managerLookup: Record<string, string> = {};
+                managerResponses.forEach(res => {
+                    managerLookup[res.data.id] = res.data.name;
+                });
 
-        const agentLookup: Record<string, string> = {};
-        agentResponses.forEach(res => {
-            agentLookup[res.data.id] = res.data.name;
-        });
+                const agentLookup: Record<string, string> = {};
+                agentResponses.forEach(res => {
+                    agentLookup[res.data.id] = res.data.name;
+                });
 
-        setManagerMap(managerLookup);
-        setAgentMap(agentLookup);
+                setManagerMap(managerLookup);
+                setAgentMap(agentLookup);
 
-    } catch (err) {
-        console.error(err);
-    } finally {
-        setLoading(false);
-    }
-};
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
         fetchCustomers();
     }, []);
@@ -266,7 +266,6 @@ const ViewCustomer: React.FC = () => {
                                             <button className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-xs mr-2">
                                                 <a
                                                     href={`/customers/view/${c.id}`}
-                                                    target="_blank"  // opens in new tab
                                                     rel="noopener noreferrer"  // security best practice
 
                                                 >
@@ -276,7 +275,6 @@ const ViewCustomer: React.FC = () => {
                                             <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-xs">
                                                 <a
                                                     href={`/customers/edit/${c.id}`}
-                                                    target="_blank"  // opens in new tab
                                                     rel="noopener noreferrer"  // security best practice
 
                                                 >

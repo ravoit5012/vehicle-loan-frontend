@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, ChangeEvent } from "react";
-import { useParams } from "next/navigation"; // Next.js 13+ app router
+import { useParams, useRouter } from "next/navigation"; // Next.js 13+ app router
 import axios from "axios";
 import { API_ENDPOINTS } from "../../../config/config";
 import {
@@ -17,6 +17,8 @@ import {
   FaLock,
   FaEnvelope,
   FaIdCard,
+  FaExternalLinkAlt,
+  FaMoneyBillWave,
 } from "react-icons/fa";
 
 interface Customer {
@@ -80,12 +82,49 @@ interface Customer {
 
 }
 
+interface Loan {
+  id: string;
+  loanAmount: number;
+  interestRate: number;
+  interestType: string;
+  loanDuration: number;
+  totalInterest: number;
+  totalPayableAmount: number;
+  status: string;
+  agentId: string;
+  loanTypeId: string;
+  customerId: string;
+  loanType?: {
+    loanName: string;
+    vehicleCondition: string;
+  };
+  agent?: {
+    name: string;
+  };
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  DRAFT: "bg-gray-200 text-gray-700",
+  SUBMITTED: "bg-blue-100 text-blue-700",
+  CALL_VERIFIED: "bg-indigo-100 text-indigo-700",
+  CONTRACT_GENERATED: "bg-yellow-100 text-yellow-700",
+  CONTRACT_SIGNED: "bg-purple-100 text-purple-700",
+  FIELD_VERIFIED: "bg-teal-100 text-teal-700",
+  ADMIN_APPROVED: "bg-green-100 text-green-700",
+  DISBURSED: "bg-green-200 text-green-800",
+  CLOSED: "bg-gray-300 text-gray-800",
+  REJECTED: "bg-red-100 text-red-700",
+};
+
 const ViewCustomer: React.FC = () => {
   const params = useParams();
+  const router = useRouter();
   const id = params.id; // From /customers/add/:id
 
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loans, setLoans] = useState<Loan[]>([]);
+  const [loansLoading, setLoansLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
@@ -104,6 +143,36 @@ const ViewCustomer: React.FC = () => {
       }
     };
     fetchCustomer();
+
+    const fetchLoans = async () => {
+      setLoansLoading(true);
+      try {
+        const res = await axios.get<Loan[]>(API_ENDPOINTS.GET_ALL_LOAN_APPLICATIONS);
+        const filtered = res.data.filter((l) => l.customerId === id);
+
+        // Enrich each loan with agent and loanType details fetched in parallel
+        const enriched = await Promise.all(
+          filtered.map(async (loan) => {
+            const [agentRes, loanTypeRes] = await Promise.all([
+              axios.get(`${API_ENDPOINTS.GET_AGENT_BY_ID}/${loan.agentId}`).catch(() => null),
+              axios.get(`${API_ENDPOINTS.GET_LOAN_TYPE_BY_ID}/${loan.loanTypeId}`, { withCredentials: true }).catch(() => null),
+            ]);
+            return {
+              ...loan,
+              agent: agentRes?.data ?? undefined,
+              loanType: loanTypeRes?.data ?? undefined,
+            };
+          })
+        );
+
+        setLoans(enriched);
+      } catch (err) {
+        console.error("Error fetching loans:", err);
+      } finally {
+        setLoansLoading(false);
+      }
+    };
+    fetchLoans();
   }, [id]);
 
   const openFile = (url: string) => {
@@ -143,6 +212,85 @@ const ViewCustomer: React.FC = () => {
           <InputField label="Marital Status" value={customer.maritalStatus} readOnly />
           <InputField label="Gender" value={customer.gender} readOnly />
           <InputField label="Date of Birth" value={customer.dateOfBirth.split("T")[0]} readOnly type="date" />
+        </div>
+      </section>
+
+      {/* LINKED LOANS */}
+      <section className="mb-8">
+        <h2 className="bg-indigo-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+          <FaMoneyBillWave /> Linked Loans
+        </h2>
+        <div className="border border-t-0 border-indigo-600 rounded-b-md overflow-x-auto bg-white">
+          {loansLoading ? (
+            <div className="text-center text-gray-500 py-6">Loading loans...</div>
+          ) : loans.length === 0 ? (
+            <div className="text-center text-gray-500 py-6">No loans linked to this customer.</div>
+          ) : (
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-200 text-left">
+                <tr>
+                  <th className="px-4 py-3 font-semibold text-gray-700">Loan Details</th>
+                  <th className="px-4 py-3 font-semibold text-gray-700">Loan Type Details</th>
+                  <th className="px-4 py-3 font-semibold text-gray-700">Totals</th>
+                  <th className="px-4 py-3 font-semibold text-gray-700">Status</th>
+                  <th className="px-4 py-3 font-semibold text-gray-700">Applied By</th>
+                  <th className="px-4 py-3 font-semibold text-gray-700 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loans.map((loan) => (
+                  <tr key={loan.id} className="border-t border-gray-100 hover:bg-indigo-50/30 transition">
+                    <td className="px-4 py-3">
+                      <div className="font-medium">₹ {loan.loanAmount}</div>
+                      <div className="text-xs text-gray-500">
+                        {loan.interestRate}% ({loan.interestType})
+                      </div>
+                      <div className="text-xs text-gray-500">{loan.loanDuration} months</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {loan.loanType ? (
+                        <>
+                          <div>{loan.loanType.loanName}</div>
+                          <div className="text-xs text-gray-500">
+                            {loan.loanType.vehicleCondition.charAt(0).toUpperCase() +
+                              loan.loanType.vehicleCondition.slice(1).toLowerCase()}{" "}
+                            Vehicle Loan
+                          </div>
+                        </>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div>Interest: ₹ {loan.totalInterest}</div>
+                      <div className="text-xs text-gray-500">Total: ₹ {loan.totalPayableAmount}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[loan.status] ??
+                          "bg-white/40 backdrop-blur-md border border-white/50"
+                          }`}
+                      >
+                        {loan.status.replaceAll("_", " ")}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {(loan as any).agent?.name ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => router.push(`/loans/view/${loan.id}`)}
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow hover:shadow-md hover:-translate-y-0.5 transition-all"
+                      >
+                        <FaExternalLinkAlt className="text-[10px]" />
+                        View Loan
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </section>
 
