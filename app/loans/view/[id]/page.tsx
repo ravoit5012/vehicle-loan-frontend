@@ -57,7 +57,7 @@ export default function ViewLoanPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 relative overflow-hidden">
+        <div className="relative z-10 w-full/50 p-4 md:p-8 relative overflow-hidden">
             {/* Ambient Background Glow */}
             <div className="fixed top-0 -left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
             <div className="fixed top-20 -right-10 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 pointer-events-none"></div>
@@ -67,7 +67,7 @@ export default function ViewLoanPage() {
                 <header className="bg-white/80 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-8 flex items-center justify-between transition-all duration-300 hover:shadow-indigo-500/10">
                     <div className="flex items-center space-x-5">
                         <div className="h-16 w-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg flex items-center justify-center transform -rotate-3 hover:rotate-0 transition duration-300">
-                            <FaInfo className="text-white text-3xl drop-shadow-md" />
+                            <FaInfo className="text-white text-3xl drop-shadow-[0_8px_30px_rgb(0,0,0,0.04)]" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 tracking-tight">Loan Profile Context</h1>

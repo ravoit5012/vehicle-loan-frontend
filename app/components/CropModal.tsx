@@ -103,14 +103,14 @@ export default function CropModal({
           </h3>
           <button
             onClick={onCancel}
-            className="p-1 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+            className="p-1 hover:bg-white/40 backdrop-blur-md border border-white/50 rounded-lg transition cursor-pointer"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Crop area */}
-        <div className="p-4 flex justify-center bg-gray-100 max-h-[60vh] overflow-auto">
+        <div className="p-4 flex justify-center bg-white/40 backdrop-blur-md border border-white/50 max-h-[60vh] overflow-auto">
           <ReactCrop
             crop={crop}
             onChange={(c) => setCrop(c)}
@@ -137,7 +137,7 @@ export default function CropModal({
         <div className="flex justify-end gap-3 px-6 py-3 border-t">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+            className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-white/40 backdrop-blur-md border border-white/50 rounded-lg transition cursor-pointer"
           >
             Cancel
           </button>

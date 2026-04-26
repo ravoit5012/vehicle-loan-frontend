@@ -133,7 +133,7 @@ export default function BackupRestorePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* EXPORT CARD */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 flex flex-col h-full">
+        <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 p-6 sm:p-8 flex flex-col h-full">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
               <DownloadCloud size={24} />
@@ -156,7 +156,7 @@ export default function BackupRestorePage() {
           <button
             onClick={handleExport}
             disabled={isExporting}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 outline outline-white/30 hover:shadow-lg hover:-translate-y-0.5 transition-all text-white font-bold py-3.5 px-4 rounded-xl transition flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isExporting ? <Loader2 className="animate-spin" size={20} /> : <DownloadCloud size={20} />}
             {isExporting ? "Generating Backup..." : "Generate & Download JSON Backup"}
@@ -164,7 +164,7 @@ export default function BackupRestorePage() {
         </div>
 
         {/* IMPORT CARD */}
-        <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 sm:p-8 flex flex-col h-full border-t-[4px] border-t-red-500">
+        <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-red-100 p-6 sm:p-8 flex flex-col h-full border-t-[4px] border-t-red-500">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
               <UploadCloud size={24} />
@@ -191,7 +191,7 @@ export default function BackupRestorePage() {
 
           <div className="space-y-4">
             <div className="flex items-center justify-center w-full">
-              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-transparent border-t border-white/40 hover:bg-white/40 backdrop-blur-md border border-white/50 transition">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   {selectedFile ? (
                     <>

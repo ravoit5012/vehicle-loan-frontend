@@ -45,7 +45,7 @@ const RemarkModal: React.FC<RemarkModalProps> = ({
             onClick={() => onSubmit(remark)}
             disabled={!remark.trim()}
             className={`px-4 py-2 rounded-lg text-white transition
-              ${remark.trim() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300 cursor-not-allowed'}`}
+              ${remark.trim() ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 outline outline-white/30 hover:shadow-lg hover:-translate-y-0.5 transition-all' : 'bg-blue-300 cursor-not-allowed'}`}
           >
             {actionLabel}
           </button>

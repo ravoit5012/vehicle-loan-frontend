@@ -46,7 +46,7 @@ export default function DeleteAgentModal({ id, onClose }: DeleteAgentModalProps)
         <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-300 w-full sm:w-auto"
+            className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-white/40 backdrop-blur-md border border-white/50 transition-all duration-300 w-full sm:w-auto"
           >
             Cancel
           </button>

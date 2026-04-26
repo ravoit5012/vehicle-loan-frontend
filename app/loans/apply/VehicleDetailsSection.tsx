@@ -121,7 +121,7 @@ export default function VehicleDetailsSection({ loanType, register, watch, setVa
             <button type="button" onClick={() => setValue(field, '', { shouldValidate: true })} className="text-red-500 text-xs underline cursor-pointer hover:text-red-600">Remove</button>
           </div>
         ) : (
-          <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 flex items-center justify-center">
+          <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-transparent border-t border-white/40 flex items-center justify-center">
             {isWorking ? (
               <span className="text-blue-500 font-medium">Uploading...</span>
             ) : (

@@ -15,7 +15,7 @@ export default function EmiRow({ emi, loanId }: any) {
 
   return (
     <>
-      <tr className="border-b hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+      <tr className="border-b hover:bg-transparent border-t border-white/40 dark:hover:bg-gray-700 transition">
         <td className="p-3 font-medium text-gray-700 dark:text-gray-200">{emi.emiNumber}</td>
         <td className="p-3 text-gray-600 dark:text-gray-300">
           {new Date(emi.dueDate).toLocaleDateString()}
@@ -26,7 +26,7 @@ export default function EmiRow({ emi, loanId }: any) {
         <td className="p-3 text-gray-700 dark:text-gray-100">₹ {emi.paidAmount.toLocaleString()}</td>
         <td className="p-3">
           <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[emi.status] || 'text-gray-600 bg-gray-100'}`}
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[emi.status] || 'text-gray-600 bg-white/40 backdrop-blur-md border border-white/50'}`}
           >
             {emi.status}
           </span>
@@ -42,7 +42,7 @@ export default function EmiRow({ emi, loanId }: any) {
               </button>
               <button
                 onClick={() => setPenaltyOpen(true)}
-                className="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-md text-sm hover:bg-gray-300 dark:hover:bg-gray-500 transition"
+                className="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-md text-sm hover:bg-gray-300 dark:hover:bg-transparent border-t border-white/400 transition"
               >
                 Penalty
               </button>

@@ -110,7 +110,7 @@ export default function EditManagerModal({ manager, onClose, onUpdated }: any) {
                 <div className="flex justify-end gap-3 mt-6">
                     <button
                         onClick={onClose}
-                        className="px-5 py-2 cursor-pointer hover:scale-110 transition-all ease-in-out duration-300 rounded-lg border border-gray-300 hover:bg-gray-100 font-medium"
+                        className="px-5 py-2 cursor-pointer hover:scale-110 transition-all ease-in-out duration-300 rounded-lg border border-gray-300 hover:bg-white/40 backdrop-blur-md border border-white/50 font-medium"
                         disabled={loading}
                     >
                         Cancel

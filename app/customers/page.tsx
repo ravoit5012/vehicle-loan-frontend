@@ -162,7 +162,7 @@ const ViewCustomer: React.FC = () => {
     return (
         <div className="max-w-7xl mx-auto p-4">
             {/* Card */}
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">
                     All Customers
                 </h2>
@@ -216,7 +216,7 @@ const ViewCustomer: React.FC = () => {
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full border border-gray-200 text-sm">
-                            <thead className="bg-gray-100">
+                            <thead className="bg-white/40 backdrop-blur-md border border-white/50">
                                 <tr>
                                     {[
                                         "Member ID",
@@ -241,7 +241,7 @@ const ViewCustomer: React.FC = () => {
                                 {filteredCustomers.map((c) => (
                                     <tr
                                         key={c.id}
-                                        className="border-t hover:bg-gray-50 transition"
+                                        className="border-t hover:bg-transparent border-t border-white/40 transition"
                                     >
                                         <td className="px-4 py-3">{c.memberId || "-"}</td>
                                         <td className="px-4 py-3">{c.applicantName}</td>

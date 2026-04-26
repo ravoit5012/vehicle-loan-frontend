@@ -8,7 +8,7 @@ export default function RepaymentHeader({ data, open }: any) {
   ).length;
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors cursor-pointer">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl hover:bg-transparent border-t border-white/40 transition-colors cursor-pointer">
 
       {/* Left section: Customer info */}
       <div className="flex flex-col">

@@ -114,9 +114,9 @@ const ViewCustomer: React.FC = () => {
   if (!customer) return <p className="p-6 text-red-500">Customer not found.</p>;
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] my-8">
       {/* Header */}
-      <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
+      <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
         <FaUser className="text-orange-400 text-3xl" />
         <div>
           <h2 className="text-2xl font-bold text-gray-900">View Customer</h2>
@@ -232,7 +232,7 @@ const ViewCustomer: React.FC = () => {
               {customer.extraDocuments.map((doc) => (
                 <div
                   key={doc.id}
-                  className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition bg-gray-50"
+                  className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition bg-transparent border-t border-white/40"
                 >
                   <div className="flex flex-col gap-3">
 
@@ -248,7 +248,7 @@ const ViewCustomer: React.FC = () => {
 
                     <button
                       onClick={() => window.open(doc.url, "_blank")}
-                      className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-md transition"
+                      className="mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:-translate-y-0.5 transition-all outline outline-white/30 hover:shadow-lg text-white text-sm px-4 py-2 rounded-md transition"
                     >
                       View Document
                     </button>
@@ -297,7 +297,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, value, icon, readOnly = 
       type={type}
       value={value}
       readOnly={readOnly}
-      className="border border-gray-300 rounded-md px-3 py-2 bg-gray-100 cursor-not-allowed"
+      className="border border-gray-300 rounded-md px-3 py-2 bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed"
     />
   </label>
 );

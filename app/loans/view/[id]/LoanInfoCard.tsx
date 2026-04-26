@@ -73,7 +73,7 @@ export default function LoanInfoCard({ loan }: { loan: any }) {
                 </div>
 
                 {isEditing ? (
-                    <div className="grid grid-cols-2 gap-4 mt-4 bg-gray-50 p-4 rounded-lg border">
+                    <div className="grid grid-cols-2 gap-4 mt-4 bg-transparent border-t border-white/40 p-4 rounded-lg border">
                         <div className="flex flex-col">
                             <label className="text-xs font-bold text-gray-500 uppercase">Amount</label>
                             <input type="number" className="border px-2 py-1 rounded" value={form.loanAmount} onChange={e => setForm({ ...form, loanAmount: e.target.value as any })} />
@@ -93,7 +93,7 @@ export default function LoanInfoCard({ loan }: { loan: any }) {
                             </select>
                         </div>
                         <div className="col-span-2 flex justify-end gap-2 mt-4 border-t pt-4">
-                            <button onClick={() => setIsEditing(false)} className="text-sm px-4 py-2 border rounded font-semibold text-gray-600 hover:bg-gray-100">Cancel</button>
+                            <button onClick={() => setIsEditing(false)} className="text-sm px-4 py-2 border rounded font-semibold text-gray-600 hover:bg-white/40 backdrop-blur-md border border-white/50">Cancel</button>
                             <button onClick={handleSave} disabled={loading} className="text-sm px-4 py-2 bg-blue-600 rounded text-white font-bold hover:bg-blue-700 disabled:opacity-50">
                                 {loading ? 'Saving...' : 'Save & Recalculate'}
                             </button>

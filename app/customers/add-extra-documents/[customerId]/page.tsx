@@ -199,7 +199,7 @@ export default function AddExtraDocumentsPage() {
 
           <button
             onClick={addDocumentField}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-md transition"
+            className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:-translate-y-0.5 transition-all outline outline-white/30 hover:shadow-lg text-white px-4 py-2 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition"
           >
             <FaPlus />
             Add Document
@@ -211,7 +211,7 @@ export default function AddExtraDocumentsPage() {
           {uploads.map((item, index) => (
             <div
               key={index}
-              className="bg-gray-50 border rounded-xl p-6 flex flex-col md:flex-row gap-6 items-center"
+              className="bg-transparent border-t border-white/40 border rounded-xl p-6 flex flex-col md:flex-row gap-6 items-center"
             >
               <div className="flex-1 w-full">
                 <label className="block text-sm font-medium text-gray-600 mb-2">

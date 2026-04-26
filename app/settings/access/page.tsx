@@ -143,15 +143,12 @@ export default function AssignAccessPage() {
       <Loading visible={loading} />
       <div className="mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-500 pb-12">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
+        <div className="bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 sm:p-12 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] relative overflow-hidden">
           <div className="relative z-10 max-w-2xl">
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-indigo-900">
               Access Control
             </h1>
-            <p className="text-blue-100/90 text-lg sm:text-xl leading-relaxed">
+            <p className="text-slate-500 text-lg sm:text-xl leading-relaxed font-medium">
               Dynamically assign application permissions to Managers and Agents to securely govern the flow of operations.
             </p>
           </div>
@@ -168,7 +165,7 @@ export default function AssignAccessPage() {
             return (
               <div
                 key={roleName}
-                className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col h-full"
+                className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 flex flex-col h-full"
               >
                 <div className="flex items-center justify-between border-b border-gray-100 pb-6 mb-6">
                   <div>
@@ -193,7 +190,7 @@ export default function AssignAccessPage() {
                         className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer border-2 transition-all duration-200 group
                         ${isChecked
                             ? "border-blue-500 bg-blue-50/50"
-                            : "border-transparent bg-gray-50 hover:bg-gray-100"}`}
+                            : "border-transparent bg-transparent border-t border-white/40 hover:bg-white/40 backdrop-blur-md border border-white/50"}`}
                       >
                         <span className={`font-semibold transition-colors ${isChecked ? "text-blue-700" : "text-gray-700"}`}>
                           {getStatusLabel(status)}
@@ -219,7 +216,7 @@ export default function AssignAccessPage() {
                 <button
                   onClick={() => handleSave(rRole)}
                   disabled={saving === rRole}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-colors shadow-lg shadow-blue-600/25 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 outline outline-white/30 hover:shadow-lg hover:-translate-y-0.5 transition-all text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-colors shadow-lg shadow-blue-600/25 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {saving === rRole ? (
                     <Loader2 className="animate-spin" size={20} />

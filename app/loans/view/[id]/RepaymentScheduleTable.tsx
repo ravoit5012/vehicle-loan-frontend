@@ -8,7 +8,7 @@ export default function RepaymentScheduleTable({
       <h2 className="section-title mb-4">Repayment Schedule</h2>
 
       <table className="min-w-full text-sm">
-        <thead className="bg-gray-50">
+        <thead className="bg-transparent border-t border-white/40">
           <tr>
             <th className="px-3 py-2">EMI</th>
             <th className="px-3 py-2">Due Date</th>

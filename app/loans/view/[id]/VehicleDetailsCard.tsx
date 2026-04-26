@@ -111,7 +111,7 @@ export default function VehicleDetailsCard({ loan, user, onUpdate, customer }: P
     const displayUrl = isEditing ? editingUrl : defaultUrl;
 
     return (
-      <div className="flex flex-col space-y-2 border rounded p-3 bg-gray-50">
+      <div className="flex flex-col space-y-2 border rounded p-3 bg-transparent border-t border-white/40">
         <label className="text-sm font-semibold text-gray-700">{title}</label>
         {displayUrl ? (
           <div className="flex flex-col gap-2">
@@ -132,7 +132,7 @@ export default function VehicleDetailsCard({ loan, user, onUpdate, customer }: P
             uploading[field] ? (
               <span className="text-sm text-blue-500">Uploading...</span>
             ) : (
-              <div className="relative border-2 border-dashed border-gray-300 rounded p-2 text-center text-xs hover:bg-gray-100 cursor-pointer">
+              <div className="relative border-2 border-dashed border-gray-300 rounded p-2 text-center text-xs hover:bg-white/40 backdrop-blur-md border border-white/50 cursor-pointer">
                 + Upload
                 <input
                   type="file"
@@ -272,14 +272,14 @@ export default function VehicleDetailsCard({ loan, user, onUpdate, customer }: P
                 });
                 setIsEditing(false);
               }}
-              className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded font-semibold"
+              className="px-4 py-2 text-sm text-gray-600 hover:bg-white/40 backdrop-blur-md border border-white/50 rounded font-semibold"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={loading}
-              className="px-6 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded font-semibold disabled:opacity-50"
+              className="px-6 py-2 text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 outline outline-white/30 hover:shadow-lg hover:-translate-y-0.5 transition-all rounded font-semibold disabled:opacity-50"
             >
               {loading ? 'Saving...' : 'Save Changes'}
             </button>

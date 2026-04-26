@@ -14,14 +14,9 @@ export default function Home() {
   );
 
   return (
-    <div className="relative min-h-screen bg-slate-50 overflow-hidden flex flex-col items-center justify-center font-sans">
-      {/* Ambient Background Orbs */}
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-400 rounded-full mix-blend-multiply filter blur-[150px] opacity-30 pointer-events-none animate-pulse"></div>
-      <div className="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500 rounded-full mix-blend-multiply filter blur-[150px] opacity-30 pointer-events-none animate-pulse" style={{ animationDelay: "2s" }}></div>
-      <div className="fixed top-[20%] right-[10%] w-[400px] h-[400px] bg-purple-400 rounded-full mix-blend-multiply filter blur-[150px] opacity-20 pointer-events-none animate-pulse" style={{ animationDelay: "1s" }}></div>
-
+    <div className="relative min-h-screen font-sans">
       {/* Main Glass Container */}
-      <div className="relative z-10 w-full max-w-5xl p-6 md:p-12 mt-12 flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-5xl mx-auto p-6 md:p-12 mt-12 flex flex-col items-center">
         
         {/* Hero Area */}
         <div className="text-center space-y-8 animate-fade-in-up">
@@ -54,7 +49,7 @@ export default function Home() {
             Manage your vehicle lending lifecycle with pristine security and next-generation speed. Access your administrative workspace instantly.
           </p>
 
-          <div className="pt-4 pb-12">
+          <div className="pt-4 pb-12 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => router.push("/login")}
               className="relative overflow-hidden group px-10 py-4 font-bold text-white bg-indigo-600 rounded-full shadow-[0_0_40px_rgba(79,70,229,0.3)] hover:shadow-[0_0_60px_rgba(79,70,229,0.5)] transition-all duration-300 hover:-translate-y-1"
@@ -65,6 +60,16 @@ export default function Home() {
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
               </span>
             </button>
+
+            <a
+              href="https://www.champanandmotors.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-3.5 flex items-center gap-2 rounded-full font-bold text-slate-700 bg-white/40 backdrop-blur-md border border-slate-300/50 hover:bg-white/70 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+              Champanand Motors Site
+            </a>
           </div>
         </div>
 

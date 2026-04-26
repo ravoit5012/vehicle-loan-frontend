@@ -107,7 +107,7 @@ export default function LoanTypePage() {
   /* ============================== UI ============================== */
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="relative z-10 w-full p-6">
       <div className="max-w-6xl mx-auto space-y-8">
 
         {/* ========================== HEADER ========================== */}

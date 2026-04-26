@@ -54,7 +54,10 @@ export default function ViewLoansPage() {
                 const term = search.toLowerCase();
                 return (
                     customer?.applicantName?.toLowerCase().includes(term) ||
-                    customer?.mobileNumber?.includes(term)
+                    customer?.mobileNumber?.includes(term) ||
+                    loan?.registrationNumber?.toLowerCase().includes(term) ||
+                    loan?.chassisNumber?.toLowerCase().includes(term) ||
+                    loan?.engineNumber?.toLowerCase().includes(term)
                 );
             }
 
@@ -63,10 +66,10 @@ export default function ViewLoansPage() {
     }, [loans, customersMap, agentsMap, agentFilter, search]);
 
     return (
-        <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="max-w-7xl mx-auto space-y-6 relative z-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
+                <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
                     <FaFile className="text-orange-400 text-3xl" />
                     <div>
                         <h2 className="text-2xl font-bold text-gray-900">View All Loans</h2>

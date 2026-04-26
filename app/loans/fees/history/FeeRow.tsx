@@ -10,7 +10,7 @@ export default function FeeRow({ fee }: { fee: any }) {
 
   return (
     <>
-      <tr className="border-t hover:bg-gray-50">
+      <tr className="border-t hover:bg-transparent border-t border-white/40">
         <td className="px-4 py-3 font-medium">
           {fee.customerName}
         </td>

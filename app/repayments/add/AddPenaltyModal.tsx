@@ -53,13 +53,13 @@ export default function AddPenaltyModal({ loanId, emi, onClose }: any) {
                     <button
                         onClick={submit}
                         disabled={loading}
-                        className="flex-1 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 cursor-pointer bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 outline outline-white/30 hover:shadow-lg hover:-translate-y-0.5 transition-all text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? 'Adding...' : 'Add'}
                     </button>
                     <button
                         onClick={onClose}
-                        className="flex-1 border cursor-pointer border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-2 px-4 rounded-md transition-colors"
+                        className="flex-1 border cursor-pointer border-gray-300 dark:border-gray-600 hover:bg-white/40 backdrop-blur-md border border-white/50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-2 px-4 rounded-md transition-colors"
                     >
                         Cancel
                     </button>

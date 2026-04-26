@@ -5,8 +5,7 @@ export default function FormActions({ loading, onSubmit }: any) {
       <button
         disabled={loading}
         onClick={onSubmit}
-        className="w-full cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        // className="bg-red-500 text-white p-10"
+        className="w-full md:w-auto cursor-pointer font-bold px-8 py-3 rounded-xl shadow-lg border border-white/40 bg-gradient-to-r from-indigo-500 to-purple-600 text-white transform transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_4px_20px_rgba(79,70,229,0.4)] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
           <div className="flex items-center justify-center space-x-2">

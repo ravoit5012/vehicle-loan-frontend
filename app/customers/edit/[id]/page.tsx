@@ -265,9 +265,9 @@ const EditCustomer: React.FC = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">
+        <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] my-8">
             {/* Header */}
-            <div className="flex items-center justify-between bg-gray-100 rounded-lg p-6 mb-4">
+            <div className="flex items-center justify-between bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
                 <div className="flex items-center space-x-4">
                     <FaUser className="text-orange-400 text-3xl" />
                     <div>
@@ -563,7 +563,7 @@ const EditCustomer: React.FC = () => {
                                 value={customer.agentId || ""}
                                 onChange={handleAgentChange}
                                 disabled={!customer.managerId}
-                                className="border border-gray-300 rounded-md px-3 py-2 bg-white disabled:bg-gray-100"
+                                className="border border-gray-300 rounded-md px-3 py-2 bg-white disabled:bg-white/40 backdrop-blur-md border border-white/50"
                             >
                                 <option value="" disabled>Select Agent</option>
                                 {agents.map((a) => (
@@ -586,7 +586,7 @@ const EditCustomer: React.FC = () => {
 
             <button
                 onClick={() => router.push(`/customers/add-extra-documents/${customer.id}`)}
-                className="mt-8 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition duration-200"
+                className="mt-8 w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:-translate-y-0.5 transition-all outline outline-white/30 hover:shadow-lg text-white font-medium px-6 py-3 rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition duration-200"
             >
                 Add Extra Documents
             </button>

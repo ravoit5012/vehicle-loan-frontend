@@ -18,7 +18,7 @@ export default function FeesTable({ fees }: { fees: any[] }) {
     return (
         <div className="overflow-x-auto bg-white rounded-xl shadow border">
             <table className="min-w-full text-sm">
-                <thead className="bg-gray-50">
+                <thead className="bg-transparent border-t border-white/40">
                     <tr>
                         <th className="px-4 py-3">Customer</th>
                         <th className="px-4 py-3">Mobile</th>

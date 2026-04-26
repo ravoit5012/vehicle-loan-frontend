@@ -200,7 +200,7 @@ export default function CollectionReportsPage() {
   if (!user) return <ProtectedPageMessage />;
   if (!["ADMIN", "MANAGER"].includes(user.role)) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 text-red-900 px-4 text-center">
+      <div className="flex flex-col items-center justify-center relative z-10 w-full text-red-900 px-4 text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Access Denied</h1>
       </div>
     );
@@ -278,9 +278,9 @@ export default function CollectionReportsPage() {
       </div>
 
       {/* Filters & Content */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
         {/* Filter Bar */}
-        <div className="p-4 sm:p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-end gap-5">
+        <div className="p-4 sm:p-6 border-b border-gray-100 bg-transparent border-t border-white/40/50 flex flex-col sm:flex-row sm:items-end gap-5">
           <div className="flex items-center gap-2 text-gray-700 font-semibold sm:w-1/4">
             <Filter size={18} className="text-purple-500" />
             Filters
@@ -353,7 +353,7 @@ export default function CollectionReportsPage() {
                 filteredRepayments.map((rep, i) => (
                   <tr
                     key={`${rep.loanId}-${rep.emiNumber}-${i}`}
-                    className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                    className="border-b border-gray-50 hover:bg-transparent border-t border-white/40/50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div className="font-semibold text-gray-800">
@@ -362,7 +362,7 @@ export default function CollectionReportsPage() {
                       <div className="text-xs text-gray-400 mt-1 flex items-center gap-2">
                         <span>{rep.customerPhone}</span>
                         <span className="hidden sm:inline">•</span>
-                        <span className="font-mono text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">
+                        <span className="font-mono text-[10px] bg-white/40 backdrop-blur-md border border-white/50 px-1.5 py-0.5 rounded text-gray-500">
                           {rep.loanId.slice(-6).toUpperCase()}
                         </span>
                       </div>

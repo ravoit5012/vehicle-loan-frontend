@@ -1,7 +1,7 @@
 export default function LoanCard({ loan, onClick }: any) {
   // Determine badge color based on loan status
   const statusColor = loan.status === 'Active' ? 'bg-green-100 text-green-800' :
-                      loan.status === 'Closed' ? 'bg-gray-100 text-gray-800' :
+                      loan.status === 'Closed' ? 'bg-white/40 backdrop-blur-md border border-white/50 text-gray-800' :
                       'bg-yellow-100 text-yellow-800';
 
   return (

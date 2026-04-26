@@ -51,7 +51,7 @@ export default function RepaymentTable({
             >
                 ← Back to loans
             </button>
-            <div className="flex justify-between items-center p-4 bg-gray-100">
+            <div className="flex justify-between items-center p-4 bg-white/40 backdrop-blur-md border border-white/50">
                 <h2 className="text-lg font-semibold text-gray-700">
                     Repayment Schedule
                 </h2>
@@ -66,7 +66,7 @@ export default function RepaymentTable({
             {/* Table Container */}
             <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
                 <table className="w-full min-w-150 text-sm text-left border-collapse">
-                    <thead className="bg-gray-50 sticky top-0">
+                    <thead className="bg-transparent border-t border-white/40 sticky top-0">
                         <tr>
                             <th className="p-3 border-b text-gray-600 font-medium">EMI</th>
                             <th className="p-3 border-b text-gray-600 font-medium">Due Date</th>

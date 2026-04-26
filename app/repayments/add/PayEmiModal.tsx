@@ -75,7 +75,7 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
               Upload Payment Proof
             </label>
 
-            <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-500 transition bg-gray-50 dark:bg-gray-700">
+            <label className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-500 transition bg-transparent border-t border-white/40 dark:bg-gray-700">
               <div className="text-center">
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   {proof ? proof.name : "Click to upload image or PDF"}
@@ -102,13 +102,13 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
           <button
             onClick={submit}
             disabled={loading}
-            className="btn-primary w-full cursor-pointer sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary w-full cursor-pointer sm:w-auto px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 outline outline-white/30 hover:shadow-lg hover:-translate-y-0.5 transition-all text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Processing...' : 'Submit'}
           </button>
           <button
             onClick={onClose}
-            className="btn-secondary w-full sm:w-auto cursor-pointer px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            className="btn-secondary w-full sm:w-auto cursor-pointer px-5 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-white/40 backdrop-blur-md border border-white/50 dark:hover:bg-gray-700 transition"
           >
             Cancel
           </button>

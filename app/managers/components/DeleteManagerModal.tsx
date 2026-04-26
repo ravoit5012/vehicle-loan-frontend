@@ -21,7 +21,7 @@ export default function DeleteManagerModal({ managerId, onClose, onDeleted }: an
         <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-4 cursor-pointer hover:scale-110 transition-all ease-in-out duration-300 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+            className="w-full sm:w-auto px-4 cursor-pointer hover:scale-110 transition-all ease-in-out duration-300 py-2 rounded-lg border border-gray-300 hover:bg-white/40 backdrop-blur-md border border-white/50"
           >
             Cancel
           </button>

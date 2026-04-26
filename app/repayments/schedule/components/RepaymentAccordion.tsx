@@ -17,7 +17,7 @@ export default function RepaymentAccordion({ data }: any) {
       </button>
 
       {open && (
-        <div className="p-4 bg-gray-50">
+        <div className="p-4 bg-transparent border-t border-white/40">
           <EmiTable
             loanId={data.loanId}
             repayments={data.repayments}

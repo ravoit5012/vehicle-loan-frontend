@@ -587,8 +587,8 @@ export default function AddCustomer() {
         onCancel={handleCropCancel}
       />
     )}
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-md my-8">
-      <div className="flex items-center space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] my-8">
+      <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
         <FaUserPlus className="text-orange-400 text-3xl" />
         <div className="flex-1">
           <h2 className="text-2xl font-bold text-gray-900">Add New Customer</h2>
@@ -962,7 +962,7 @@ export default function AddCustomer() {
               name="panImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.panImage && <img src={URL.createObjectURL(form.panImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -999,7 +999,7 @@ export default function AddCustomer() {
               name="poiFrontImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.poiFrontImage && <img src={URL.createObjectURL(form.poiFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1011,7 +1011,7 @@ export default function AddCustomer() {
               name="poiBackImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.poiBackImage && <img src={URL.createObjectURL(form.poiBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1049,7 +1049,7 @@ export default function AddCustomer() {
               name="poaFrontImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.poaFrontImage && <img src={URL.createObjectURL(form.poaFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1061,7 +1061,7 @@ export default function AddCustomer() {
               name="poaBackImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.poaBackImage && <img src={URL.createObjectURL(form.poaBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1073,7 +1073,7 @@ export default function AddCustomer() {
               name="applicantSignature"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.applicantSignature && <img src={URL.createObjectURL(form.applicantSignature)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1085,7 +1085,7 @@ export default function AddCustomer() {
               name="personalPhoto"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.personalPhoto && <img src={URL.createObjectURL(form.personalPhoto)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1118,7 +1118,7 @@ export default function AddCustomer() {
               name="nomineePanImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineePanImage && <img src={URL.createObjectURL(form.nomineePanImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1155,7 +1155,7 @@ export default function AddCustomer() {
               name="nomineePoiFrontImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineePoiFrontImage && <img src={URL.createObjectURL(form.nomineePoiFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1167,7 +1167,7 @@ export default function AddCustomer() {
               name="nomineePoiBackImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineePoiBackImage && <img src={URL.createObjectURL(form.nomineePoiBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1205,7 +1205,7 @@ export default function AddCustomer() {
               name="nomineePoaFrontImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineePoaFrontImage && <img src={URL.createObjectURL(form.nomineePoaFrontImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1217,7 +1217,7 @@ export default function AddCustomer() {
               name="nomineePoaBackImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineePoaBackImage && <img src={URL.createObjectURL(form.nomineePoaBackImage)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1229,7 +1229,7 @@ export default function AddCustomer() {
               name="nomineeSignature"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineeSignature && <img src={URL.createObjectURL(form.nomineeSignature)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1241,7 +1241,7 @@ export default function AddCustomer() {
               name="nomineePersonalPhoto"
               accept="image/*"
               onChange={handleFileChange}
-              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-100 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
+              className="border border-gray-300 rounded-md px-2 py-1 file:mr-4 file:py-0.5 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-white/40 backdrop-blur-md border border-white/50 file:text-sm hover:file:bg-gray-200 cursor-pointer file:cursor-pointer"
               required
             />
             {form.nomineePersonalPhoto && <img src={URL.createObjectURL(form.nomineePersonalPhoto)} alt="Preview" className="mt-1 h-16 w-auto rounded border border-gray-200 object-contain" />}
@@ -1255,7 +1255,7 @@ export default function AddCustomer() {
           <button
             type="button"
             onClick={handlePrevStep}
-            className="cursor-pointer bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition"
+            className="cursor-pointer bg-transparent border-t border-white/400 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition"
           >
             ← Back
           </button>
@@ -1329,7 +1329,7 @@ function InputField({
         onChange={onChange}
         className={`cursor-pointer border rounded-md px-3 py-2 focus:ring-2
           ${error ? "border-red-500 focus:ring-red-500" : showWarning ? "border-amber-500 focus:ring-amber-500" : "border-gray-300 focus:ring-blue-500"}
-          ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}
+          ${disabled ? "bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed" : ""}
         `}
         required={required}
         readOnly={readOnly}

@@ -21,7 +21,7 @@ const ProtectedPageMessage = ({ redirectTo = "/login", seconds = 3 }: Props) => 
 
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 text-red-900 px-4 text-center">
+        <div className="flex flex-col items-center justify-center relative z-10 w-full text-red-900 px-4 text-center">
             <h1 className="text-3xl md:text-5xl font-bold mb-4">Access Denied</h1>
             <p className="text-lg md:text-2xl mb-6">
                 You need to <strong>log in</strong> to access this page

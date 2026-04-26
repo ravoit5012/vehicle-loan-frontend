@@ -6,7 +6,7 @@ export default function ManagerRow({ manager }: any) {
   const router = useRouter();
 
   return (
-    <tr className="border-t hover:bg-gray-50 transition">
+    <tr className="border-t hover:bg-transparent border-t border-white/40 transition">
       <td className="p-4 font-medium">{manager.name}</td>
       <td className="p-4">{manager.managerCode}</td>
       <td className="p-4">{manager.phoneNumber}</td>

@@ -179,7 +179,7 @@ export default function AllRepaymentsPage() {
             <Loading visible={loading} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
                 {/* Hero Section */}
-                <div className="flex items-center bg-gray-50 rounded-lg p-6 shadow-md">
+                <div className="flex items-center bg-transparent border-t border-white/40 rounded-lg p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <FaClock className="text-orange-500 text-4xl" />
                     <div className="ml-4">
                         <h2 className="text-3xl font-semibold text-gray-900">

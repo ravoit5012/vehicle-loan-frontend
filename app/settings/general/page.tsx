@@ -221,7 +221,7 @@ export default function GeneralSettingsPage() {
   if (!user) return <ProtectedPageMessage />;
   if (user.role !== "ADMIN") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 text-red-900 px-4 text-center">
+      <div className="flex flex-col items-center justify-center relative z-10 w-full text-red-900 px-4 text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Access Denied</h1>
         <p className="text-lg md:text-2xl">
           Only <strong>Admins</strong> can access this page.
@@ -300,8 +300,8 @@ export default function GeneralSettingsPage() {
       </div>
 
       {/* ===== Logo Upload Card ===== */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-transparent border-t border-white/40/50">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <ImageIcon size={20} className="text-indigo-500" />
             Company Logo
@@ -313,7 +313,7 @@ export default function GeneralSettingsPage() {
 
         <div className="p-6 flex flex-col sm:flex-row items-center gap-6">
           {/* Logo preview */}
-          <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+          <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-transparent border-t border-white/40 shrink-0">
             {settings.logoUrl ? (
               <img
                 src={settings.logoUrl}
@@ -360,7 +360,7 @@ export default function GeneralSettingsPage() {
               </h3>
               <button
                 onClick={() => setCropSrc(null)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition cursor-pointer"
+                className="p-1 hover:bg-white/40 backdrop-blur-md border border-white/50 rounded-lg transition cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -397,7 +397,7 @@ export default function GeneralSettingsPage() {
             <div className="flex justify-end gap-3 px-6 py-4 border-t">
               <button
                 onClick={() => setCropSrc(null)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-white/40 backdrop-blur-md border border-white/50 rounded-xl transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -405,7 +405,7 @@ export default function GeneralSettingsPage() {
                 onClick={handleCropUpload}
                 disabled={uploading}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600
-                  text-white font-semibold rounded-xl shadow-md hover:shadow-lg
+                  text-white font-semibold rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg
                   hover:from-indigo-600 hover:to-purple-700
                   disabled:opacity-60 disabled:cursor-not-allowed
                   transition-all duration-200 text-sm cursor-pointer"
@@ -428,9 +428,9 @@ export default function GeneralSettingsPage() {
       )}
 
       {/* ===== Form Card ===== */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
         {/* Card Header */}
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+        <div className="px-6 py-4 border-b border-gray-100 bg-transparent border-t border-white/40/50">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <Building2 size={20} className="text-indigo-500" />
             Company Information
@@ -473,7 +473,7 @@ export default function GeneralSettingsPage() {
                     rows={3}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm
                       focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400
-                      transition-all duration-200 resize-none bg-gray-50/50 hover:bg-white"
+                      transition-all duration-200 resize-none bg-transparent border-t border-white/40/50 hover:bg-white"
                   />
                 ) : (
                   <input
@@ -485,7 +485,7 @@ export default function GeneralSettingsPage() {
                     placeholder={placeholder}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm
                       focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400
-                      transition-all duration-200 bg-gray-50/50 hover:bg-white"
+                      transition-all duration-200 bg-transparent border-t border-white/40/50 hover:bg-white"
                   />
                 )}
               </div>
@@ -499,7 +499,7 @@ export default function GeneralSettingsPage() {
               onClick={handleSave}
               disabled={saving}
               className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600
-                text-white font-semibold rounded-xl shadow-md hover:shadow-lg
+                text-white font-semibold rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg
                 hover:from-indigo-600 hover:to-purple-700
                 disabled:opacity-60 disabled:cursor-not-allowed
                 transition-all duration-200 text-sm cursor-pointer"

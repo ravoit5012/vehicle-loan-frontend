@@ -54,14 +54,14 @@ export default function LoanDetailsSection({
                 </div>
 
                 {/* Interest Rate */}
-                <div className="form-group space-y-2 bg-gray-100 p-4 rounded-md">
+                <div className="form-group space-y-2 bg-white/40 backdrop-blur-md border border-white/50 p-4 rounded-md">
                     <label htmlFor="interestRate" className="text-sm font-medium md:block text-gray-700">Interest Rate</label>
                     <input
                         id="interestRate"
                         type="text"
                         value={`${interestRate}% : ${interestType}`}
                         readOnly
-                        className="input-field bg-gray-100 cursor-not-allowed  border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%]"
+                        className="input-field bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed  border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%]"
                     />
                 </div>
 
@@ -126,36 +126,36 @@ export default function LoanDetailsSection({
                 </div>
 
                 {/* Processing Fees */}
-                <div className="form-group space-y-2 bg-gray-100 p-4 rounded-md">
+                <div className="form-group space-y-2 bg-white/40 backdrop-blur-md border border-white/50 p-4 rounded-md">
                     <label className="text-sm font-medium md:block text-gray-700">Processing Fees</label>
                     <input
                         type="text"
                         value={`${processingFees.isPercentage ? processingFees.amount + "%" : "₹" + processingFees.amount}`}
                         readOnly
-                        className="input-field bg-gray-100  border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%]cursor-not-allowed"
+                        className="input-field bg-white/40 backdrop-blur-md border border-white/50  border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%]cursor-not-allowed"
                     />
                 </div>
 
                 {/* Insurance Fees */}
-                <div className="form-group space-y-2 bg-gray-100 p-4 rounded-md">
+                <div className="form-group space-y-2 bg-white/40 backdrop-blur-md border border-white/50 p-4 rounded-md">
                     <label className="text-sm font-medium md:block text-gray-700">Insurance Fees</label>
                     <input
                         type="text"
                         value={`${insuranceFees.isPercentage ? insuranceFees.amount + "%" : "₹" + insuranceFees.amount}`}
                         readOnly
-                        className="input-field border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%] bg-gray-100 cursor-not-allowed"
+                        className="input-field border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%] bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed"
                     />
                 </div>
 
                 {/* Other Fees */}
                 {otherFees.length > 0 && otherFees.map((fee: OtherFee, index: number) => (
-                    <div key={index} className="form-group space-y-2 bg-gray-100 p-4 rounded-md shadow-sm">
+                    <div key={index} className="form-group space-y-2 bg-white/40 backdrop-blur-md border border-white/50 p-4 rounded-md shadow-sm">
                         <label className="text-sm font-medium md:block text-gray-700">{fee.description}</label>
                         <input
                             type="text"
                             value={`${fee.isPercentage ? fee.amount + "%" : "₹" + fee.amount}`}
                             readOnly
-                            className="input-field bg-gray-100 cursor-not-allowed border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%]"
+                            className="input-field bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed border-2 py-2 px-4 rounded-lg mx-4 md:mx-0 md:w-[75%]"
                         />
                     </div>
                 ))}

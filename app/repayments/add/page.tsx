@@ -68,7 +68,7 @@ export default function RepaymentPage() {
 
     return (<>
     <Loading visible={loading} />
-        <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="max-w-7xl mx-auto space-y-6 relative z-10">
             <div className="flex items-center space-x-4 bg-[#0078F8] rounded-lg p-6 mb-4">
                 <FaPlus className="text-orange-400 text-3xl" />
                 <div>

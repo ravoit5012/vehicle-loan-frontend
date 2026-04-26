@@ -30,7 +30,7 @@ export default function LocationStatus({
           <div className="mt-4">
             <button
               onClick={getLocation}
-              className="px-6 py-3 bg-yellow-500 cursor-pointer text-white rounded-full shadow-md hover:bg-yellow-600 transition duration-300 ease-in-out focus:outline-none"
+              className="px-6 py-3 bg-yellow-500 cursor-pointer text-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-yellow-600 transition duration-300 ease-in-out focus:outline-none"
             >
               Recapture Location
             </button>
@@ -40,7 +40,7 @@ export default function LocationStatus({
         <div className="flex justify-center mt-4">
           <button
             onClick={getLocation}
-            className="px-6 py-3 bg-blue-500 cursor-pointer text-white rounded-full shadow-md hover:bg-blue-600 transition duration-300 ease-in-out focus:outline-none"
+            className="px-6 py-3 bg-blue-500 cursor-pointer text-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-blue-600 transition duration-300 ease-in-out focus:outline-none"
           >
             Capture Location
           </button>

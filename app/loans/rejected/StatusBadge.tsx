@@ -15,7 +15,7 @@ export default function StatusBadge({ status }: { status: string }) {
   return (
     <span
       className={`px-2 py-1 rounded-full text-xs font-medium ${
-        colors[status] || 'bg-gray-100'
+        colors[status] || 'bg-white/40 backdrop-blur-md border border-white/50'
       }`}
     >
       {status.replaceAll('_', ' ')}

@@ -104,7 +104,7 @@ export default function AgentTable({ agents }: { agents: any[] }) {
                   <button
                     onClick={() => handleApprove(agent.id)}
                     className="inline-flex flex-row my-1 cursor-pointer hover:scale-105 transition-all items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-xs font-semibold text-white shadow-sm ease-in-out duration-300
-                             hover:bg-green-700 hover:shadow-md
+                             hover:bg-green-700 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]
                              focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                   >
                     <User className='inline-block mr-2' size={14} />
@@ -114,7 +114,7 @@ export default function AgentTable({ agents }: { agents: any[] }) {
                 <button
                   onClick={() => router.push(`/agents/view/${agent.id}`)}
                   className="inline-flex flex-row cursor-pointer hover:scale-105 transition-all items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm ease-in-out duration-300
-                             hover:bg-blue-700 hover:shadow-md
+                             hover:bg-blue-700 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)]
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   <Eye className='inline-block mr-2' size={14} />

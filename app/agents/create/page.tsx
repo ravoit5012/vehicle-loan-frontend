@@ -73,7 +73,7 @@ export default function CreateAgentPage() {
     }
 
     return (<>
-        <div className="flex items-center space-x-4 bg-gray-100 m-2 mt-4 rounded-lg p-6 mb-4">
+        <div className="flex items-center space-x-4 bg-white/40 backdrop-blur-md border border-white/50 m-2 mt-4 rounded-lg p-6 mb-4">
             <FaUserPlus className="text-orange-400 text-3xl" />
             <div>
                 <h2 className="text-2xl font-bold text-gray-900">Add New Agent</h2>

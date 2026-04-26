@@ -17,7 +17,7 @@ export default function LoanFilters({
             <div className="relative flex-1">
                 <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <input
-                    placeholder="Search by customer name or mobile"
+                    placeholder="Search by customer name or mobile or Vehicle Details"
                     className="border-2 rounded-xl pl-12 pr-4 py-2 mr-8 input w-full" // Adjusted padding
                     onChange={e => onSearch(e.target.value)}
                 />

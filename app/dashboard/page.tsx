@@ -92,10 +92,7 @@ export default function AdminDashboard() {
     });
 
     return (
-        <div className="relative min-h-screen bg-slate-50 overflow-hidden font-sans p-4 md:p-8 space-y-8">
-            {/* Ambient Background Glowing Orbs */}
-            <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-300 rounded-full mix-blend-multiply filter blur-[150px] opacity-40 pointer-events-none"></div>
-            <div className="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-[150px] opacity-40 pointer-events-none"></div>
+        <div className="relative font-sans p-4 md:p-8 space-y-8">
 
             {/* ================= HEADER ================= */}
             <div className="relative z-10 w-full max-w-7xl mx-auto">

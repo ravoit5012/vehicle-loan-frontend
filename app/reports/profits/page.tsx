@@ -153,7 +153,7 @@ export default function ProfitReportsPage() {
   if (!user) return <ProtectedPageMessage />;
   if (!["ADMIN", "MANAGER"].includes(user.role)) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 text-red-900 px-4 text-center">
+      <div className="flex flex-col items-center justify-center relative z-10 w-full text-red-900 px-4 text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Access Denied</h1>
       </div>
     );
@@ -255,13 +255,13 @@ export default function ProfitReportsPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
+          <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 p-6 space-y-5">
             <div>
               <div className="flex justify-between items-end mb-1">
                 <span className="text-sm font-semibold text-gray-600">Expected Interest</span>
                 <span className="font-bold text-gray-800">{fmtCurrency(expectedInterest)}</span>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2.5">
+              <div className="w-full bg-white/40 backdrop-blur-md border border-white/50 rounded-full h-2.5">
                 <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '100%' }}></div>
               </div>
             </div>
@@ -271,7 +271,7 @@ export default function ProfitReportsPage() {
                 <span className="text-sm font-semibold text-gray-600">Expected Fees</span>
                 <span className="font-bold text-gray-800">{fmtCurrency(totalFeesExpected)}</span>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2.5">
+              <div className="w-full bg-white/40 backdrop-blur-md border border-white/50 rounded-full h-2.5">
                 <div 
                   className="bg-emerald-500 h-2.5 rounded-full" 
                   style={{ width: totalFeesExpected > 0 ? `${(totalFeesCollected / totalFeesExpected) * 100}%` : '0%' }}

@@ -47,13 +47,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-50 flex items-center justify-center font-sans overflow-hidden">
-      {/* Dynamic Background Glows */}
-      <div className="fixed top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-500 rounded-full mix-blend-multiply filter blur-[150px] opacity-40 pointer-events-none animate-pulse"></div>
-      <div className="fixed bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-[150px] opacity-30 pointer-events-none animate-pulse" style={{ animationDelay: "1.5s" }}></div>
-
+    <div className="relative font-sans overflow-hidden flex items-center justify-center p-6 h-full min-h-[90vh]">
       {/* Main Glass Modal */}
-      <div className="relative z-10 w-full max-w-5xl flex flex-col md:flex-row items-center justify-center p-6 gap-8">
+      <div className="relative z-10 w-full max-w-5xl flex flex-col md:flex-row items-center justify-center gap-8">
         
         {/* Left Branding Panel */}
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left space-y-6">

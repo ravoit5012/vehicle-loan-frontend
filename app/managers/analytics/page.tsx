@@ -110,7 +110,7 @@ export default function ManagerAnalyticsPage() {
   if (!user) return <ProtectedPageMessage />;
   if (user.role !== "ADMIN") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 text-red-900 px-4 text-center">
+      <div className="flex flex-col items-center justify-center relative z-10 w-full text-red-900 px-4 text-center">
         <h1 className="text-3xl md:text-5xl font-bold mb-4">Access Denied</h1>
         <p className="text-lg md:text-2xl">
           Only <strong>Admins</strong> can access this page.
@@ -205,7 +205,7 @@ export default function ManagerAnalyticsPage() {
         {summaryCards.map((card) => (
           <div
             key={card.label}
-            className={`rounded-xl p-4 text-white bg-gradient-to-br ${card.color} shadow-md`}
+            className={`rounded-xl p-4 text-white bg-gradient-to-br ${card.color} shadow-[0_8px_30px_rgb(0,0,0,0.04)]`}
           >
             <div className="flex items-center gap-2 opacity-90 mb-2">
               {card.icon}
@@ -241,8 +241,8 @@ export default function ManagerAnalyticsPage() {
       )}
 
       {/* ===== Loan Volume Comparison Bar Chart ===== */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-transparent border-t border-white/40/50">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <Target size={20} className="text-indigo-500" />
             Loan Volume Comparison
@@ -327,8 +327,8 @@ export default function ManagerAnalyticsPage() {
       </div>
 
       {/* ===== Disbursement Comparison ===== */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-transparent border-t border-white/40/50">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <IndianRupee size={20} className="text-emerald-500" />
             Disbursement Comparison
@@ -364,8 +364,8 @@ export default function ManagerAnalyticsPage() {
       </div>
 
       {/* ===== Detailed Comparison Table ===== */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 bg-transparent border-t border-white/40/50">
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <BarChart3 size={20} className="text-indigo-500" />
             Detailed Manager Comparison
@@ -374,7 +374,7 @@ export default function ManagerAnalyticsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/50 text-gray-600">
+              <tr className="border-b border-gray-100 bg-transparent border-t border-white/40/50 text-gray-600">
                 <th className="text-left px-4 py-3 font-semibold">#</th>
                 <th className="text-left px-4 py-3 font-semibold">Manager</th>
                 <th className="text-center px-4 py-3 font-semibold">Status</th>
@@ -415,7 +415,7 @@ export default function ManagerAnalyticsPage() {
                 return (
                   <tr
                     key={mgr.managerId}
-                    className="border-b border-gray-50 hover:bg-gray-50/50 transition"
+                    className="border-b border-gray-50 hover:bg-transparent border-t border-white/40/50 transition"
                   >
                     <td className="px-4 py-3 text-gray-400 font-medium">
                       {i + 1}
@@ -517,7 +517,7 @@ export default function ManagerAnalyticsPage() {
           return (
             <div
               key={mgr.managerId}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow"
             >
               {/* Card header */}
               <div
@@ -602,7 +602,7 @@ export default function ManagerAnalyticsPage() {
                       <span className="text-gray-500">Approval Rate</span>
                       <span className="font-semibold">{approvalRate}%</span>
                     </div>
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/40 backdrop-blur-md border border-white/50 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-700 ${
                           approvalRate >= 70
@@ -620,7 +620,7 @@ export default function ManagerAnalyticsPage() {
                       <span className="text-gray-500">Collection Rate</span>
                       <span className="font-semibold">{collectionRate}%</span>
                     </div>
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/40 backdrop-blur-md border border-white/50 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-700 ${
                           collectionRate >= 70

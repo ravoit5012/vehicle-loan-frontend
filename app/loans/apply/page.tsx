@@ -166,16 +166,8 @@ export default function ApplyLoanPage() {
     };
 
 
-    // =========================
-    // UI
-    // =========================
     return (
-        <div className="relative min-h-screen bg-slate-50 font-sans p-4 md:p-8 overflow-hidden">
-            {/* Premium Ambient Background Glows */}
-            <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-400 rounded-full mix-blend-multiply filter blur-[150px] opacity-30 pointer-events-none animate-pulse"></div>
-            <div className="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500 rounded-full mix-blend-multiply filter blur-[150px] opacity-30 pointer-events-none animate-pulse" style={{ animationDelay: "2s" }}></div>
-            <div className="fixed top-[30%] left-[20%] w-[400px] h-[400px] bg-purple-400 rounded-full mix-blend-multiply filter blur-[150px] opacity-20 pointer-events-none animate-pulse" style={{ animationDelay: "1s" }}></div>
-
+        <div className="relative font-sans p-4 md:p-8 overflow-hidden">
             <div className="max-w-7xl mx-auto space-y-8 relative z-10 pt-4">
                 <header className="bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 flex items-center justify-between transition-all duration-300 hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)]">
                     <div className="flex items-center space-x-5">

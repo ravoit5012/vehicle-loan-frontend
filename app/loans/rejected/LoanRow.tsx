@@ -77,7 +77,7 @@ export default function LoanRow({
   }
 
   return (
-    <tr className="border-t hover:bg-gray-50 transition">
+    <tr className="border-t hover:bg-transparent border-t border-white/40 transition">
       <td className="px-4 py-3">
         <div className="font-medium">{customer?.applicantName}</div>
         <div className="text-xs text-gray-500">

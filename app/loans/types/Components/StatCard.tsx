@@ -53,8 +53,8 @@ export default function StatCard({
   return (
     <div
       onClick={() => router.push(href)}
-      className="bg-white rounded-2xl shadow-sm border p-6 
-                 hover:shadow-md transition 
+      className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border p-6 
+                 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition 
                  cursor-pointer active:scale-[0.98]"
     >
       {loading ? (

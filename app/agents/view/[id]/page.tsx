@@ -70,7 +70,7 @@ export default function ViewAgentPage() {
 
     return (
         <>
-            <div className="flex items-center m-2 my-4 space-x-4 bg-gray-100 rounded-lg p-6 mb-4">
+            <div className="flex items-center m-2 my-4 space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
                 <FaPencil className="text-orange-400 text-3xl" />
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">View / Edit Agent</h2>
