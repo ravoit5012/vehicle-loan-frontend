@@ -37,11 +37,13 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
     setImageToCrop(null);
   };
 
+  const isCash = paymentMethod === 'CASH';
+
   const submit = async () => {
     if (!paymentMethod || !transactionId) {
       return alert('Please fill all fields');
     }
-    if (!receiptFile) {
+    if (!isCash && !receiptFile) {
       return alert('Please upload a payment receipt');
     }
 
@@ -53,7 +55,7 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
       formData.append('loanId', fee.loanId);
       formData.append('paymentMethod', paymentMethod);
       formData.append('transactionId', transactionId);
-      formData.append('receipt', receiptFile);
+      if (receiptFile) formData.append('receipt', receiptFile);
 
       const res = await fetch(API_ENDPOINTS.FEES_PAYMENT, {
         method: 'POST',
@@ -62,6 +64,11 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
       });
 
       if (!res.ok) throw new Error('Payment failed');
+
+      const result = await res.json();
+      if (result?.customerReceiptUrl) {
+        window.open(result.customerReceiptUrl, '_blank');
+      }
 
       alert('Fee payment recorded successfully');
       window.location.reload();
@@ -96,11 +103,11 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
 
         <div>
           <label className="text-sm m-2 text-gray-800">
-            Transaction ID
+            {isCash ? 'Collected by' : 'Transaction ID'}
           </label>
           <input
             className="input border-2 border-black rounded-lg mt-2 p-2 w-full"
-            placeholder="UTR / Reference No"
+            placeholder={isCash ? 'Agent / Collector Name' : 'UTR / Reference No'}
             value={transactionId}
             onChange={e => setTransactionId(e.target.value)}
           />
@@ -108,7 +115,10 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
 
         <div>
           <label className="text-sm m-2 text-gray-800 flex items-center justify-between">
-            <span>Payment Receipt</span>
+            <span>
+              Payment Receipt
+              {isCash && <span className="ml-1 text-xs text-gray-400 font-normal">(Optional)</span>}
+            </span>
             {receiptPreview && <span className="text-green-600 font-bold text-xs">Added</span>}
           </label>
           <div className="relative mt-2">

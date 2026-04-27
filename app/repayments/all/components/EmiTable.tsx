@@ -82,6 +82,9 @@ export default function EmiTable({ loanId, repayments }: any) {
             <th className="px-4 py-2 text-left font-medium text-gray-700 uppercase tracking-wider">
               Proof
             </th>
+            <th className="px-4 py-2 text-left font-medium text-gray-700 uppercase tracking-wider">
+              Customer Receipt
+            </th>
           </tr>
         </thead>
 

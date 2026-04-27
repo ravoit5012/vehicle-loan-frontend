@@ -76,6 +76,8 @@ export default function RepaymentTable({
                             <th className="p-3 border-b text-gray-600 font-medium">Paid</th>
                             <th className="p-3 border-b text-gray-600 font-medium">Status</th>
                             <th className="p-3 border-b text-gray-600 font-medium">Action</th>
+                            <th className="p-3 border-b text-gray-600 font-medium">Proof</th>
+                            <th className="p-3 border-b text-gray-600 font-medium">Customer Receipt</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">

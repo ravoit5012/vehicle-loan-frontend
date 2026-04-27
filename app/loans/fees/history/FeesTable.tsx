@@ -19,12 +19,16 @@ export default function FeesTable({ fees }: { fees: any[] }) {
       <table className="min-w-full text-sm">
         <thead className="bg-transparent border-t border-white/40">
           <tr>
-            <th className="px-4 py-3">Customer</th>
-            <th className="px-4 py-3">Loan Details</th>
-            <th className="px-4 py-3">Loan Type Details</th>
-            <th className="px-4 py-3">Total Fees</th>
-            <th className="px-4 py-3">Receipt</th>
-            <th className="px-4 py-3 text-right">Collected at </th>
+            <th className="px-4 py-3 text-left">Customer</th>
+            <th className="px-4 py-3 text-left">Loan Details</th>
+            <th className="px-4 py-3 text-left">Loan Type</th>
+            <th className="px-4 py-3 text-left">Total Fees</th>
+            <th className="px-4 py-3 text-left">Payment Method</th>
+            <th className="px-4 py-3 text-left">Transaction / Collected By</th>
+            <th className="px-4 py-3 text-left">Payment Receipt</th>
+            <th className="px-4 py-3 text-left">Customer Receipt</th>
+            <th className="px-4 py-3 text-right">Collected At</th>
+            <th className="px-4 py-3 text-right"></th>
           </tr>
         </thead>
 

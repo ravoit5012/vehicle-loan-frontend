@@ -34,6 +34,10 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
       });
 
       if (res.ok) {
+        const result = await res.json().catch(() => null);
+        if (result?.customerReceiptUrl) {
+          window.open(result.customerReceiptUrl, '_blank');
+        }
         alert("Payment recorded successfully!");
         window.location.reload();
       } else {

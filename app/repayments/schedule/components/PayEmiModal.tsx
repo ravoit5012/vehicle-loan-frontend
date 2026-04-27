@@ -3,8 +3,11 @@ import { API_ENDPOINTS } from '@/app/config/config';
 
 export default function PayEmiModal({ loanId, emi, onClose }: any) {
   const [amount, setAmount] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('CASH');
   const [txn, setTxn] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const isCash = paymentMethod === 'CASH';
 
   const submit = async () => {
     if (!amount || !txn) {
@@ -21,12 +24,16 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
         body: JSON.stringify({
           emiNumber: emi.emiNumber,
           paidAmount: Number(amount),
-          paymentMethod: 'CASH',
+          paymentMethod,
           transactionId: txn,
         }),
       });
 
       if (res.ok) {
+        const result = await res.json();
+        if (result?.customerReceiptUrl) {
+          window.open(result.customerReceiptUrl, '_blank');
+        }
         alert('Payment recorded successfully!');
         window.location.reload();
       } else {
@@ -55,13 +62,31 @@ export default function PayEmiModal({ loanId, emi, onClose }: any) {
             value={amount}
             onChange={e => setAmount(e.target.value)}
           />
-          <input
-            type="text"
-            className="input px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100"
-            placeholder="Transaction ID"
-            value={txn}
-            onChange={e => setTxn(e.target.value)}
-          />
+
+          <select
+            className="input px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 cursor-pointer"
+            value={paymentMethod}
+            onChange={e => setPaymentMethod(e.target.value)}
+          >
+            <option value="CASH">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="NEFT">NEFT</option>
+            <option value="RTGS">RTGS</option>
+            <option value="BANK_TRANSFER">Bank Transfer</option>
+          </select>
+
+          <div>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+              {isCash ? 'Collected by' : 'Transaction ID'}
+            </label>
+            <input
+              type="text"
+              className="input px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 w-full"
+              placeholder={isCash ? 'Agent / Collector Name' : 'UTR / Reference No'}
+              value={txn}
+              onChange={e => setTxn(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">

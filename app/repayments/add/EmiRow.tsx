@@ -64,6 +64,21 @@ export default function EmiRow({ emi, loanId }: any) {
           )}
         </td>
 
+        <td className="p-3">
+          {emi.customerReceiptUrl ? (
+            <a
+              href={emi.customerReceiptUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-md text-xs font-medium hover:bg-indigo-100 transition"
+            >
+              📄 Receipt PDF
+            </a>
+          ) : (
+            <span className="text-gray-400 text-xs italic">—</span>
+          )}
+        </td>
+
       </tr>
 
       {/* Pay EMI Modal */}

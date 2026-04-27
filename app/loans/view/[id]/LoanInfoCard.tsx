@@ -52,7 +52,7 @@ export default function LoanInfoCard({ loan }: { loan: any }) {
             setLoading(false);
         }
     };
-
+    const loanId = loan?.id?.toUpperCase();
     return (
         <div className="w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden p-6 relative">
             <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-indigo-700 p-4 mb-6 rounded-lg text-white shadow">
@@ -70,6 +70,9 @@ export default function LoanInfoCard({ loan }: { loan: any }) {
             <div className="space-y-4">
                 <div className="container">
                     <StatusBadge status={loan.status} />
+                </div>
+                <div className="container">
+                    Loan Id : {loanId}
                 </div>
 
                 {isEditing ? (
