@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   ADD_CUSTOMER: `${BASE_URL}/customers`,
   CUSTOMER_COUNT: `${BASE_URL}/customers/count`,
   GET_ALL_CUSTOMERS: `${BASE_URL}/customers/all`,
+  GET_ALL_CUSTOMERS_NOFILTER: `${BASE_URL}/customers/get-all`,
   GET_CUSTOMER_BY_ID: `${BASE_URL}/customers/id`,
   UPDATE_CUSTOMER: `${BASE_URL}/customers/update/id`,
   DELETE_CUSTOMER: `${BASE_URL}/customers/delete/id`,

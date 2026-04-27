@@ -25,7 +25,7 @@ export default function ViewLoansPage() {
         (async () => {
             const [loansRes, customersRes, agentsRes, loanTypesRes] = await Promise.all([
                 axios.get(API_ENDPOINTS.GET_ALL_LOAN_APPLICATIONS, { withCredentials: true }),
-                axios.get(API_ENDPOINTS.GET_ALL_CUSTOMERS, { withCredentials: true }),
+                axios.get(API_ENDPOINTS.GET_ALL_CUSTOMERS_NOFILTER, { withCredentials: true }),
                 axios.get(API_ENDPOINTS.GET_ALL_AGENTS, { withCredentials: true }),
                 axios.get(API_ENDPOINTS.GET_ALL_LOAN_TYPES, { withCredentials: true }), // 👈 new
             ]);
