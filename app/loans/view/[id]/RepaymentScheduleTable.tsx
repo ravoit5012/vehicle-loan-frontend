@@ -55,7 +55,9 @@ export default function RepaymentScheduleTable({
                     : '—'}
                 </td>
                 <td className="px-3 py-2">
-                  {r.transactionId ? (
+                  {r.collectedBy ? (
+                    <span className="font-semibold text-gray-800">{r.collectedBy}</span>
+                  ) : r.transactionId ? (
                     <span className="font-mono text-xs">{r.transactionId}</span>
                   ) : (
                     <span className="text-gray-400 text-xs">—</span>

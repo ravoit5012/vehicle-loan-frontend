@@ -5,10 +5,19 @@ import { API_ENDPOINTS } from '@/app/config/config';
 import Loading from '@/app/components/Loading';
 import CropModal from '@/app/components/CropModal';
 import { Image as ImageIcon } from 'lucide-react';
+import CollectorSelect from '@/app/components/CollectorSelect';
+
+type CollectorOption = {
+  id: string;
+  label: string;
+  name: string;
+  role: 'MANAGER' | 'AGENT';
+};
 
 export default function CollectFeeForm({ fee }: { fee: any }) {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [transactionId, setTransactionId] = useState('');
+  const [collectedBy, setCollectedBy] = useState<CollectorOption | null>(null);
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -40,8 +49,14 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
   const isCash = paymentMethod === 'CASH';
 
   const submit = async () => {
-    if (!paymentMethod || !transactionId) {
-      return alert('Please fill all fields');
+    if (!paymentMethod) {
+      return alert('Please select payment method');
+    }
+    if (!collectedBy) {
+      return alert('Please select a collector');
+    }
+    if (!isCash && !transactionId) {
+      return alert('Please enter transaction ID');
     }
     if (!isCash && !receiptFile) {
       return alert('Please upload a payment receipt');
@@ -54,7 +69,8 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
       formData.append('id', fee.id);
       formData.append('loanId', fee.loanId);
       formData.append('paymentMethod', paymentMethod);
-      formData.append('transactionId', transactionId);
+      formData.append('transactionId', transactionId || '');
+      formData.append('collectedBy', collectedBy.name);
       if (receiptFile) formData.append('receipt', receiptFile);
 
       const res = await fetch(API_ENDPOINTS.FEES_PAYMENT, {
@@ -82,7 +98,7 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
   return (
     <>
       <Loading visible={loading} />
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
         <div>
           <label className="text-sm m-2 text-gray-800">
             Payment Method
@@ -103,11 +119,24 @@ export default function CollectFeeForm({ fee }: { fee: any }) {
 
         <div>
           <label className="text-sm m-2 text-gray-800">
-            {isCash ? 'Collected by' : 'Transaction ID'}
+            Collector
+          </label>
+          <div className="my-2">
+            <CollectorSelect
+              value={collectedBy}
+              onChange={setCollectedBy}
+              placeholder="Search & select collector"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm m-2 text-gray-800">
+            {isCash ? 'Reference (Optional)' : 'Transaction ID'}
           </label>
           <input
             className="input border-2 border-black rounded-lg mt-2 p-2 w-full"
-            placeholder={isCash ? 'Agent / Collector Name' : 'UTR / Reference No'}
+            placeholder={isCash ? 'Reference No' : 'UTR / Reference No'}
             value={transactionId}
             onChange={e => setTransactionId(e.target.value)}
           />

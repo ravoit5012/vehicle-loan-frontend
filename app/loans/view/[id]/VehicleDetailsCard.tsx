@@ -37,7 +37,7 @@ export default function VehicleDetailsCard({ loan, user, onUpdate, customer }: P
   const handleSave = async () => {
     setLoading(true);
     try {
-      await axios.patch(`${API_ENDPOINTS.VERIFY_VEHICLE}/${loan.id}`, fields, {
+      await axios.patch(`${API_ENDPOINTS.UPDATE_VEHICLE}/${loan.id}`, fields, {
         withCredentials: true,
       });
       setIsEditing(false);
@@ -93,8 +93,10 @@ export default function VehicleDetailsCard({ loan, user, onUpdate, customer }: P
       const res = await axios.post(API_ENDPOINTS.UPLOAD_SINGLE_DOCUMENT, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      if (res.data && res.data.fileUrl) {
-        setFields(prev => ({ ...prev, [field]: res.data.fileUrl }));
+      if (res.data && res.data.url) {
+        setFields(prev => ({ ...prev, [field]: res.data.url }));
+      } else {
+        alert(`Upload succeeded but no URL was returned for ${field}.`);
       }
     } catch (err) {
       console.error(err);
