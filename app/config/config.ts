@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   LOGIN: `${BASE_URL}/auth/login`,
   LOGOUT: `${BASE_URL}/auth/logout`,
   ME: `${BASE_URL}/auth/dashboard`,
+  UPDATE_ADMIN_PASSWORD: `${BASE_URL}/auth/update-password`,
 
   // CUSTOMER DETAILS ENDPOINTS
   ADD_CUSTOMER: `${BASE_URL}/customers`,

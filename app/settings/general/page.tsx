@@ -20,6 +20,9 @@ import {
   ImageIcon,
   Crop,
   X,
+  KeyRound,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 type CompanySettingsData = {
@@ -84,6 +87,14 @@ export default function GeneralSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  /* ===== Change password state ===== */
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSaving, setPasswordSaving] = useState(false);
 
   /* ===== Crop modal state ===== */
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -162,6 +173,47 @@ export default function GeneralSettingsPage() {
       setError(err.message || "Something went wrong");
     } finally {
       setSaving(false);
+    }
+  };
+
+  /* ===== Change password handler ===== */
+  const handleChangePassword = async () => {
+    setPasswordError(null);
+
+    if (!newPassword.trim() || !confirmPassword.trim()) {
+      setPasswordError("Please fill in both password fields");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      const res = await fetch(API_ENDPOINTS.UPDATE_ADMIN_PASSWORD, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: newPassword, confirmPassword }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(errData?.message || "Failed to update password");
+      }
+
+      setNewPassword("");
+      setConfirmPassword("");
+      setToast("Password updated successfully!");
+    } catch (err: any) {
+      setPasswordError(err.message || "Something went wrong");
+    } finally {
+      setPasswordSaving(false);
     }
   };
 
@@ -513,6 +565,110 @@ export default function GeneralSettingsPage() {
                 <>
                   <Save size={16} />
                   Save Settings
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Change Password Card ===== */}
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl border border-gray-100 overflow-hidden">
+        {/* Card Header */}
+        <div className="px-6 py-4 border-b border-gray-100 bg-transparent border-t border-white/40/50">
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <KeyRound size={20} className="text-indigo-500" />
+            Change Password
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Update the password for your own admin account
+          </p>
+        </div>
+
+        {/* Error Banner */}
+        {passwordError && (
+          <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
+            {passwordError}
+          </div>
+        )}
+
+        {/* Fields */}
+        <div className="p-6 space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1.5">
+                <KeyRound size={18} className="text-indigo-500" />
+                New Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  className="w-full px-4 py-2.5 pr-11 border border-gray-200 rounded-xl text-gray-800 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400
+                    transition-all duration-200 bg-transparent border-t border-white/40/50 hover:bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1.5">
+                <KeyRound size={18} className="text-indigo-500" />
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter new password"
+                  className="w-full px-4 py-2.5 pr-11 border border-gray-200 rounded-xl text-gray-800 text-sm
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400
+                    transition-all duration-200 bg-transparent border-t border-white/40/50 hover:bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="flex justify-end pt-4 border-t border-gray-100">
+            <button
+              id="save-admin-password"
+              onClick={handleChangePassword}
+              disabled={passwordSaving}
+              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600
+                text-white font-semibold rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg
+                hover:from-indigo-600 hover:to-purple-700
+                disabled:opacity-60 disabled:cursor-not-allowed
+                transition-all duration-200 text-sm cursor-pointer"
+            >
+              {passwordSaving ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  Update Password
                 </>
               )}
             </button>
