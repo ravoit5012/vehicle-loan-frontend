@@ -46,17 +46,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [company, setCompany] = useState<Company | null>(null);
 
   /* ===== Fetch current user ===== */
-  const fetchMe = async () => {
+  // On a hard refresh this is the only source of truth for restoring the
+  // session (React state doesn't survive a reload). A genuine 401/403 means
+  // the user really isn't authenticated. Anything else — a network blip, the
+  // backend mid-restart, a transient 5xx — is retried a couple of times
+  // before giving up, so a refresh during a brief server hiccup doesn't look
+  // like the user got logged out.
+  const fetchMe = async (attempt = 0): Promise<void> => {
     try {
       const res = await fetch(API_ENDPOINTS.ME, {
         credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Not authenticated");
+      if (res.status === 401 || res.status === 403) {
+        setUser(null);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`Unexpected status ${res.status}`);
+      }
 
       const data = await res.json();
       setUser(data.user ?? null);
     } catch {
+      if (attempt < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 600 * (attempt + 1)));
+        return fetchMe(attempt + 1);
+      }
       setUser(null);
     }
   };

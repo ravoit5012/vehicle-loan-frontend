@@ -12,11 +12,12 @@ import React, { useEffect } from "react";
 
 type ToastProps = {
     message: string;
+    type?: "success" | "error";
     duration?: number; // in milliseconds
     onClose: () => void;
 };
 
-export const Toast = ({ message, duration = 3000, onClose }: ToastProps) => {
+export const Toast = ({ message, type = "success", duration = 3000, onClose }: ToastProps) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             onClose();
@@ -25,7 +26,11 @@ export const Toast = ({ message, duration = 3000, onClose }: ToastProps) => {
     }, [duration, onClose]);
 
     return (
-        <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg animate-slideIn">
+        <div
+            className={`fixed bottom-5 right-5 z-50 max-w-sm text-white px-4 py-3 rounded-lg shadow-lg animate-slideIn ${
+                type === "error" ? "bg-red-600" : "bg-green-600"
+            }`}
+        >
             {message}
         </div>
     );

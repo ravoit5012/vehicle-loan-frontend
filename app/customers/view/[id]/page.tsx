@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useMemo, useState, ChangeEvent } from "react";
 import { useParams, useRouter } from "next/navigation"; // Next.js 13+ app router
 import axios from "axios";
 import { API_ENDPOINTS } from "../../../config/config";
@@ -19,6 +19,13 @@ import {
   FaIdCard,
   FaExternalLinkAlt,
   FaMoneyBillWave,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaSearchPlus,
+  FaUniversity,
+  FaMoneyCheckAlt,
+  FaCopy,
+  FaCheck,
 } from "react-icons/fa";
 
 interface Customer {
@@ -73,6 +80,32 @@ interface Customer {
   accountStatus: string;
   managerId: string;
   agentId: string;
+
+  bankName?: string;
+  bankAccountNumber?: string;
+  bankIfscCode?: string;
+  bankAddress?: string;
+  chequeNumber1?: string;
+  chequeNumber2?: string;
+  chequeNumber3?: string;
+  chequeNumber4?: string;
+  chequeImage1Url?: string;
+  chequeImage2Url?: string;
+  chequeImage3Url?: string;
+  chequeImage4Url?: string;
+
+  nomineeBankName?: string;
+  nomineeBankAccountNumber?: string;
+  nomineeBankIfscCode?: string;
+  nomineeBankAddress?: string;
+  nomineeChequeNumber1?: string;
+  nomineeChequeNumber2?: string;
+  nomineeChequeNumber3?: string;
+  nomineeChequeNumber4?: string;
+  nomineeChequeImage1Url?: string;
+  nomineeChequeImage2Url?: string;
+  nomineeChequeImage3Url?: string;
+  nomineeChequeImage4Url?: string;
   extraDocuments?: {
     id: string;
     name: string;
@@ -175,8 +208,55 @@ const ViewCustomer: React.FC = () => {
     fetchLoans();
   }, [id]);
 
-  const openFile = (url: string) => {
-    window.open(url, "_blank");
+  // Flattened, ordered list of every document image on this customer, used to
+  // drive the lightbox's prev/next navigation across the whole gallery at once.
+  const allDocuments = useMemo(() => {
+    if (!customer) return [];
+    const docs: { label: string; url?: string }[] = [
+      { label: "PAN Card", url: customer.panImageUrl },
+      { label: "POI Front", url: customer.poiFrontImageUrl },
+      { label: "POI Back", url: customer.poiBackImageUrl },
+      { label: "POA Front", url: customer.poaFrontImageUrl },
+      { label: "POA Back", url: customer.poaBackImageUrl },
+      { label: "Applicant Signature", url: customer.applicantSignatureUrl },
+      { label: "Personal Photo", url: customer.personalPhotoUrl },
+      { label: "Nominee PAN Card", url: customer.nomineePanImageUrl },
+      { label: "Nominee POI Front", url: customer.nomineePoiFrontImageUrl },
+      { label: "Nominee POI Back", url: customer.nomineePoiBackImageUrl },
+      { label: "Nominee POA Front", url: customer.nomineePoaFrontImageUrl },
+      { label: "Nominee POA Back", url: customer.nomineePoaBackImageUrl },
+      { label: "Nominee Signature", url: customer.nomineeSignatureUrl },
+      { label: "Nominee Photo", url: customer.nomineePersonalPhotoUrl },
+      { label: "Cheque 1", url: customer.chequeImage1Url },
+      { label: "Cheque 2", url: customer.chequeImage2Url },
+      { label: "Cheque 3", url: customer.chequeImage3Url },
+      { label: "Cheque 4", url: customer.chequeImage4Url },
+      { label: "Nominee Cheque 1", url: customer.nomineeChequeImage1Url },
+      { label: "Nominee Cheque 2", url: customer.nomineeChequeImage2Url },
+      { label: "Nominee Cheque 3", url: customer.nomineeChequeImage3Url },
+      { label: "Nominee Cheque 4", url: customer.nomineeChequeImage4Url },
+      ...(customer.extraDocuments || []).map((d) => ({ label: d.name, url: d.url })),
+    ];
+    return docs.filter((d): d is { label: string; url: string } => !!d.url);
+  }, [customer]);
+
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const viewDoc = (url?: string) => {
+    if (!url) return;
+    const idx = allDocuments.findIndex((d) => d.url === url);
+    if (idx >= 0) setLightboxIndex(idx);
+  };
+
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const copyToClipboard = async (field: string, value?: string) => {
+    if (!value) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField((f) => (f === field ? null : f)), 1500);
+    } catch {
+      // clipboard permission denied — silently ignore
+    }
   };
 
   if (loading) return <p className="p-6">Loading customer...</p>;
@@ -184,6 +264,14 @@ const ViewCustomer: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-white rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] my-8">
+      {lightboxIndex !== null && (
+        <Lightbox
+          items={allDocuments}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
       {/* Header */}
       <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl p-8 transition-shadow hover:shadow-[0_8px_40px_rgb(0,0,0,0.06)] mb-4">
         <FaUser className="text-orange-400 text-3xl" />
@@ -318,17 +406,17 @@ const ViewCustomer: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
           <InputField label="PAN Card Number" value={customer.panNumber} readOnly />
-          <FileField label="PAN Card" url={customer.panImageUrl} />
+          <FileField label="PAN Card" url={customer.panImageUrl} onView={() => viewDoc(customer.panImageUrl)} />
           <InputField label="Proof of Identity Document" value={customer.poiDocumentType} readOnly />
           <InputField label="POI Document Number" value={customer.poiDocumentNumber} readOnly />
-          <FileField label="POI Front Image" url={customer.poiFrontImageUrl} />
-          <FileField label="POI Back Image" url={customer.poiBackImageUrl} />
+          <FileField label="POI Front Image" url={customer.poiFrontImageUrl} onView={() => viewDoc(customer.poiFrontImageUrl)} />
+          <FileField label="POI Back Image" url={customer.poiBackImageUrl} onView={() => viewDoc(customer.poiBackImageUrl)} />
           <InputField label="Proof of Address Document" value={customer.poaDocumentType} readOnly />
           <InputField label="POA Document Number" value={customer.poaDocumentNumber} readOnly />
-          <FileField label="POA Front Image" url={customer.poaFrontImageUrl} />
-          <FileField label="POA Back Image" url={customer.poaBackImageUrl} />
-          <FileField label="Signature" url={customer.applicantSignatureUrl} />
-          <FileField label="Personal Photo" url={customer.personalPhotoUrl} />
+          <FileField label="POA Front Image" url={customer.poaFrontImageUrl} onView={() => viewDoc(customer.poaFrontImageUrl)} />
+          <FileField label="POA Back Image" url={customer.poaBackImageUrl} onView={() => viewDoc(customer.poaBackImageUrl)} />
+          <FileField label="Signature" url={customer.applicantSignatureUrl} onView={() => viewDoc(customer.applicantSignatureUrl)} />
+          <FileField label="Personal Photo" url={customer.personalPhotoUrl} onView={() => viewDoc(customer.personalPhotoUrl)} />
         </div>
       </section>
 
@@ -339,17 +427,17 @@ const ViewCustomer: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-yellow-600 rounded-b-md">
           <InputField label="PAN Card Number" value={customer.nomineePanNumber} readOnly />
-          <FileField label="PAN Card" url={customer.nomineePanImageUrl} />
+          <FileField label="PAN Card" url={customer.nomineePanImageUrl} onView={() => viewDoc(customer.nomineePanImageUrl)} />
           <InputField label="Proof of Identity Document" value={customer.nomineePoiDocumentType} readOnly />
           <InputField label="POI Document Number" value={customer.nomineePoiDocumentNumber} readOnly />
-          <FileField label="POI Front Image" url={customer.nomineePoiFrontImageUrl} />
-          <FileField label="POI Back Image" url={customer.nomineePoiBackImageUrl} />
+          <FileField label="POI Front Image" url={customer.nomineePoiFrontImageUrl} onView={() => viewDoc(customer.nomineePoiFrontImageUrl)} />
+          <FileField label="POI Back Image" url={customer.nomineePoiBackImageUrl} onView={() => viewDoc(customer.nomineePoiBackImageUrl)} />
           <InputField label="Proof of Address Document" value={customer.nomineePoaDocumentType} readOnly />
           <InputField label="POA Document Number" value={customer.nomineePoaDocumentNumber} readOnly />
-          <FileField label="POA Front Image" url={customer.nomineePoaFrontImageUrl} />
-          <FileField label="POA Back Image" url={customer.nomineePoaBackImageUrl} />
-          <FileField label="Nominee Signature" url={customer.nomineeSignatureUrl} />
-          <FileField label="Nominee Photo" url={customer.nomineePersonalPhotoUrl} />
+          <FileField label="POA Front Image" url={customer.nomineePoaFrontImageUrl} onView={() => viewDoc(customer.nomineePoaFrontImageUrl)} />
+          <FileField label="POA Back Image" url={customer.nomineePoaBackImageUrl} onView={() => viewDoc(customer.nomineePoaBackImageUrl)} />
+          <FileField label="Nominee Signature" url={customer.nomineeSignatureUrl} onView={() => viewDoc(customer.nomineeSignatureUrl)} />
+          <FileField label="Nominee Photo" url={customer.nomineePersonalPhotoUrl} onView={() => viewDoc(customer.nomineePersonalPhotoUrl)} />
         </div>
       </section>
 
@@ -359,11 +447,111 @@ const ViewCustomer: React.FC = () => {
           <FaLock /> Account Information
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-purple-600 rounded-b-md">
-          <InputField label="Member ID" value={customer.memberId} readOnly icon={<FaUser />} />
+          <InputField
+            label="Member ID"
+            value={customer.memberId}
+            readOnly
+            icon={<FaUser />}
+            onCopy={() => copyToClipboard("memberId", customer.memberId)}
+            copied={copiedField === "memberId"}
+          />
           <InputField label="Email" value={customer.email} readOnly icon={<FaEnvelope />} />
           <InputField label="Account Status" value={customer.accountStatus} readOnly />
         </div>
       </section>
+
+      {/* BANK DETAILS */}
+      {(customer.bankAccountNumber || customer.bankName) && (
+        <section className="mb-8">
+          <h2 className="bg-teal-600 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+            <FaUniversity /> Borrower Bank Details
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-teal-600 rounded-b-md">
+            <InputField label="Bank Name" value={customer.bankName || "—"} readOnly icon={<FaUniversity />} />
+            <InputField
+              label="Account Number"
+              value={customer.bankAccountNumber || "—"}
+              readOnly
+              icon={<FaMoneyCheckAlt />}
+              onCopy={() => copyToClipboard("bankAccountNumber", customer.bankAccountNumber)}
+              copied={copiedField === "bankAccountNumber"}
+            />
+            <InputField
+              label="IFSC Code"
+              value={customer.bankIfscCode || "—"}
+              readOnly
+              icon={<FaHashtag />}
+              onCopy={() => copyToClipboard("bankIfscCode", customer.bankIfscCode)}
+              copied={copiedField === "bankIfscCode"}
+            />
+            <InputField label="Bank Address" value={customer.bankAddress || "—"} readOnly icon={<FaMapMarkerAlt />} />
+          </div>
+
+          <h3 className="mt-4 mb-2 px-1 text-sm font-semibold text-gray-600 flex items-center gap-2">
+            <FaMoneyCheckAlt /> Security Cheques
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((n) => {
+              const num = (customer as any)[`chequeNumber${n}`] as string | undefined;
+              const url = (customer as any)[`chequeImage${n}Url`] as string | undefined;
+              if (!num && !url) return null;
+              return (
+                <div key={n} className="rounded-lg border border-gray-200 bg-gray-50/60 p-3 flex flex-col gap-3">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Cheque {n}</p>
+                  <InputField label="Cheque Number" value={num || "—"} readOnly />
+                  <FileField label="Cheque Photo" url={url} onView={() => viewDoc(url)} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {(customer.nomineeBankAccountNumber || customer.nomineeBankName) && (
+        <section className="mb-8">
+          <h2 className="bg-cyan-700 text-white px-4 py-2 rounded-t-md font-semibold flex items-center gap-3">
+            <FaUniversity /> Nominee Bank Details
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border border-t-0 border-cyan-700 rounded-b-md">
+            <InputField label="Bank Name" value={customer.nomineeBankName || "—"} readOnly icon={<FaUniversity />} />
+            <InputField
+              label="Account Number"
+              value={customer.nomineeBankAccountNumber || "—"}
+              readOnly
+              icon={<FaMoneyCheckAlt />}
+              onCopy={() => copyToClipboard("nomineeBankAccountNumber", customer.nomineeBankAccountNumber)}
+              copied={copiedField === "nomineeBankAccountNumber"}
+            />
+            <InputField
+              label="IFSC Code"
+              value={customer.nomineeBankIfscCode || "—"}
+              readOnly
+              icon={<FaHashtag />}
+              onCopy={() => copyToClipboard("nomineeBankIfscCode", customer.nomineeBankIfscCode)}
+              copied={copiedField === "nomineeBankIfscCode"}
+            />
+            <InputField label="Bank Address" value={customer.nomineeBankAddress || "—"} readOnly icon={<FaMapMarkerAlt />} />
+          </div>
+
+          <h3 className="mt-4 mb-2 px-1 text-sm font-semibold text-gray-600 flex items-center gap-2">
+            <FaMoneyCheckAlt /> Security Cheques
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((n) => {
+              const num = (customer as any)[`nomineeChequeNumber${n}`] as string | undefined;
+              const url = (customer as any)[`nomineeChequeImage${n}Url`] as string | undefined;
+              if (!num && !url) return null;
+              return (
+                <div key={n} className="rounded-lg border border-gray-200 bg-gray-50/60 p-3 flex flex-col gap-3">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Cheque {n}</p>
+                  <InputField label="Cheque Number" value={num || "—"} readOnly />
+                  <FileField label="Cheque Photo" url={url} onView={() => viewDoc(url)} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* EXTRA DOCUMENTS */}
       <section className="mb-8">
@@ -390,16 +578,36 @@ const ViewCustomer: React.FC = () => {
                       </h3>
                     </div>
 
+                    <button
+                      type="button"
+                      onClick={() => viewDoc(doc.url)}
+                      className="cursor-pointer group relative w-full h-32 rounded-md border border-gray-200 overflow-hidden bg-gray-50"
+                    >
+                      <img
+                        src={doc.url}
+                        alt={doc.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                      <span className="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                        <FaSearchPlus className="mr-1" /> View
+                      </span>
+                    </button>
+
                     <p className="text-xs text-gray-500">
                       Uploaded: {new Date(doc.uploadedAt).toLocaleDateString()}
                     </p>
 
-                    <button
-                      onClick={() => window.open(doc.url, "_blank")}
-                      className="mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:-translate-y-0.5 transition-all outline outline-white/30 hover:shadow-lg text-white text-sm px-4 py-2 rounded-md transition"
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-center mt-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:-translate-y-0.5 transition-all outline outline-white/30 hover:shadow-lg text-white text-sm px-4 py-2 rounded-md transition"
                     >
-                      View Document
-                    </button>
+                      Open Original
+                    </a>
 
                   </div>
                 </div>
@@ -434,35 +642,147 @@ interface InputFieldProps {
   icon?: React.ReactNode;
   readOnly?: boolean;
   type?: string;
+  onCopy?: () => void;
+  copied?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, value, icon, readOnly = true, type = "text" }) => (
+const InputField: React.FC<InputFieldProps> = ({ label, value, icon, readOnly = true, type = "text", onCopy, copied = false }) => (
   <label className="flex flex-col text-gray-700 text-sm">
     <span className="mb-1 font-semibold flex items-center gap-2">
       {icon} {label}
     </span>
-    <input
-      type={type}
-      value={value}
-      readOnly={readOnly}
-      className="border border-gray-300 rounded-md px-3 py-2 bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed"
-    />
+    <div className="relative">
+      <input
+        type={type}
+        value={value}
+        readOnly={readOnly}
+        className={`w-full border border-gray-300 rounded-md px-3 py-2 bg-white/40 backdrop-blur-md border border-white/50 cursor-not-allowed ${onCopy ? "pr-9" : ""}`}
+      />
+      {onCopy && (
+        <button
+          type="button"
+          onClick={onCopy}
+          title="Copy to clipboard"
+          className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"
+        >
+          {copied ? <FaCheck className="text-green-600" /> : <FaCopy />}
+        </button>
+      )}
+    </div>
   </label>
 );
 
 interface FileFieldProps {
   label: string;
-  url: string;
+  url?: string;
+  onView?: () => void;
 }
 
-const FileField: React.FC<FileFieldProps> = ({ label, url }) => (
-  <div className="flex flex-col gap-2">
-    <span className="font-semibold">{label}</span>
-    <button
-      onClick={() => window.open(url, "_blank")}
-      className="px-3 py-1 text-sm cursor-pointer text-blue-700 underline hover:text-blue-900"
-    >
-      View File
-    </button>
+const FileField: React.FC<FileFieldProps> = ({ label, url, onView }) => (
+  <div className="flex flex-col gap-1 text-sm">
+    <span className="font-semibold flex items-center gap-2 flex-wrap text-gray-700">
+      {label}
+      {url ? (
+        <span className="inline-flex items-center gap-1 text-green-600 text-xs font-normal">
+          <FaCheckCircle /> Uploaded
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1 text-gray-400 text-xs font-normal">
+          <FaTimesCircle /> Not Uploaded
+        </span>
+      )}
+    </span>
+
+    {url ? (
+      <button
+        type="button"
+        onClick={onView}
+        className="cursor-pointer group relative w-full h-28 rounded-md border border-gray-200 overflow-hidden bg-gray-50"
+      >
+        <img src={url} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition" />
+        <span className="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center text-white text-xs opacity-0 group-hover:opacity-100 transition">
+          <FaSearchPlus className="mr-1" /> View
+        </span>
+      </button>
+    ) : (
+      <div className="w-full h-28 rounded-md border-2 border-dashed border-gray-200 flex items-center justify-center text-xs text-gray-400">
+        No document
+      </div>
+    )}
   </div>
 );
+
+/* --------------------------------------
+   LIGHTBOX — full-screen document viewer with prev/next across the whole gallery
+-------------------------------------- */
+interface LightboxProps {
+  items: { label: string; url: string }[];
+  index: number;
+  onClose: () => void;
+  onNavigate: (index: number) => void;
+}
+
+const Lightbox: React.FC<LightboxProps> = ({ items, index, onClose, onNavigate }) => {
+  const item = items[index];
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onNavigate((index + 1) % items.length);
+      if (e.key === "ArrowLeft") onNavigate((index - 1 + items.length) % items.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [index, items.length, onClose, onNavigate]);
+
+  if (!item) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/80 z-50 flex flex-col items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="flex items-center justify-between w-full max-w-4xl mb-3 text-white"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <span className="font-semibold">
+          {item.label} <span className="text-white/60 text-sm">({index + 1} / {items.length})</span>
+        </span>
+        <div className="flex items-center gap-4">
+          <a href={item.url} target="_blank" rel="noreferrer" className="text-white/80 hover:text-white text-sm underline">
+            Open original
+          </a>
+          <button onClick={onClose} className="cursor-pointer text-white/80 hover:text-white text-2xl leading-none" aria-label="Close">
+            ×
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="relative flex items-center justify-center w-full max-w-4xl flex-1 min-h-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {items.length > 1 && (
+          <button
+            onClick={() => onNavigate((index - 1 + items.length) % items.length)}
+            className="cursor-pointer absolute left-0 text-white text-3xl px-3 py-6 hover:bg-white/10 rounded transition"
+            aria-label="Previous document"
+          >
+            ‹
+          </button>
+        )}
+        <img src={item.url} alt={item.label} className="max-h-[75vh] max-w-full object-contain rounded shadow-2xl" />
+        {items.length > 1 && (
+          <button
+            onClick={() => onNavigate((index + 1) % items.length)}
+            className="cursor-pointer absolute right-0 text-white text-3xl px-3 py-6 hover:bg-white/10 rounded transition"
+            aria-label="Next document"
+          >
+            ›
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
